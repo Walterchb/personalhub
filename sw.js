@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v3-drilldown';
+const CACHE='personal-hub-v4-toolbar-privacy';
 const APP_SHELL=[
   './',
   './index.html',

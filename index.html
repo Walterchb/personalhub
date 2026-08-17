@@ -1091,6 +1091,73 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
   #detailDialog{width:calc(100vw - 10px);max-height:94dvh}.detailModal{padding:11px}.detailHeader h3{font-size:16px!important}.detailStats{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.detailStat{padding:7px 8px}.detailStatValue{font-size:14px}.detailChartBlock{padding:7px}.detailChart{min-height:165px}.detailChart svg{max-height:185px}.detailMovementList{max-height:280px}.detailMovementRow{grid-template-columns:28px minmax(0,1fr) auto;padding:8px;gap:7px}.detailMvIcon{width:27px;height:27px}.matrix td.pnlClick::after{display:none}
 }
 
+
+
+/* Personal Hub — aligned section controls */
+.topControlRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  min-height:58px;
+  margin-bottom:10px;
+  border-bottom:1px solid var(--line);
+}
+.topControlRow .tabs{
+  position:static !important;
+  top:auto !important;
+  z-index:auto !important;
+  flex:1 1 auto;
+  min-width:0;
+  margin:0 !important;
+  padding:8px 0 !important;
+  border-bottom:0 !important;
+  background:transparent !important;
+  backdrop-filter:none !important;
+  align-items:center;
+}
+.topControlRow .pageTop.periodOnly{
+  flex:0 0 auto;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  align-self:center;
+}
+.topControlRow .periodControl{
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  margin:0 !important;
+}
+@media(max-width:700px){
+  .topControlRow{
+    display:block;
+    min-height:0;
+    margin-bottom:8px;
+    padding:8px 0 7px;
+  }
+  .topControlRow .tabs{display:none !important;}
+  .topControlRow .pageTop.periodOnly{width:100%;}
+  .topControlRow .pageTop.periodOnly .periodControl{width:100% !important;min-height:42px;}
+}
+
+/* Header privacy control */
+#privacyBtn.active{
+  background:#213747 !important;
+  border-color:#5d849d !important;
+  box-shadow:inset 0 -2px 0 #4aa3d8;
+}
+@media(max-width:350px){
+  .headerInner{gap:4px !important;}
+  .brandLink{max-width:105px !important;}
+  .brandIcon{width:28px !important;height:28px !important;flex-basis:28px !important;}
+  .headerBrandTitle{font-size:10.5px !important;}
+  .headerBrandSub{display:none !important;}
+  .desktopActions{gap:2px !important;}
+  .desktopActions button{width:29px !important;height:29px !important;min-width:29px !important;min-height:29px !important;}
+  .desktopActions button i{font-size:12px !important;}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1153,6 +1220,7 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
     </a>
     <div class="headerActions desktopActions">
       <button id="themeBtn" title="Cambiar tema" aria-label="Cambiar tema"><i class="fa-solid fa-circle-half-stroke"></i><span>Tema</span></button>
+      <button id="privacyBtn" title="Ocultar cifras" aria-label="Ocultar cifras" aria-pressed="false"><i class="fa-solid fa-eye-slash"></i><span>Ocultar</span></button>
       <button id="exportBtn" title="Exportar datos" aria-label="Exportar datos"><i class="fa-solid fa-file-export"></i><span>Exportar</span></button>
       <button id="importBtn" title="Importar datos" aria-label="Importar datos"><i class="fa-solid fa-file-import"></i><span>Importar</span></button>
       <button id="headerSettingsBtn" class="headerViewBtn" data-view="settings" title="Ajustes" aria-label="Ajustes"><i class="fa-solid fa-gear"></i><span>Ajustes</span></button>
@@ -1163,18 +1231,19 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
 </header>
 
 <main class="shell">
-  <div class="pageTop periodOnly">
-    <div class="periodControl"><label for="periodInput">Periodo</label><input id="periodInput" type="month"></div>
+  <div class="topControlRow">
+    <nav class="tabs" aria-label="Secciones">
+      <button class="tab active" data-view="dashboard"><i class="fa-solid fa-gauge-high"></i><span>Resumen</span></button>
+      <button class="tab" data-view="movements"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Movimientos</span></button>
+      <button class="tab" data-view="accounts"><i class="fa-solid fa-building-columns"></i><span>Cuentas</span></button>
+      <button class="tab" data-view="cards"><i class="fa-solid fa-credit-card"></i><span>Tarjetas</span></button>
+      <button class="tab" data-view="recurring"><i class="fa-solid fa-rotate"></i><span>Recurrentes</span></button>
+      <button class="tab" data-view="categories"><i class="fa-solid fa-tags"></i><span>Categorías</span></button>
+    </nav>
+    <div class="pageTop periodOnly">
+      <div class="periodControl"><label for="periodInput">Periodo</label><input id="periodInput" type="month"></div>
+    </div>
   </div>
-
-  <nav class="tabs" aria-label="Secciones">
-    <button class="tab active" data-view="dashboard"><i class="fa-solid fa-gauge-high"></i><span>Resumen</span></button>
-    <button class="tab" data-view="movements"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Movimientos</span></button>
-    <button class="tab" data-view="accounts"><i class="fa-solid fa-building-columns"></i><span>Cuentas</span></button>
-    <button class="tab" data-view="cards"><i class="fa-solid fa-credit-card"></i><span>Tarjetas</span></button>
-    <button class="tab" data-view="recurring"><i class="fa-solid fa-rotate"></i><span>Recurrentes</span></button>
-    <button class="tab" data-view="categories"><i class="fa-solid fa-tags"></i><span>Categorías</span></button>
-  </nav>
 
   <section id="dashboard" class="view active">
     <div class="heroGrid">
@@ -1331,12 +1400,15 @@ let INVITE_LINK_TYPE=(()=>{try{const h=new URLSearchParams(location.hash.replace
 let supabaseClient=null,cloudSession=null,cloudReady=false,cloudBusy=false,cloudSaveTimer=null,cloudLastUpdated='',cloudPollTimer=null,cloudApplyingRemote=false;
 
 const KEY='control-financiero-ledger-v2';
+const PRIVACY_KEY='personal-hub-hide-figures-v1';
+let figuresHidden=localStorage.getItem(PRIVACY_KEY)==='1';
 const $=id=>document.getElementById(id);
 const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random().toString(36).slice(2);
 const today=()=>new Date().toISOString().slice(0,10);
 const monthNow=()=>today().slice(0,7);
-const money=(v,c='PEN')=>new Intl.NumberFormat('es-PE',{style:'currency',currency:c,minimumFractionDigits:2}).format(Number(v)||0);
+const money=(v,c='PEN')=>figuresHidden?'••••':new Intl.NumberFormat('es-PE',{style:'currency',currency:c,minimumFractionDigits:2}).format(Number(v)||0);
 const pen=v=>money(v,'PEN');
+const pct=v=>figuresHidden?'••••':`${Number(v||0).toFixed(1)}%`;
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 function toast(title,message='',type='good'){const wrap=$('toastWrap'),el=document.createElement('div');el.className='toast '+(type==='warn'?'warnToast':type==='bad'?'badToast':'');el.innerHTML=`<strong>${esc(title)}</strong>${message?`<small>${esc(message)}</small>`:''}`;wrap.appendChild(el);setTimeout(()=>el.remove(),3200)}
 
@@ -1427,7 +1499,7 @@ function renderPnlMobile(year,mi){
 
 
 function isoDateLocal(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
-function compactMoney(v,c='PEN'){const n=Number(v)||0,a=Math.abs(n),prefix=c==='USD'?'US$':'S/';let x=n,s='';if(a>=1000000){x=n/1000000;s='M'}else if(a>=1000){x=n/1000;s='K'}const digits=Math.abs(x)>=100?0:Math.abs(x)>=10?1:2;return `${prefix} ${x.toLocaleString('es-PE',{minimumFractionDigits:0,maximumFractionDigits:digits})}${s}`}
+function compactMoney(v,c='PEN'){if(figuresHidden)return '••••';const n=Number(v)||0,a=Math.abs(n),prefix=c==='USD'?'US$':'S/';let x=n,s='';if(a>=1000000){x=n/1000000;s='M'}else if(a>=1000){x=n/1000;s='K'}const digits=Math.abs(x)>=100?0:Math.abs(x)>=10?1:2;return `${prefix} ${x.toLocaleString('es-PE',{minimumFractionDigits:0,maximumFractionDigits:digits})}${s}`}
 function entityMovementDelta(t,type,id){
   if(type==='account'){
     if(t.kind==='expense'&&t.sourceType==='account'&&t.sourceId===id)return -(+t.amount||0);
@@ -1478,7 +1550,7 @@ function openPnlDetail(scope,id,year,mi=null){
 
 function renderIndicators(cash,debt,due,inc,exp,inv,saving){
   const sr=inc?saving/inc*100:0,er=inc?exp/inc*100:0,dc=cash?debt/cash*100:0,line=data.cards.filter(c=>c.active).reduce((s,c)=>s+toPen(c.limit,c.currency),0),util=line?debt/line*100:0;
-  $('indicators').innerHTML=`<div class="indicator"><span>Posición líquida</span><strong class="${cash-debt<0?'bad':'good'}">${pen(cash-debt)}</strong></div><div class="indicator"><span>Tasa de ahorro</span><strong class="${sr>=20?'good':sr<0?'bad':'warn'}">${sr.toFixed(1)}%</strong></div><div class="indicator"><span>Egresos / ingresos</span><strong>${er.toFixed(1)}%</strong></div><div class="indicator"><span>Pago TC / efectivo</span><strong>${(cash?due/cash*100:0).toFixed(1)}%</strong></div><div class="indicator"><span>Deuda TC / efectivo</span><strong class="${dc>100?'bad':dc>50?'warn':'good'}">${dc.toFixed(1)}%</strong></div><div class="indicator"><span>Utilización líneas TC</span><strong class="${util>80?'bad':util>50?'warn':'good'}">${util.toFixed(1)}%</strong></div><div class="indicator"><span>Inversiones</span><strong>${pen(inv)}</strong></div>`;
+  $('indicators').innerHTML=`<div class="indicator"><span>Posición líquida</span><strong class="${cash-debt<0?'bad':'good'}">${pen(cash-debt)}</strong></div><div class="indicator"><span>Tasa de ahorro</span><strong class="${sr>=20?'good':sr<0?'bad':'warn'}">${pct(sr)}</strong></div><div class="indicator"><span>Egresos / ingresos</span><strong>${pct(er)}</strong></div><div class="indicator"><span>Pago TC / efectivo</span><strong>${pct(cash?due/cash*100:0)}</strong></div><div class="indicator"><span>Deuda TC / efectivo</span><strong class="${dc>100?'bad':dc>50?'warn':'good'}">${pct(dc)}</strong></div><div class="indicator"><span>Utilización líneas TC</span><strong class="${util>80?'bad':util>50?'warn':'good'}">${pct(util)}</strong></div><div class="indicator"><span>Inversiones</span><strong>${pen(inv)}</strong></div>`;
 }
 function renderUpcoming(){const rows=data.recurring.filter(r=>r.active).map(r=>({...r,n:nextDue(r)})).filter(r=>r.n).sort((a,b)=>a.n-b.n).slice(0,6);$('upcoming').innerHTML=rows.length?rows.map(r=>`<div class="commitment"><div><div class="commitmentName">${esc(r.name)}</div><div class="commitmentMeta">${fmt(r.n)} · ${esc(srcName(r.sourceType,r.sourceId))}</div></div><div class="commitmentAmount">${money(r.amount,r.sourceType==='card'?(card(r.sourceId)?.currency||'PEN'):(account(r.sourceId)?.currency||'PEN'))}</div></div>`).join(''):'<div class="empty">Sin compromisos activos.</div>'}
 
@@ -1488,7 +1560,7 @@ function renderMovements(){const m=$('mvMonth').value||monthNow(),k=$('mvKindFil
 
 function renderAccounts(){$('accountsGrid').innerHTML=data.accounts.length?data.accounts.map(a=>{const b=accountBalance(a.id);return `<div class="entityCard"><div class="entityHeader"><div><div class="entityTitle"><i class="fa-solid fa-building-columns iconBlue"></i> ${esc(a.name)}</div><div class="entitySub">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge ${a.active?'good':'warn'}">${a.active?'Activa':'Archivada'}</span></div><div class="entityValueLabel">Saldo actual</div><div class="entityValue ${b<0?'bad':''}">${money(b,a.currency)}</div><div class="entityStats"><div class="statBox"><div class="statLabel">Saldo base</div><div class="statValue">${money(a.openingBalance,a.currency)}</div></div><div class="statBox"><div class="statLabel">Fecha base</div><div class="statValue">${a.openingDate}</div></div></div><div class="entityActions"><button class="btn small" onclick="openAccount('${a.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar</button><button class="btn small" onclick="reconcileAccount('${a.id}')"><i class="fa-solid fa-scale-balanced"></i> Conciliar</button><button class="btn small" onclick="toggleEntity('accounts','${a.id}')">${a.active?'Archivar':'Activar'}</button></div></div>`}).join(''):'<div class="empty">Agrega tu primera cuenta.</div>'}
 
-function renderCards(){$('cardsGrid').innerHTML=data.cards.length?data.cards.map(c=>{const cy=cardCycle(c.id),usage=c.limit?Math.min(100,cy.debt/c.limit*100):0,av=Math.max(0,c.limit-cy.debt);return `<div class="creditCard"><div class="creditHeader"><div><div class="creditName"><i class="fa-solid fa-credit-card iconBlue"></i> ${esc(c.name)}</div><div class="creditBank">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge">${usage.toFixed(0)}% uso</span></div><div class="creditDebtLabel">Deuda total</div><div class="creditDebt">${money(cy.debt,c.currency)}</div><div class="creditProgress"><div style="width:${usage}%"></div></div><div class="tileMeta">Disponible ${money(av,c.currency)} de ${money(c.limit,c.currency)}</div><div class="creditCycle"><div class="cycleBox"><div class="cycleLabel">Pago mes</div><div class="cycleValue">${money(cy.amount,c.currency)}</div></div><div class="cycleBox"><div class="cycleLabel">Pagado</div><div class="cycleValue">${money(cy.paid,c.currency)}</div></div><div class="cycleBox"><div class="cycleLabel">Pendiente</div><div class="cycleValue ${cy.remaining>0?'warn':'good'}">${money(cy.remaining,c.currency)}</div></div></div><div class="creditFooter"><div class="dueText">Vence: <strong>${cy.dueDate||'—'}</strong></div><div class="actions"><button class="btn small" onclick="openCard('${c.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar ciclo</button><button class="btn small" onclick="reconcileCard('${c.id}')"><i class="fa-solid fa-scale-balanced"></i> Conciliar</button></div></div></div>`}).join(''):'<div class="empty">Agrega tu primera tarjeta.</div>'}
+function renderCards(){$('cardsGrid').innerHTML=data.cards.length?data.cards.map(c=>{const cy=cardCycle(c.id),usage=c.limit?Math.min(100,cy.debt/c.limit*100):0,av=Math.max(0,c.limit-cy.debt);return `<div class="creditCard"><div class="creditHeader"><div><div class="creditName"><i class="fa-solid fa-credit-card iconBlue"></i> ${esc(c.name)}</div><div class="creditBank">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge">${figuresHidden?'••••':usage.toFixed(0)+'%'} uso</span></div><div class="creditDebtLabel">Deuda total</div><div class="creditDebt">${money(cy.debt,c.currency)}</div><div class="creditProgress"><div style="width:${usage}%"></div></div><div class="tileMeta">Disponible ${money(av,c.currency)} de ${money(c.limit,c.currency)}</div><div class="creditCycle"><div class="cycleBox"><div class="cycleLabel">Pago mes</div><div class="cycleValue">${money(cy.amount,c.currency)}</div></div><div class="cycleBox"><div class="cycleLabel">Pagado</div><div class="cycleValue">${money(cy.paid,c.currency)}</div></div><div class="cycleBox"><div class="cycleLabel">Pendiente</div><div class="cycleValue ${cy.remaining>0?'warn':'good'}">${money(cy.remaining,c.currency)}</div></div></div><div class="creditFooter"><div class="dueText">Vence: <strong>${cy.dueDate||'—'}</strong></div><div class="actions"><button class="btn small" onclick="openCard('${c.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar ciclo</button><button class="btn small" onclick="reconcileCard('${c.id}')"><i class="fa-solid fa-scale-balanced"></i> Conciliar</button></div></div></div>`}).join(''):'<div class="empty">Agrega tu primera tarjeta.</div>'}
 
 function renderRecurring(){const f=$('recActive').value,q=$('recSearch').value.toLowerCase(),rows=data.recurring.filter(r=>(f===''||String(r.active)===f)&&(!q||r.name.toLowerCase().includes(q)));$('recurringGrid').innerHTML=rows.length?rows.map(r=>`<div class="entityCard"><div class="entityHeader"><div><div class="entityTitle"><i class="fa-solid fa-rotate iconBlue"></i> ${esc(r.name)}</div><div class="entitySub">${r.period==='weekly'?'Semanal':r.period==='annual'?'Anual':'Mensual'} · ${esc(catName(r.categoryId))}</div></div><span class="badge ${r.autoPost?'good':'warn'}">${r.autoPost?'Auto':'Manual'}</span></div><div class="entityValueLabel">${r.kind==='income'?'Ingreso':'Gasto / inversión'}</div><div class="entityValue">${money(r.amount,r.sourceType==='card'?(card(r.sourceId)?.currency||'PEN'):(account(r.sourceId)?.currency||'PEN'))}</div><div class="entityStats"><div class="statBox"><div class="statLabel">Fuente</div><div class="statValue">${esc(srcName(r.sourceType,r.sourceId))}</div></div><div class="statBox"><div class="statLabel">Próxima</div><div class="statValue">${nextDue(r)?fmt(nextDue(r)):'—'}</div></div></div><div class="entityActions"><button class="btn small primary" onclick="postRecurringNow('${r.id}')"><i class="fa-solid fa-circle-check"></i> Registrar</button><button class="btn small" onclick="openRecurring('${r.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar</button><button class="btn small" onclick="toggleRecurring('${r.id}')">${r.active?'Pausar':'Activar'}</button></div></div>`).join(''):'<div class="empty">No hay recurrentes.</div>'}
 
@@ -1614,13 +1686,31 @@ window.addEventListener('focus',()=>{if(cloudReady)cloudPullState(false)});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudReady)cloudPullState(false)});
 window.addEventListener('online',()=>{if(cloudReady){cloudPullState(false);queueCloudSave()}});
 
+function updatePrivacyButton(){
+  const b=$('privacyBtn');if(!b)return;
+  b.classList.toggle('active',figuresHidden);
+  b.setAttribute('aria-pressed',String(figuresHidden));
+  b.setAttribute('aria-label',figuresHidden?'Mostrar cifras':'Ocultar cifras');
+  b.title=figuresHidden?'Mostrar cifras':'Ocultar cifras';
+  b.innerHTML=figuresHidden?'<i class="fa-solid fa-eye"></i><span>Mostrar</span>':'<i class="fa-solid fa-eye-slash"></i><span>Ocultar</span>';
+}
+function togglePrivacy(){
+  figuresHidden=!figuresHidden;
+  localStorage.setItem(PRIVACY_KEY,figuresHidden?'1':'0');
+  updatePrivacyButton();
+  const d=$('detailDialog');if(d&&d.open)d.close();
+  renderAll();
+  toast(figuresHidden?'Cifras ocultas':'Cifras visibles',figuresHidden?'Los importes y ratios están protegidos en pantalla.':'Se volvieron a mostrar los importes y ratios.');
+}
+
 $('movementKind').onchange=updateMvForm;$('movementSourceType').onchange=()=>{refreshMvSources();preview()};['movementSourceId','movementDestinationId','movementCardId','movementAmount','movementAppliedAmount'].forEach(id=>$(id).oninput=preview);
 $('recurringKind').onchange=updateRecForm;$('recurringSourceType').onchange=refreshRecSources;
 $('periodInput').onchange=()=>{renderDashboard();renderCategories();$('mvMonth').value=$('periodInput').value};$('pnlMonth').onchange=()=>{const {year}=selectedPeriod();renderPnlMobile(year,+$('pnlMonth').value)};
 $('mvMonth').onchange=renderMovements;$('mvKindFilter').onchange=renderMovements;$('mvCatFilter').onchange=renderMovements;$('mvSearch').oninput=renderMovements;$('recActive').onchange=renderRecurring;$('recSearch').oninput=renderRecurring;
 $('incomeInput').onchange=()=>{data.settings.income=+$('incomeInput').value||0;save()};$('fxInput').onchange=()=>{data.settings.fx=+$('fxInput').value||0;save()};$('lookbackInput').onchange=()=>{data.settings.lookback=+$('lookbackInput').value||6;save()};
-$('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('settingsTheme').onclick=toggleTheme;$('exportBtn').onclick=exportData;$('settingsExport').onclick=exportData;$('importBtn').onclick=importClick;$('settingsImport').onclick=importClick;
+$('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('settingsTheme').onclick=toggleTheme;$('privacyBtn').onclick=togglePrivacy;$('exportBtn').onclick=exportData;$('settingsExport').onclick=exportData;$('importBtn').onclick=importClick;$('settingsImport').onclick=importClick;
 $('resetBtn').onclick=()=>{if(confirm('¿Reiniciar toda la herramienta?')){data=starter();save();toast('Herramienta reiniciada','','warn')}};
+updatePrivacyButton();
 renderAll();
 initCloud();
 
