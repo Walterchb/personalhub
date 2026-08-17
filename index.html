@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Personal Hub</title>
+<title>PERSONAL HUB</title>
 
-<meta name="application-name" content="Personal Hub">
+<meta name="application-name" content="PERSONAL HUB">
 <meta name="theme-color" content="#051c2c">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Personal Hub">
+<meta name="apple-mobile-web-app-title" content="PERSONAL HUB">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./assets/logo-mark.svg">
@@ -833,6 +833,99 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
   .headerLogo{width:154px;max-height:34px}
 }
 
+
+/* PERSONAL HUB — final header geometry */
+.appHeader{
+  width:100% !important;
+  background:#051c2c !important;
+}
+.headerInner{
+  width:100% !important;
+  max-width:1540px !important;
+  height:64px !important;
+  margin:0 auto !important;
+  padding:0 18px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:20px !important;
+}
+.brandLink{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  min-width:0 !important;
+  text-decoration:none !important;
+  color:#fff !important;
+  flex:0 1 auto !important;
+}
+.brandIcon{
+  display:block !important;
+  width:36px !important;
+  height:36px !important;
+  flex:0 0 36px !important;
+  border-radius:7px !important;
+}
+.headerBrandCopy{
+  min-width:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  line-height:1 !important;
+}
+.headerBrandTitle{
+  color:#fff !important;
+  font-family:Manrope,Arial,sans-serif !important;
+  font-size:15px !important;
+  font-weight:800 !important;
+  letter-spacing:-.015em !important;
+  white-space:nowrap !important;
+}
+.headerBrandSub{
+  margin-top:5px !important;
+  color:#8eb4c8 !important;
+  font-family:Manrope,Arial,sans-serif !important;
+  font-size:9px !important;
+  font-weight:700 !important;
+  letter-spacing:.08em !important;
+  white-space:nowrap !important;
+}
+.headerActions{
+  margin-left:auto !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:7px !important;
+  flex:0 0 auto !important;
+}
+.headerActions button{
+  min-height:36px !important;
+  height:36px !important;
+  padding:0 12px !important;
+  border-radius:5px !important;
+}
+/* Header and page title share the exact same horizontal content grid. */
+.shell{
+  max-width:1540px !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  padding-left:18px !important;
+  padding-right:18px !important;
+}
+@media(max-width:700px){
+  .headerInner{
+    height:56px !important;
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+  .shell{
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+  .brandIcon{width:32px !important;height:32px !important;flex-basis:32px !important}
+  .headerBrandTitle{font-size:13px !important}
+  .headerBrandSub{font-size:8px !important;margin-top:4px !important}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -842,8 +935,12 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
 <body>
 <header class="appHeader">
   <div class="headerInner">
-    <a class="brand brandLink" href="./" aria-label="Personal Hub">
-      <img class="headerLogo" src="./assets/logo-white.svg" alt="Personal Hub — Control diario">
+    <a class="brand brandLink" href="./" aria-label="PERSONAL HUB — CONTROL DIARIO">
+      <img class="brandIcon" src="./assets/logo-mark.svg" alt="" aria-hidden="true">
+      <div class="headerBrandCopy">
+        <div class="headerBrandTitle">PERSONAL HUB</div>
+        <div class="headerBrandSub">CONTROL DIARIO</div>
+      </div>
     </a>
     <div class="headerActions desktopActions">
       <button id="themeBtn"><i class="fa-solid fa-circle-half-stroke"></i> Tema</button>
@@ -998,8 +1095,6 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
 <div><label>Registro automático</label><select id="recurringAuto"><option value="false">No</option><option value="true">Sí</option></select></div><div><label>Activo</label><select id="recurringActive"><option value="true">Sí</option><option value="false">No</option></select></div>
 <div class="span2"><label>Comentario</label><input id="recurringComment"></div>
 </div><div class="modalActions"><button type="button" class="btn" onclick="$('recurringDialog').close()">Cancelar</button><button class="btn primary">Guardar</button></div></form></dialog>
-
-<input id="importFile" type="file" accept=".json" hidden>
 
 <script>
 const KEY='control-financiero-ledger-v2';

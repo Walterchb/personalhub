@@ -7,6 +7,6 @@
 </defs>
 <rect x="2" y="8" width="68" height="68" rx="13" fill="url(#g)"/>
 <path d="M17 60V28M17 60H56M20 51L31 41L40 47L54 31" fill="none" stroke="#fff" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="84" y="40" fill="#102133" font-family="Manrope,Arial,sans-serif" font-size="25" font-weight="800">Personal Hub</text>
-<text x="85" y="61" fill="#64748b" font-family="Manrope,Arial,sans-serif" font-size="13" font-weight="600" letter-spacing=".6">Control diario</text>
+<text x="84" y="40" fill="#102133" font-family="Manrope,Arial,sans-serif" font-size="25" font-weight="800">PERSONAL HUB</text>
+<text x="85" y="61" fill="#64748b" font-family="Manrope,Arial,sans-serif" font-size="13" font-weight="600" letter-spacing=".6">CONTROL DIARIO</text>
 </svg>

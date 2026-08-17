@@ -1,6 +1,6 @@
 {
-  "name": "Personal Hub",
-  "short_name": "Personal Hub",
+  "name": "PERSONAL HUB",
+  "short_name": "PERSONAL HUB",
   "description": "Control diario de finanzas personales.",
   "start_url": "./",
   "scope": "./",
