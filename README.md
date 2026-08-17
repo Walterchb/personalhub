@@ -1,6 +1,6 @@
 # Personal Hub
 
-Web app de control financiero personal lista para desplegar en GitHub Pages.
+Web app de control financiero personal lista para desplegar en GitHub Pages, con autenticación y sincronización automática en Supabase.
 
 ## Publicar en GitHub Pages
 1. Descomprime este ZIP.
@@ -27,3 +27,14 @@ La app incluye manifest, Service Worker, Apple Touch Icon e iconos PWA de 192 y 
 - `assets/logo-white.svg`: logo para fondo oscuro.
 - `assets/logo-mark.svg`: isotipo.
 - `icons/`: iconos de instalación.
+
+
+## Sincronización cloud
+- Frontend: GitHub Pages.
+- Backend: Supabase (`personal_hub_state`).
+- El primer inicio de sesión, si la nube está vacía, sube automáticamente los datos existentes de este navegador.
+- Después, cada cambio se guarda en Supabase y se conserva una copia local como caché.
+- Al abrir o volver a la app se consulta la versión más reciente de la nube; además se comprueba periódicamente mientras está abierta.
+- **Exportar JSON** queda solo como respaldo opcional.
+
+> La clave incluida en `index.html` es la **Publishable key** de Supabase. No agregues nunca una Secret key o `service_role` al repositorio.

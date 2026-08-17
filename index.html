@@ -1038,13 +1038,88 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
   .desktopActions button{width:31px !important;height:31px !important;min-width:31px !important;min-height:31px !important;}
 }
 
+
+
+/* PERSONAL HUB Cloud — authentication and sync */
+.authLocked .appHeader,.authLocked .shell,.authLocked .mobileNav{visibility:hidden}
+.authGate{position:fixed;inset:0;z-index:5000;display:grid;place-items:center;padding:18px;background:linear-gradient(145deg,#031723 0%,#062638 55%,#0a3343 100%)}
+.authGate.hidden{display:none!important}
+.authCard{width:min(420px,100%);background:#fff;color:#102133;border:1px solid rgba(255,255,255,.12);border-radius:12px;box-shadow:0 28px 90px rgba(0,0,0,.35);padding:24px}
+.authBrand{display:flex;align-items:center;gap:11px;margin-bottom:22px}
+.authBrand img{width:38px;height:38px;border-radius:8px}
+.authBrandTitle{font-size:14px;font-weight:800;letter-spacing:.055em;line-height:1}
+.authBrandSub{margin-top:5px;color:#6b7b88;font-size:9px;font-weight:800;letter-spacing:.09em;line-height:1}
+.authCard h1{margin:0;font-size:22px;line-height:1.15;letter-spacing:-.025em}
+.authCard p{margin:7px 0 18px;color:#667786;font-size:13px;line-height:1.55}
+.authForm{display:grid;gap:11px}
+.authForm label{display:block;margin-bottom:5px;color:#667786;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.authForm input{width:100%;min-height:46px;border:1px solid #d5dee8;background:#f7f9fb;border-radius:7px;padding:9px 11px;font-size:15px;color:#102133}
+.authPrimary{width:100%;min-height:46px;border:1px solid #0b5fff;background:#0b5fff;color:#fff;border-radius:7px;font-size:13px;font-weight:800;margin-top:2px}
+.authSecondary{width:100%;border:0;background:transparent;color:#0b5fff;min-height:38px;font-size:12px;font-weight:750}
+.authMessage{display:none;margin-top:12px;padding:10px 11px;border-radius:7px;background:#f3f6f9;border:1px solid #d5dee8;color:#556674;font-size:12px;line-height:1.45}
+.authMessage.show{display:block}.authMessage.bad{background:#fff2f2;border-color:#efcaca;color:#9b3838}.authMessage.good{background:#eefaf5;border-color:#bfe5d7;color:#286a57}
+.authLoader{display:flex;align-items:center;justify-content:center;gap:9px;padding:20px 0 6px;color:#6a7985;font-size:13px}
+.authLoader i{color:#0b5fff}
+.cloudLine{display:flex;align-items:center;gap:8px;margin:2px 0 10px}
+.cloudDot{width:8px;height:8px;border-radius:50%;background:#a5b0ba;box-shadow:0 0 0 3px rgba(165,176,186,.15)}
+.cloudDot.good{background:#0d9488;box-shadow:0 0 0 3px rgba(13,148,136,.14)}
+.cloudDot.busy{background:#d69b2d;box-shadow:0 0 0 3px rgba(214,155,45,.14)}
+.cloudDot.bad{background:#c34b4b;box-shadow:0 0 0 3px rgba(195,75,75,.14)}
+.cloudStateText{font-size:13px;font-weight:800}.cloudAccount{font-size:11px;color:var(--muted);overflow-wrap:anywhere;margin-bottom:10px}
+.cloudMeta{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.45}
+.cloudActions{display:flex;gap:7px;flex-wrap:wrap}.cloudActions .btn{flex:1 1 auto}
+@media(max-width:700px){.authGate{padding:10px}.authCard{padding:20px 17px;border-radius:9px}.authCard h1{font-size:20px}}
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
+<body class="authLocked">
+
+<div id="authGate" class="authGate" aria-live="polite">
+  <div class="authCard">
+    <div class="authBrand">
+      <img src="./assets/logo-mark.svg" alt="">
+      <div><div class="authBrandTitle">PERSONAL HUB</div><div class="authBrandSub">CONTROL DIARIO · CLOUD</div></div>
+    </div>
+
+    <div id="authLoadingPanel">
+      <div class="authLoader"><i class="fa-solid fa-circle-notch fa-spin"></i><span>Conectando con tu información…</span></div>
+    </div>
+
+    <div id="authLoginPanel" class="hidden">
+      <h1>Accede a Personal Hub</h1>
+      <p>Usa el correo que invitaste en Supabase. Tus datos se sincronizarán automáticamente entre tus dispositivos.</p>
+      <form id="loginForm" class="authForm">
+        <div><label for="authEmail">Correo</label><input id="authEmail" type="email" autocomplete="email" required></div>
+        <div><label for="authPassword">Contraseña</label><input id="authPassword" type="password" autocomplete="current-password" required></div>
+        <button id="loginBtn" class="authPrimary" type="submit"><i class="fa-solid fa-right-to-bracket"></i> Ingresar</button>
+      </form>
+      <button id="forgotPasswordBtn" class="authSecondary" type="button">Restablecer contraseña</button>
+      <div id="authLoginMessage" class="authMessage"></div>
+    </div>
+
+    <div id="authPasswordPanel" class="hidden">
+      <h1>Crea tu contraseña</h1>
+      <p>La invitación ya validó tu acceso. Define una contraseña para entrar normalmente desde cualquier dispositivo.</p>
+      <form id="setPasswordForm" class="authForm">
+        <div><label for="newPassword">Nueva contraseña</label><input id="newPassword" type="password" minlength="8" autocomplete="new-password" required></div>
+        <div><label for="newPassword2">Repite la contraseña</label><input id="newPassword2" type="password" minlength="8" autocomplete="new-password" required></div>
+        <button class="authPrimary" type="submit"><i class="fa-solid fa-key"></i> Guardar contraseña</button>
+      </form>
+      <div id="authPasswordMessage" class="authMessage"></div>
+    </div>
+
+    <div id="authFatalPanel" class="hidden">
+      <h1>No se pudo conectar</h1>
+      <p id="authFatalText">Revisa tu conexión a internet y vuelve a cargar la página.</p>
+      <button class="authPrimary" type="button" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Reintentar</button>
+    </div>
+  </div>
+</div>
+
 <header class="appHeader">
   <div class="headerInner">
     <a class="brand brandLink" href="./" aria-label="PERSONAL HUB — CONTROL DIARIO">
@@ -1139,7 +1214,8 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
         <div class="card settingCard"><label>Ingreso mensual de referencia</label><input id="incomeInput" type="number" step=".01"></div>
         <div class="card settingCard"><label>Tipo de cambio USD → PEN</label><input id="fxInput" type="number" step=".0001"></div>
         <div class="card settingCard"><label>Histórico automático</label><select id="lookbackInput"><option value="3">3 meses</option><option value="6">6 meses</option><option value="12">12 meses</option><option value="24">24 meses</option></select></div>
-        <div class="card settingCard"><label>Respaldo de datos</label><div class="backupActions"><button id="settingsExport" class="btn"><i class="fa-solid fa-file-export"></i> Exportar JSON</button><button id="settingsImport" class="btn"><i class="fa-solid fa-file-import"></i> Importar JSON</button></div></div>
+        <div class="card settingCard"><label>Sincronización en la nube</label><div class="cloudLine"><span id="cloudDot" class="cloudDot"></span><span id="cloudStateLabel" class="cloudStateText">Conectando…</span></div><div id="cloudAccount" class="cloudAccount"></div><div class="cloudActions"><button id="syncNowBtn" class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Sincronizar</button><button id="signOutBtn" class="btn"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button></div><div id="cloudMeta" class="cloudMeta">Supabase es la fuente principal; este dispositivo conserva una copia local.</div></div>
+        <div class="card settingCard"><label>Respaldo opcional</label><div class="backupActions"><button id="settingsExport" class="btn"><i class="fa-solid fa-file-export"></i> Exportar JSON</button><button id="settingsImport" class="btn"><i class="fa-solid fa-file-import"></i> Importar JSON</button></div></div>
         <div class="card settingCard"><label>Apariencia</label><button id="settingsTheme" class="btn"><i class="fa-solid fa-circle-half-stroke"></i> Cambiar claro / oscuro</button></div>
         <div class="card settingCard"><label>Mantenimiento</label><button id="resetBtn" class="btn danger"><i class="fa-solid fa-rotate-left"></i> Reiniciar herramienta</button></div>
       </div>
@@ -1148,7 +1224,7 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
     </div>
   </section>
 
-  <div class="footer">TREASURYHUB · PERSONAL FINANCE · LOCAL LEDGER</div>
+  <div class="footer">PERSONAL HUB · CLOUD SYNC · LOCAL CACHE</div>
 </main>
 
 <nav class="mobileNav" aria-label="Navegación móvil">
@@ -1207,6 +1283,14 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
 </div><div class="modalActions"><button type="button" class="btn" onclick="$('recurringDialog').close()">Cancelar</button><button class="btn primary">Guardar</button></div></form></dialog>
 
 <script>
+const SUPABASE_URL='https://zewuynfpogzdmpjkkzuf.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_fngZWDMJzvyfD_Q3yZNyYA_rbMHOAbP';
+const SITE_URL='https://walterchb.github.io/personalhub/';
+const CLOUD_TABLE='personal_hub_state';
+const CLOUD_META_KEY='personal-hub-cloud-meta-v1';
+let INVITE_LINK_TYPE=(()=>{try{const h=new URLSearchParams(location.hash.replace(/^#/,'')),q=new URLSearchParams(location.search);return h.get('type')||q.get('type')||''}catch{return ''}})();
+let supabaseClient=null,cloudSession=null,cloudReady=false,cloudBusy=false,cloudDirty=false,cloudSaveTimer=null,cloudLastUpdated='',cloudPollTimer=null,cloudApplyingRemote=false;
+
 const KEY='control-financiero-ledger-v2';
 const $=id=>document.getElementById(id);
 const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random().toString(36).slice(2);
@@ -1241,7 +1325,7 @@ function normalize(d){
 }
 let data;try{data=normalize(JSON.parse(localStorage.getItem(KEY))||starter())}catch{data=starter()}
 function persist(){localStorage.setItem(KEY,JSON.stringify(data))}
-function save(){persist();syncRecurring();renderAll()}
+function save(){persist();syncRecurring();persist();renderAll();if(!cloudApplyingRemote)queueCloudSave()}
 
 const account=id=>data.accounts.find(x=>x.id===id), card=id=>data.cards.find(x=>x.id===id), cat=id=>data.categories.find(x=>x.id===id);
 const catName=id=>cat(id)?.name||'Sin categoría';
@@ -1347,6 +1431,97 @@ function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'a
 function importClick(){$('importFile').click()}
 $('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{data=normalize(JSON.parse(await f.text()));save();toast('Datos importados','Archivo cargado correctamente.')}catch{toast('No se importó','JSON incompatible.','bad')}e.target.value=''};
 
+
+
+function setAuthPanel(name){['authLoadingPanel','authLoginPanel','authPasswordPanel','authFatalPanel'].forEach(id=>$(id)?.classList.add('hidden'));$(name)?.classList.remove('hidden')}
+function setAuthMessage(id,text='',type=''){const el=$(id);if(!el)return;el.textContent=text;el.className='authMessage'+(text?' show':'')+(type?' '+type:'')}
+function setCloudStatus(state,label,detail=''){
+  const dot=$('cloudDot'),txt=$('cloudStateLabel'),meta=$('cloudMeta');
+  if(dot)dot.className='cloudDot '+state;if(txt)txt.textContent=label;if(meta&&detail)meta.textContent=detail;
+}
+function showApp(){document.body.classList.remove('authLocked');$('authGate')?.classList.add('hidden')}
+function showLogin(message=''){document.body.classList.add('authLocked');$('authGate')?.classList.remove('hidden');setAuthPanel('authLoginPanel');if(cloudSession?.user?.email&&!$('authEmail').value)$('authEmail').value=cloudSession.user.email;if(message)setAuthMessage('authLoginMessage',message,'bad')}
+function showPasswordSetup(){document.body.classList.add('authLocked');$('authGate')?.classList.remove('hidden');setAuthPanel('authPasswordPanel')}
+function localCloudMeta(){try{return JSON.parse(localStorage.getItem(CLOUD_META_KEY)||'{}')}catch{return {}}}
+function saveCloudMeta(meta){localStorage.setItem(CLOUD_META_KEY,JSON.stringify(meta))}
+function rawRemoteLooksEmpty(v){return !v||typeof v!=='object'||(!v.version&&!Array.isArray(v.accounts)&&!Array.isArray(v.cards)&&!Array.isArray(v.movements)&&!Array.isArray(v.recurring))}
+function queueCloudSave(){if(!cloudReady||!cloudSession||cloudApplyingRemote)return;cloudDirty=true;saveCloudMeta({userId:cloudSession.user.id,remoteUpdatedAt:cloudLastUpdated,dirty:true});clearTimeout(cloudSaveTimer);setCloudStatus('busy','Guardando…');cloudSaveTimer=setTimeout(()=>cloudSaveState(),650)}
+async function cloudSaveState(){
+  if(!supabaseClient||!cloudSession||cloudBusy)return;
+  cloudBusy=true;setCloudStatus('busy','Guardando…');
+  try{
+    const stamp=new Date().toISOString();
+    const {data:row,error}=await supabaseClient.from(CLOUD_TABLE).upsert({user_id:cloudSession.user.id,data,updated_at:stamp},{onConflict:'user_id'}).select('updated_at').single();
+    if(error)throw error;
+    cloudLastUpdated=row?.updated_at||stamp;cloudDirty=false;saveCloudMeta({userId:cloudSession.user.id,remoteUpdatedAt:cloudLastUpdated,dirty:false});
+    setCloudStatus('good','Sincronizado',`Última sincronización: ${new Date(cloudLastUpdated).toLocaleString('es-PE')}. Supabase es la fuente principal; este dispositivo conserva una copia local.`);
+  }catch(err){console.error('Cloud save',err);setCloudStatus('bad','Sin conexión','Los cambios siguen guardados en este dispositivo y se volverán a intentar al recuperar conexión.');}
+  finally{cloudBusy=false}
+}
+async function cloudPullState(force=false){
+  if(!supabaseClient||!cloudSession||cloudBusy)return;
+  if(cloudDirty&&!force){queueCloudSave();return}
+  try{
+    const {data:row,error}=await supabaseClient.from(CLOUD_TABLE).select('data,updated_at').eq('user_id',cloudSession.user.id).maybeSingle();
+    if(error)throw error;
+    if(!row){if(force)await cloudSaveState();return}
+    const remoteTime=row.updated_at||'';
+    if(force||(!cloudLastUpdated||remoteTime>cloudLastUpdated)){
+      cloudApplyingRemote=true;data=normalize(row.data);persist();const made=syncRecurring();persist();renderAll();cloudApplyingRemote=false;
+      cloudLastUpdated=remoteTime;cloudDirty=false;saveCloudMeta({userId:cloudSession.user.id,remoteUpdatedAt:cloudLastUpdated,dirty:false});
+      if(made)queueCloudSave();
+    }
+    setCloudStatus('good','Sincronizado',`Última sincronización: ${remoteTime?new Date(remoteTime).toLocaleString('es-PE'):'ahora'}. Supabase es la fuente principal; este dispositivo conserva una copia local.`);
+  }catch(err){cloudApplyingRemote=false;console.error('Cloud pull',err);setCloudStatus('bad','Sin conexión','No se pudo consultar Supabase. Puedes volver a intentar desde Ajustes.');}
+}
+async function bootstrapCloud(session){
+  cloudSession=session;cloudReady=false;clearInterval(cloudPollTimer);
+  if(!session?.user){showLogin();return}
+  if($('cloudAccount'))$('cloudAccount').textContent=session.user.email||session.user.id;
+  setCloudStatus('busy','Conectando…');
+  try{
+    const {data:row,error}=await supabaseClient.from(CLOUD_TABLE).select('data,updated_at').eq('user_id',session.user.id).maybeSingle();
+    if(error)throw error;
+    const meta=localCloudMeta();cloudDirty=meta.userId===session.user.id&&meta.dirty===true;cloudLastUpdated=meta.userId===session.user.id?(meta.remoteUpdatedAt||''):'';
+    if(!row||rawRemoteLooksEmpty(row.data)){
+      cloudReady=true;showApp();cloudDirty=true;await cloudSaveState();toast('Personal Hub Cloud activado','Tus datos locales ya están guardados en Supabase.');
+    }else if(cloudDirty){
+      cloudReady=true;showApp();await cloudSaveState();toast('Cambios pendientes sincronizados','Se recuperaron los cambios guardados en este dispositivo.');
+    }else{
+      cloudApplyingRemote=true;data=normalize(row.data);persist();const made=syncRecurring();persist();renderAll();cloudApplyingRemote=false;
+      cloudLastUpdated=row.updated_at||'';cloudDirty=false;saveCloudMeta({userId:session.user.id,remoteUpdatedAt:cloudLastUpdated,dirty:false});cloudReady=true;showApp();
+      setCloudStatus('good','Sincronizado',`Última sincronización: ${cloudLastUpdated?new Date(cloudLastUpdated).toLocaleString('es-PE'):'ahora'}. Supabase es la fuente principal; este dispositivo conserva una copia local.`);
+      if(made)queueCloudSave();
+    }
+    cloudPollTimer=setInterval(()=>{if(document.visibilityState==='visible')cloudPullState(false)},20000);
+  }catch(err){cloudApplyingRemote=false;console.error('Cloud bootstrap',err);cloudReady=false;setAuthPanel('authFatalPanel');$('authFatalText').textContent='No se pudo leer tu información de Supabase. Revisa tu conexión y vuelve a cargar la página.';}
+}
+async function initCloud(){
+  if(!window.supabase?.createClient){setAuthPanel('authFatalPanel');$('authFatalText').textContent='No se pudo cargar el conector de Supabase. Revisa tu conexión a internet y vuelve a cargar.';return}
+  supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  supabaseClient.auth.onAuthStateChange((event,session)=>{
+    cloudSession=session||null;
+    if(event==='SIGNED_OUT'){cloudReady=false;showLogin();return}
+    if(session&&(INVITE_LINK_TYPE==='invite'||INVITE_LINK_TYPE==='recovery'||event==='PASSWORD_RECOVERY')){showPasswordSetup();return}
+    if(session&&!cloudReady)bootstrapCloud(session);
+  });
+  const {data:{session},error}=await supabaseClient.auth.getSession();
+  if(error){showLogin(error.message);return}
+  cloudSession=session;
+  if(session&&(INVITE_LINK_TYPE==='invite'||INVITE_LINK_TYPE==='recovery'))showPasswordSetup();
+  else if(session)bootstrapCloud(session);
+  else showLogin();
+}
+
+$('loginForm').onsubmit=async e=>{e.preventDefault();setAuthMessage('authLoginMessage');const email=$('authEmail').value.trim(),password=$('authPassword').value;$('loginBtn').disabled=true;$('loginBtn').innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Ingresando…';try{const {data:res,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;cloudSession=res.session;await bootstrapCloud(res.session)}catch(err){setAuthMessage('authLoginMessage',err.message||'No se pudo iniciar sesión.','bad')}finally{$('loginBtn').disabled=false;$('loginBtn').innerHTML='<i class="fa-solid fa-right-to-bracket"></i> Ingresar'}};
+$('forgotPasswordBtn').onclick=async()=>{const email=$('authEmail').value.trim();if(!email)return setAuthMessage('authLoginMessage','Escribe primero tu correo.','bad');try{const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:SITE_URL});if(error)throw error;setAuthMessage('authLoginMessage','Te enviamos un enlace para crear una nueva contraseña.','good')}catch(err){setAuthMessage('authLoginMessage',err.message||'No se pudo enviar el correo.','bad')}};
+$('setPasswordForm').onsubmit=async e=>{e.preventDefault();setAuthMessage('authPasswordMessage');const p1=$('newPassword').value,p2=$('newPassword2').value;if(p1.length<8)return setAuthMessage('authPasswordMessage','Usa al menos 8 caracteres.','bad');if(p1!==p2)return setAuthMessage('authPasswordMessage','Las contraseñas no coinciden.','bad');const previousLinkType=INVITE_LINK_TYPE;INVITE_LINK_TYPE='';try{const {data:res,error}=await supabaseClient.auth.updateUser({password:p1});if(error)throw error;history.replaceState(null,'',location.pathname);cloudSession=(await supabaseClient.auth.getSession()).data.session;setAuthMessage('authPasswordMessage','Contraseña guardada.','good');setTimeout(()=>bootstrapCloud(cloudSession),350)}catch(err){INVITE_LINK_TYPE=previousLinkType;setAuthMessage('authPasswordMessage',err.message||'No se pudo guardar la contraseña.','bad')}};
+$('syncNowBtn').onclick=async()=>{if(!cloudSession)return;if(cloudDirty)await cloudSaveState();else await cloudPullState(false);toast('Sincronización completada','Personal Hub está al día.')};
+$('signOutBtn').onclick=async()=>{if(!supabaseClient)return;if(!confirm('¿Cerrar sesión en este dispositivo?'))return;clearInterval(cloudPollTimer);await supabaseClient.auth.signOut();cloudReady=false;showLogin()};
+window.addEventListener('focus',()=>{if(cloudReady)cloudPullState(false)});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudReady)cloudPullState(false)});
+window.addEventListener('online',()=>{if(cloudReady){if(cloudDirty)queueCloudSave();else cloudPullState(false)}});
+
 $('movementKind').onchange=updateMvForm;$('movementSourceType').onchange=()=>{refreshMvSources();preview()};['movementSourceId','movementDestinationId','movementCardId','movementAmount','movementAppliedAmount'].forEach(id=>$(id).oninput=preview);
 $('recurringKind').onchange=updateRecForm;$('recurringSourceType').onchange=refreshRecSources;
 $('periodInput').onchange=()=>{renderDashboard();renderCategories();$('mvMonth').value=$('periodInput').value};$('pnlMonth').onchange=()=>{const {year}=selectedPeriod();renderPnlMobile(year,+$('pnlMonth').value)};
@@ -1355,6 +1530,7 @@ $('incomeInput').onchange=()=>{data.settings.income=+$('incomeInput').value||0;s
 $('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('settingsTheme').onclick=toggleTheme;$('exportBtn').onclick=exportData;$('settingsExport').onclick=exportData;$('importBtn').onclick=importClick;$('settingsImport').onclick=importClick;
 $('resetBtn').onclick=()=>{if(confirm('¿Reiniciar toda la herramienta?')){data=starter();save();toast('Herramienta reiniciada','','warn')}};
 renderAll();
+initCloud();
 
 if('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost')){
   window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
