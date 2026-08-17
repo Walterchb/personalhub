@@ -1069,6 +1069,28 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
 .cloudMeta{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.45}
 .cloudActions{display:flex;gap:7px;flex-wrap:wrap}.cloudActions .btn{flex:1 1 auto}
 @media(max-width:700px){.authGate{padding:10px}.authCard{padding:20px 17px;border-radius:9px}.authCard h1{font-size:20px}}
+
+
+/* Interactive drill-down: availability + P&L */
+.balanceTile.drillable,.matrix .pnlClick,.pnlGroupTitle.drillable,.pnlLine.drillable,.pnlFree.drillable{cursor:pointer;transition:background .14s ease,border-color .14s ease,transform .14s ease}
+.balanceTile.drillable:hover{background:var(--surface-2);border-color:color-mix(in srgb,var(--blue) 35%,var(--line));transform:translateY(-1px)}
+.balanceTile.drillable:focus-visible,.matrix .pnlClick:focus-visible,.pnlGroupTitle.drillable:focus-visible,.pnlLine.drillable:focus-visible,.pnlFree.drillable:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.matrix .pnlClick:hover,.pnlGroupTitle.drillable:hover,.pnlLine.drillable:hover{background:color-mix(in srgb,var(--blue) 5%,var(--surface))}
+.pnlFree.drillable:hover{background:color-mix(in srgb,#0d9488 13%,var(--surface))}
+.matrix td.pnlClick{position:relative}.matrix td.pnlClick::after{content:'›';opacity:0;margin-left:4px;color:var(--blue);font-weight:900}.matrix td.pnlClick:hover::after{opacity:.7}
+#detailDialog{width:min(900px,calc(100vw - 28px));max-height:min(92vh,900px)}
+.detailModal{padding:15px}
+.detailHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}
+.detailHeader h3{margin:2px 0 3px!important;font-size:18px!important}.detailEyebrow{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--blue)}
+.detailSubtitle{font-size:11px;color:var(--muted);line-height:1.4}.detailClose{width:34px;height:34px;min-width:34px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--muted);display:grid;place-items:center}
+.detailStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:10px}.detailStat{border:1px solid var(--line);border-radius:5px;background:var(--surface-2);padding:8px 9px;min-width:0}.detailStatLabel{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}.detailStatValue{margin-top:3px;font-size:15px;font-weight:800;letter-spacing:-.02em;overflow-wrap:anywhere}.detailStatHint{margin-top:2px;font-size:9px;color:var(--muted)}
+.detailChartBlock{border:1px solid var(--line);border-radius:5px;background:var(--surface);padding:10px;margin-bottom:10px}.detailChartHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:5px}.detailChartHead strong{display:block;font-size:11.5px}.detailChartHead span{display:block;margin-top:2px;font-size:9.5px;color:var(--muted)}.trendDelta{font-size:10px!important;font-weight:800!important;white-space:nowrap;color:var(--ink)!important}.trendDelta.up{color:#0d7f6f!important}.trendDelta.down{color:#b65757!important}
+.detailChart{width:100%;min-height:200px;display:flex;align-items:center;justify-content:center}.detailChart svg{display:block;width:100%;height:auto;max-height:230px;overflow:visible}.chartGrid{stroke:var(--line);stroke-width:1;opacity:.65}.chartAxisLabel{fill:var(--muted);font:9px Manrope,Arial,sans-serif}.chartLine{fill:none;stroke:var(--blue);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.chartArea{fill:color-mix(in srgb,var(--blue) 10%,transparent)}.chartDot{fill:var(--surface);stroke:var(--blue);stroke-width:2.5}
+.detailMovementsBlock{border:1px solid var(--line);border-radius:5px;overflow:hidden;background:var(--surface)}.detailMovementsHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border-bottom:1px solid var(--line);background:var(--surface-2)}.detailMovementsHead strong{font-size:11.5px}.detailMovementsHead span{font-size:9.5px;color:var(--muted)}.detailMovementList{max-height:300px;overflow:auto}.detailMovementRow{display:grid;grid-template-columns:31px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line)}.detailMovementRow:last-child{border-bottom:0}.detailMvIcon{width:29px;height:29px;border-radius:5px;display:grid;place-items:center;background:var(--surface-2);color:var(--muted);font-size:11px}.detailMvMain{min-width:0}.detailMvMain strong{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.detailMvMain span{display:block;margin-top:2px;font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.detailMvAmount{text-align:right;font-size:11px;font-weight:800;white-space:nowrap}.detailMvAmount.positive{color:#0d7f6f}.detailMvAmount.negative{color:#b65757}.detailEmpty{padding:18px 12px;text-align:center;font-size:10.5px;color:var(--muted)}
+@media(max-width:700px){
+  #detailDialog{width:calc(100vw - 10px);max-height:94dvh}.detailModal{padding:11px}.detailHeader h3{font-size:16px!important}.detailStats{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.detailStat{padding:7px 8px}.detailStatValue{font-size:14px}.detailChartBlock{padding:7px}.detailChart{min-height:165px}.detailChart svg{max-height:185px}.detailMovementList{max-height:280px}.detailMovementRow{grid-template-columns:28px minmax(0,1fr) auto;padding:8px;gap:7px}.detailMvIcon{width:27px;height:27px}.matrix td.pnlClick::after{display:none}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1282,6 +1304,23 @@ dialog{border-radius:5px;border:1px solid var(--line)}.modal{padding:13px}.modal
 <div class="span2"><label>Comentario</label><input id="recurringComment"></div>
 </div><div class="modalActions"><button type="button" class="btn" onclick="$('recurringDialog').close()">Cancelar</button><button class="btn primary">Guardar</button></div></form></dialog>
 
+<dialog id="detailDialog"><div class="modal detailModal">
+  <div class="detailHeader">
+    <div><div id="detailEyebrow" class="detailEyebrow">Detalle</div><h3 id="detailTitle">Detalle</h3><div id="detailSubtitle" class="detailSubtitle"></div></div>
+    <button type="button" class="detailClose" aria-label="Cerrar" onclick="$('detailDialog').close()"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div id="detailStats" class="detailStats"></div>
+  <div class="detailChartBlock">
+    <div class="detailChartHead"><div><strong id="detailChartTitle">Tendencia</strong><span id="detailChartCaption"></span></div><span id="detailChartDelta" class="trendDelta"></span></div>
+    <div id="detailChart" class="detailChart"></div>
+  </div>
+  <div class="detailMovementsBlock">
+    <div class="detailMovementsHead"><strong>Movimientos</strong><span id="detailMovementCount"></span></div>
+    <div id="detailMovements" class="detailMovementList"></div>
+  </div>
+</div></dialog>
+
+
 <script>
 const SUPABASE_URL='https://zewuynfpogzdmpjkkzuf.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_fngZWDMJzvyfD_Q3yZNyYA_rbMHOAbP';
@@ -1289,7 +1328,7 @@ const SITE_URL='https://walterchb.github.io/personalhub/';
 const CLOUD_TABLE='personal_hub_state';
 const CLOUD_META_KEY='personal-hub-cloud-meta-v1';
 let INVITE_LINK_TYPE=(()=>{try{const h=new URLSearchParams(location.hash.replace(/^#/,'')),q=new URLSearchParams(location.search);return h.get('type')||q.get('type')||''}catch{return ''}})();
-let supabaseClient=null,cloudSession=null,cloudReady=false,cloudBusy=false,cloudDirty=false,cloudSaveTimer=null,cloudLastUpdated='',cloudPollTimer=null,cloudApplyingRemote=false;
+let supabaseClient=null,cloudSession=null,cloudReady=false,cloudBusy=false,cloudSaveTimer=null,cloudLastUpdated='',cloudPollTimer=null,cloudApplyingRemote=false;
 
 const KEY='control-financiero-ledger-v2';
 const $=id=>document.getElementById(id);
@@ -1351,6 +1390,7 @@ function pnlValue(catId,year,mi){const prefix=`${year}-${String(mi+1).padStart(2
 function groupMonth(group,year,mi){return data.categories.filter(c=>c.group===group).reduce((s,c)=>s+pnlValue(c.id,year,mi),0)}
 function selectedPeriod(){const v=$('periodInput').value||monthNow(),[y,m]=v.split('-').map(Number);return {year:y,month:m-1,key:v}}
 function moneyCell(v){return `<td class="${Math.abs(v)<.005?'zero':''}">${pen(v)}</td>`}
+function pnlClickCell(v,scope,id,year,mi){const zero=Math.abs(v)<.005?' zero':'';return `<td class="pnlClick${zero}" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openPnlDetail('${scope}','${id||''}',${year},${mi==null?'null':mi})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">${pen(v)}</td>`}
 
 function renderAll(){document.documentElement.dataset.theme=data.settings.theme||'light';renderSelects();renderDashboard();renderMovements();renderAccounts();renderCards();renderRecurring();renderCategories();renderSettings()}
 function renderSelects(){
@@ -1368,18 +1408,74 @@ function renderDashboard(){
 }
 function renderAvailability(){
   const items=[];
-  data.accounts.filter(a=>a.active).forEach(a=>items.push(`<div class="balanceTile"><div class="tileTop"><div><div class="tileName">${esc(a.name)}</div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge"><i class="fa-solid fa-building-columns"></i> Cuenta</span></div><div class="tileAmount">${money(accountBalance(a.id),a.currency)}</div><div class="tileMeta">Saldo disponible</div></div>`));
-  data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycle(c.id);items.push(`<div class="balanceTile credit"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge"><i class="fa-solid fa-credit-card"></i> TC</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">Pago pendiente · deuda total ${money(cy.debt,c.currency)}</div></div>`)});
+  data.accounts.filter(a=>a.active).forEach(a=>items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(a.name)}</div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge"><i class="fa-solid fa-building-columns"></i> Cuenta</span></div><div class="tileAmount">${money(accountBalance(a.id),a.currency)}</div><div class="tileMeta">Saldo disponible · toca para ver detalle</div></div>`));
+  data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycle(c.id);items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge"><i class="fa-solid fa-credit-card"></i> TC</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">Pago pendiente · deuda total ${money(cy.debt,c.currency)}</div></div>`) });
   $('availability').innerHTML=items.join('')||'<div class="empty">Agrega una cuenta o tarjeta para comenzar.</div>';
 }
 function renderPnlDesktop(year){
   const months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];let h=`<thead><tr><th>P&L</th>${months.map(m=>`<th>${m}</th>`).join('')}<th>Total</th></tr></thead><tbody>`,totals={};
-  for(const [g,label] of [['income','Ingresos'],['expense','Egresos'],['investment','Inversiones']]){h+=`<tr class="group"><td>${label}</td>${months.map(()=>'<td></td>').join('')}<td></td></tr>`;data.categories.filter(c=>c.group===g).forEach(c=>{const vals=months.map((_,i)=>pnlValue(c.id,year,i)),tot=vals.reduce((a,b)=>a+b,0);h+=`<tr><td>${esc(c.name)}</td>${vals.map(moneyCell).join('')}${moneyCell(tot)}</tr>`});const vals=months.map((_,i)=>groupMonth(g,year,i));totals[g]=vals;h+=`<tr class="total"><td>Total ${label}</td>${vals.map(moneyCell).join('')}${moneyCell(vals.reduce((a,b)=>a+b,0))}</tr>`}
-  const free=months.map((_,i)=>(totals.income[i]||0)-(totals.expense[i]||0)-(totals.investment[i]||0));h+=`<tr class="cash"><td>Ahorro / Flujo libre</td>${free.map(moneyCell).join('')}${moneyCell(free.reduce((a,b)=>a+b,0))}</tr></tbody>`;$('pnlMatrix').innerHTML=h;
+  for(const [g,label] of [['income','Ingresos'],['expense','Egresos'],['investment','Inversiones']]){
+    h+=`<tr class="group"><td>${label}</td>${months.map(()=>'<td></td>').join('')}<td></td></tr>`;
+    data.categories.filter(c=>c.group===g).forEach(c=>{const vals=months.map((_,i)=>pnlValue(c.id,year,i)),tot=vals.reduce((a,b)=>a+b,0);h+=`<tr><td class="pnlClick" role="button" tabindex="0" title="Ver tendencia anual" onclick="openPnlDetail('category','${c.id}',${year},null)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">${esc(c.name)}</td>${vals.map((v,i)=>pnlClickCell(v,'category',c.id,year,i)).join('')}${pnlClickCell(tot,'category',c.id,year,null)}</tr>`});
+    const vals=months.map((_,i)=>groupMonth(g,year,i));totals[g]=vals;h+=`<tr class="total"><td class="pnlClick" role="button" tabindex="0" onclick="openPnlDetail('group','${g}',${year},null)">Total ${label}</td>${vals.map((v,i)=>pnlClickCell(v,'group',g,year,i)).join('')}${pnlClickCell(vals.reduce((a,b)=>a+b,0),'group',g,year,null)}</tr>`
+  }
+  const free=months.map((_,i)=>(totals.income[i]||0)-(totals.expense[i]||0)-(totals.investment[i]||0));h+=`<tr class="cash"><td class="pnlClick" role="button" tabindex="0" onclick="openPnlDetail('free','',${year},null)">Ahorro / Flujo libre</td>${free.map((v,i)=>pnlClickCell(v,'free','',year,i)).join('')}${pnlClickCell(free.reduce((a,b)=>a+b,0),'free','',year,null)}</tr></tbody>`;$('pnlMatrix').innerHTML=h;
 }
 function renderPnlMobile(year,mi){
-  let h='';for(const [g,label] of [['income','Ingresos'],['expense','Egresos'],['investment','Inversiones']]){const cats=data.categories.filter(c=>c.group===g),total=groupMonth(g,year,mi);h+=`<div class="pnlGroupCard"><div class="pnlGroupTitle"><span>${label}</span><strong>${pen(total)}</strong></div>${cats.map(c=>`<div class="pnlLine"><span>${esc(c.name)}</span><strong>${pen(pnlValue(c.id,year,mi))}</strong></div>`).join('')}</div>`}const saving=groupMonth('income',year,mi)-groupMonth('expense',year,mi)-groupMonth('investment',year,mi);h+=`<div class="pnlFree"><span>Ahorro / Flujo libre</span><strong class="${saving<0?'bad':''}">${pen(saving)}</strong></div>`;$('pnlMobileBody').innerHTML=h;
+  let h='';for(const [g,label] of [['income','Ingresos'],['expense','Egresos'],['investment','Inversiones']]){const cats=data.categories.filter(c=>c.group===g),total=groupMonth(g,year,mi);h+=`<div class="pnlGroupCard"><div class="pnlGroupTitle drillable" role="button" tabindex="0" onclick="openPnlDetail('group','${g}',${year},${mi})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><span>${label}</span><strong>${pen(total)}</strong></div>${cats.map(c=>`<div class="pnlLine drillable" role="button" tabindex="0" onclick="openPnlDetail('category','${c.id}',${year},${mi})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><span>${esc(c.name)}</span><strong>${pen(pnlValue(c.id,year,mi))}</strong></div>`).join('')}</div>`}const saving=groupMonth('income',year,mi)-groupMonth('expense',year,mi)-groupMonth('investment',year,mi);h+=`<div class="pnlFree drillable" role="button" tabindex="0" onclick="openPnlDetail('free','',${year},${mi})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><span>Ahorro / Flujo libre</span><strong class="${saving<0?'bad':''}">${pen(saving)}</strong></div>`;$('pnlMobileBody').innerHTML=h;
 }
+
+
+function isoDateLocal(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function compactMoney(v,c='PEN'){const n=Number(v)||0,a=Math.abs(n),prefix=c==='USD'?'US$':'S/';let x=n,s='';if(a>=1000000){x=n/1000000;s='M'}else if(a>=1000){x=n/1000;s='K'}const digits=Math.abs(x)>=100?0:Math.abs(x)>=10?1:2;return `${prefix} ${x.toLocaleString('es-PE',{minimumFractionDigits:0,maximumFractionDigits:digits})}${s}`}
+function entityMovementDelta(t,type,id){
+  if(type==='account'){
+    if(t.kind==='expense'&&t.sourceType==='account'&&t.sourceId===id)return -(+t.amount||0);
+    if(t.kind==='income'&&t.sourceId===id)return +t.amount||0;
+    if(t.kind==='transfer'){if(t.sourceId===id)return -(+t.amount||0);if(t.destinationId===id)return +(t.appliedAmount??t.amount)||0}
+    if(t.kind==='card_payment'&&t.sourceId===id)return -(+t.amount||0);
+    if(t.kind==='adjustment'&&t.targetType==='account'&&t.targetId===id)return (t.direction==='increase'?1:-1)*(+t.amount||0);
+  }else{
+    if(t.kind==='expense'&&t.sourceType==='card'&&t.sourceId===id)return +t.amount||0;
+    if(t.kind==='card_payment'&&t.cardId===id)return -(+(t.appliedAmount??t.amount)||0);
+    if(t.kind==='refund'&&t.cardId===id)return -(+t.amount||0);
+    if(t.kind==='adjustment'&&t.targetType==='card'&&t.targetId===id)return (t.direction==='increase'?1:-1)*(+t.amount||0);
+  }
+  return 0;
+}
+function entityMovements(type,id){return data.movements.filter(t=>entityMovementDelta(t,type,id)!==0).sort((a,b)=>(b.date||'').localeCompare(a.date||''))}
+function accountBalanceAt(id,endDate){const a=account(id);if(!a)return 0;let v=+a.openingBalance||0,base=a.openingDate||'0000-00-00';for(const t of data.movements){if((t.date||'')<base||(t.date||'')>endDate)continue;v+=entityMovementDelta(t,'account',id)}return v}
+function cardDebtAt(id,endDate){const c=card(id);if(!c)return 0;let v=+c.openingDebt||0,base=c.openingDate||'0000-00-00';for(const t of data.movements){if((t.date||'')<base||(t.date||'')>endDate)continue;v+=entityMovementDelta(t,'card',id)}return Math.max(0,v)}
+function entityTrend(type,id,days=90){const e=type==='account'?account(id):card(id);if(!e)return[];const now=parseDate(today()),start=new Date(now);start.setDate(start.getDate()-(days-1));const open=parseDate(e.openingDate||today());if(open>start)start.setTime(open.getTime());const out=[];for(let d=new Date(start);d<=now;d.setDate(d.getDate()+1)){const ds=isoDateLocal(d);out.push({label:`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`,value:type==='account'?accountBalanceAt(id,ds):cardDebtAt(id,ds)})}return out}
+function makeLineChart(points,currency='PEN'){
+  if(!points.length)return '<div class="detailEmpty">Todavía no hay suficiente historia para graficar.</div>';
+  const w=760,h=220,l=58,r=15,t=13,b=31,vals=points.map(p=>Number(p.value)||0);let min=Math.min(...vals),max=Math.max(...vals);if(max===min){const pad=Math.max(1,Math.abs(max)*.08);min-=pad;max+=pad}else{const pad=(max-min)*.08;min-=pad;max+=pad}const iw=w-l-r,ih=h-t-b,x=i=>l+(points.length===1?iw/2:i*iw/(points.length-1)),y=v=>t+(max-v)*ih/(max-min),line=points.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(p.value).toFixed(1)}`).join(' '),area=`${line} L${x(points.length-1).toFixed(1)},${(t+ih).toFixed(1)} L${x(0).toFixed(1)},${(t+ih).toFixed(1)} Z`,grid=[0,.333,.666,1].map(q=>{const gy=t+ih*q,val=max-(max-min)*q;return `<line class="chartGrid" x1="${l}" y1="${gy.toFixed(1)}" x2="${w-r}" y2="${gy.toFixed(1)}"/><text class="chartAxisLabel" x="${l-7}" y="${(gy+3).toFixed(1)}" text-anchor="end">${esc(compactMoney(val,currency))}</text>`}).join(''),idx=[0,Math.floor((points.length-1)/2),points.length-1].filter((v,i,a)=>a.indexOf(v)===i),labels=idx.map(i=>`<text class="chartAxisLabel" x="${x(i).toFixed(1)}" y="${h-8}" text-anchor="${i===0?'start':i===points.length-1?'end':'middle'}">${esc(points[i].label)}</text>`).join(''),last=points.length-1;
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Gráfico de tendencia"><path class="chartArea" d="${area}"/><g>${grid}</g><path class="chartLine" d="${line}"/><circle class="chartDot" cx="${x(last).toFixed(1)}" cy="${y(points[last].value).toFixed(1)}" r="4"/>${labels}</svg>`;
+}
+function statCard(label,value,hint=''){return `<div class="detailStat"><div class="detailStatLabel">${esc(label)}</div><div class="detailStatValue">${value}</div>${hint?`<div class="detailStatHint">${esc(hint)}</div>`:''}</div>`}
+function movementIcon(k){return {expense:'fa-cart-shopping',income:'fa-arrow-trend-up',transfer:'fa-right-left',card_payment:'fa-credit-card',refund:'fa-rotate-left',adjustment:'fa-scale-balanced'}[k]||'fa-circle'}
+function renderDetailMovementRows(rows,mode='entity',type='',id=''){
+  $('detailMovementCount').textContent=rows.length?`${rows.length} ${rows.length===1?'movimiento':'movimientos'}`:'';
+  if(!rows.length){$('detailMovements').innerHTML='<div class="detailEmpty">No hay movimientos para este detalle.</div>';return}
+  const entityCurrency=mode==='entity'?(type==='account'?(account(id)?.currency||'PEN'):(card(id)?.currency||'PEN')):'PEN',shown=rows.slice(0,80);$('detailMovements').innerHTML=shown.map(t=>{let signed=0,display='';if(mode==='entity'){signed=entityMovementDelta(t,type,id);display=`${signed>0?'+':signed<0?'−':''}${money(Math.abs(signed),entityCurrency)}`}else{const p=toPen(t.amount,movementCurrency(t));signed=t.kind==='income'?p:-p;display=`${signed>0?'+':'−'}${pen(Math.abs(p))}`}const partyText=party(t),meta=[t.date,kindName(t.kind),t.categoryId?catName(t.categoryId):partyText].filter(Boolean).join(' · ');return `<div class="detailMovementRow"><div class="detailMvIcon"><i class="fa-solid ${movementIcon(t.kind)}"></i></div><div class="detailMvMain"><strong>${esc(t.description||kindName(t.kind))}</strong><span>${esc(meta)}</span></div><div class="detailMvAmount ${signed>0?'positive':signed<0?'negative':''}">${display}</div></div>`}).join('')+(rows.length>shown.length?`<div class="detailEmpty">Mostrando los ${shown.length} movimientos más recientes.</div>`:'')
+}
+function setDetailTrend(points,currency,caption){$('detailChart').innerHTML=makeLineChart(points,currency);$('detailChartCaption').textContent=caption;const first=points[0]?.value||0,last=points[points.length-1]?.value||0,d=last-first;$('detailChartDelta').textContent=points.length>1?`${d>0?'+':''}${compactMoney(d,currency)}`:'';$('detailChartDelta').className=`trendDelta ${d>0?'up':d<0?'down':''}`}
+function openAvailabilityDetail(type,id){
+  const isAccount=type==='account',e=isAccount?account(id):card(id);if(!e)return;const currency=e.currency||'PEN',rows=entityMovements(type,id),points=entityTrend(type,id,90),cut=new Date(parseDate(today()));cut.setDate(cut.getDate()-29);const recent=rows.filter(t=>(t.date||'')>=isoDateLocal(cut));
+  $('detailEyebrow').textContent=`Disponibilidad · ${isAccount?'Cuenta':'Tarjeta'}`;$('detailTitle').textContent=e.name;$('detailSubtitle').textContent=isAccount?`${e.institution||e.type||'Cuenta'} · ${currency}`:`${e.bank||'Tarjeta'} · ${currency}`;
+  if(isAccount){const current=accountBalance(id),ins=recent.reduce((s,t)=>s+Math.max(0,entityMovementDelta(t,type,id)),0),outs=recent.reduce((s,t)=>s+Math.max(0,-entityMovementDelta(t,type,id)),0);$('detailStats').innerHTML=statCard('Saldo actual',money(current,currency))+statCard('Entradas 30 días',money(ins,currency))+statCard('Salidas 30 días',money(outs,currency))+statCard('Movimientos',String(rows.length),'Histórico relacionado');$('detailChartTitle').textContent='Tendencia del saldo';setDetailTrend(points,currency,'Saldo diario · últimos 90 días')}
+  else{const cy=cardCycle(id),availableLimit=Math.max(0,(+e.limit||0)-cy.debt);$('detailStats').innerHTML=statCard('Deuda total',money(cy.debt,currency))+statCard('Pago del ciclo',money(cy.remaining,currency),cy.dueDate?`Vence ${cy.dueDate}`:'Ciclo actual')+statCard('No facturado',money(cy.unbilled,currency))+statCard('Límite disponible',money(availableLimit,currency));$('detailChartTitle').textContent='Tendencia de deuda total';setDetailTrend(points,currency,'Deuda diaria · últimos 90 días')}
+  renderDetailMovementRows(rows,'entity',type,id);$('detailDialog').showModal();
+}
+function pnlMonthlySeries(scope,id,year){const names=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];return names.map((label,mi)=>({label,value:scope==='category'?pnlValue(id,year,mi):scope==='group'?groupMonth(id,year,mi):groupMonth('income',year,mi)-groupMonth('expense',year,mi)-groupMonth('investment',year,mi)}))}
+function pnlDetailMovements(scope,id,year,mi){const prefix=mi==null?`${year}-`:`${year}-${String(mi+1).padStart(2,'0')}`,groupIds=scope==='group'?new Set(data.categories.filter(c=>c.group===id).map(c=>c.id)):null;return data.movements.filter(t=>(t.kind==='expense'||t.kind==='income')&&(t.date||'').startsWith(prefix)&&(scope==='free'||(scope==='category'&&t.categoryId===id)||(scope==='group'&&groupIds.has(t.categoryId)))).sort((a,b)=>(b.date||'').localeCompare(a.date||''))}
+function openPnlDetail(scope,id,year,mi=null){
+  const monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],series=pnlMonthlySeries(scope,id,year),annual=series.reduce((s,p)=>s+p.value,0),selected=mi==null?annual:series[mi].value,rows=pnlDetailMovements(scope,id,year,mi);let title='',group='';
+  if(scope==='category'){const c=cat(id);if(!c)return;title=c.name;group=c.group==='income'?'Ingresos':c.group==='investment'?'Inversiones':'Egresos'}else if(scope==='group'){group=id==='income'?'Ingresos':id==='investment'?'Inversiones':'Egresos';title=`Total ${group}`}else{title='Ahorro / Flujo libre';group='Resultado'}
+  $('detailEyebrow').textContent='P&L / Flujo';$('detailTitle').textContent=title;$('detailSubtitle').textContent=`${group} · ${mi==null?`Año ${year}`:`${monthNames[mi]} ${year}`}`;$('detailChartTitle').textContent='Tendencia mensual';
+  const avg=annual/12,peak=series.reduce((a,b)=>Math.abs(b.value)>Math.abs(a.value)?b:a,series[0]||{label:'—',value:0});$('detailStats').innerHTML=statCard(mi==null?'Total anual':'Periodo',pen(selected))+statCard('Total anual',pen(annual))+statCard('Promedio mensual',pen(avg))+statCard('Mes de mayor movimiento',peak.label,pen(peak.value));setDetailTrend(series,'PEN',`Enero – diciembre ${year}`);renderDetailMovementRows(rows,'pnl');$('detailDialog').showModal();
+}
+
 function renderIndicators(cash,debt,due,inc,exp,inv,saving){
   const sr=inc?saving/inc*100:0,er=inc?exp/inc*100:0,dc=cash?debt/cash*100:0,line=data.cards.filter(c=>c.active).reduce((s,c)=>s+toPen(c.limit,c.currency),0),util=line?debt/line*100:0;
   $('indicators').innerHTML=`<div class="indicator"><span>Posición líquida</span><strong class="${cash-debt<0?'bad':'good'}">${pen(cash-debt)}</strong></div><div class="indicator"><span>Tasa de ahorro</span><strong class="${sr>=20?'good':sr<0?'bad':'warn'}">${sr.toFixed(1)}%</strong></div><div class="indicator"><span>Egresos / ingresos</span><strong>${er.toFixed(1)}%</strong></div><div class="indicator"><span>Pago TC / efectivo</span><strong>${(cash?due/cash*100:0).toFixed(1)}%</strong></div><div class="indicator"><span>Deuda TC / efectivo</span><strong class="${dc>100?'bad':dc>50?'warn':'good'}">${dc.toFixed(1)}%</strong></div><div class="indicator"><span>Utilización líneas TC</span><strong class="${util>80?'bad':util>50?'warn':'good'}">${util.toFixed(1)}%</strong></div><div class="indicator"><span>Inversiones</span><strong>${pen(inv)}</strong></div>`;
@@ -1445,7 +1541,7 @@ function showPasswordSetup(){document.body.classList.add('authLocked');$('authGa
 function localCloudMeta(){try{return JSON.parse(localStorage.getItem(CLOUD_META_KEY)||'{}')}catch{return {}}}
 function saveCloudMeta(meta){localStorage.setItem(CLOUD_META_KEY,JSON.stringify(meta))}
 function rawRemoteLooksEmpty(v){return !v||typeof v!=='object'||(!v.version&&!Array.isArray(v.accounts)&&!Array.isArray(v.cards)&&!Array.isArray(v.movements)&&!Array.isArray(v.recurring))}
-function queueCloudSave(){if(!cloudReady||!cloudSession||cloudApplyingRemote)return;cloudDirty=true;saveCloudMeta({userId:cloudSession.user.id,remoteUpdatedAt:cloudLastUpdated,dirty:true});clearTimeout(cloudSaveTimer);setCloudStatus('busy','Guardando…');cloudSaveTimer=setTimeout(()=>cloudSaveState(),650)}
+function queueCloudSave(){if(!cloudReady||!cloudSession||cloudApplyingRemote)return;clearTimeout(cloudSaveTimer);setCloudStatus('busy','Guardando…');cloudSaveTimer=setTimeout(()=>cloudSaveState(),650)}
 async function cloudSaveState(){
   if(!supabaseClient||!cloudSession||cloudBusy)return;
   cloudBusy=true;setCloudStatus('busy','Guardando…');
@@ -1453,14 +1549,13 @@ async function cloudSaveState(){
     const stamp=new Date().toISOString();
     const {data:row,error}=await supabaseClient.from(CLOUD_TABLE).upsert({user_id:cloudSession.user.id,data,updated_at:stamp},{onConflict:'user_id'}).select('updated_at').single();
     if(error)throw error;
-    cloudLastUpdated=row?.updated_at||stamp;cloudDirty=false;saveCloudMeta({userId:cloudSession.user.id,remoteUpdatedAt:cloudLastUpdated,dirty:false});
+    cloudLastUpdated=row?.updated_at||stamp;saveCloudMeta({userId:cloudSession.user.id,remoteUpdatedAt:cloudLastUpdated});
     setCloudStatus('good','Sincronizado',`Última sincronización: ${new Date(cloudLastUpdated).toLocaleString('es-PE')}. Supabase es la fuente principal; este dispositivo conserva una copia local.`);
   }catch(err){console.error('Cloud save',err);setCloudStatus('bad','Sin conexión','Los cambios siguen guardados en este dispositivo y se volverán a intentar al recuperar conexión.');}
   finally{cloudBusy=false}
 }
 async function cloudPullState(force=false){
   if(!supabaseClient||!cloudSession||cloudBusy)return;
-  if(cloudDirty&&!force){queueCloudSave();return}
   try{
     const {data:row,error}=await supabaseClient.from(CLOUD_TABLE).select('data,updated_at').eq('user_id',cloudSession.user.id).maybeSingle();
     if(error)throw error;
@@ -1468,7 +1563,7 @@ async function cloudPullState(force=false){
     const remoteTime=row.updated_at||'';
     if(force||(!cloudLastUpdated||remoteTime>cloudLastUpdated)){
       cloudApplyingRemote=true;data=normalize(row.data);persist();const made=syncRecurring();persist();renderAll();cloudApplyingRemote=false;
-      cloudLastUpdated=remoteTime;cloudDirty=false;saveCloudMeta({userId:cloudSession.user.id,remoteUpdatedAt:cloudLastUpdated,dirty:false});
+      cloudLastUpdated=remoteTime;saveCloudMeta({userId:cloudSession.user.id,remoteUpdatedAt:cloudLastUpdated});
       if(made)queueCloudSave();
     }
     setCloudStatus('good','Sincronizado',`Última sincronización: ${remoteTime?new Date(remoteTime).toLocaleString('es-PE'):'ahora'}. Supabase es la fuente principal; este dispositivo conserva una copia local.`);
@@ -1482,14 +1577,11 @@ async function bootstrapCloud(session){
   try{
     const {data:row,error}=await supabaseClient.from(CLOUD_TABLE).select('data,updated_at').eq('user_id',session.user.id).maybeSingle();
     if(error)throw error;
-    const meta=localCloudMeta();cloudDirty=meta.userId===session.user.id&&meta.dirty===true;cloudLastUpdated=meta.userId===session.user.id?(meta.remoteUpdatedAt||''):'';
     if(!row||rawRemoteLooksEmpty(row.data)){
-      cloudReady=true;showApp();cloudDirty=true;await cloudSaveState();toast('Personal Hub Cloud activado','Tus datos locales ya están guardados en Supabase.');
-    }else if(cloudDirty){
-      cloudReady=true;showApp();await cloudSaveState();toast('Cambios pendientes sincronizados','Se recuperaron los cambios guardados en este dispositivo.');
+      cloudReady=true;showApp();await cloudSaveState();toast('Personal Hub Cloud activado','Tus datos locales ya están guardados en Supabase.');
     }else{
       cloudApplyingRemote=true;data=normalize(row.data);persist();const made=syncRecurring();persist();renderAll();cloudApplyingRemote=false;
-      cloudLastUpdated=row.updated_at||'';cloudDirty=false;saveCloudMeta({userId:session.user.id,remoteUpdatedAt:cloudLastUpdated,dirty:false});cloudReady=true;showApp();
+      cloudLastUpdated=row.updated_at||'';saveCloudMeta({userId:session.user.id,remoteUpdatedAt:cloudLastUpdated});cloudReady=true;showApp();
       setCloudStatus('good','Sincronizado',`Última sincronización: ${cloudLastUpdated?new Date(cloudLastUpdated).toLocaleString('es-PE'):'ahora'}. Supabase es la fuente principal; este dispositivo conserva una copia local.`);
       if(made)queueCloudSave();
     }
@@ -1516,11 +1608,11 @@ async function initCloud(){
 $('loginForm').onsubmit=async e=>{e.preventDefault();setAuthMessage('authLoginMessage');const email=$('authEmail').value.trim(),password=$('authPassword').value;$('loginBtn').disabled=true;$('loginBtn').innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Ingresando…';try{const {data:res,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;cloudSession=res.session;await bootstrapCloud(res.session)}catch(err){setAuthMessage('authLoginMessage',err.message||'No se pudo iniciar sesión.','bad')}finally{$('loginBtn').disabled=false;$('loginBtn').innerHTML='<i class="fa-solid fa-right-to-bracket"></i> Ingresar'}};
 $('forgotPasswordBtn').onclick=async()=>{const email=$('authEmail').value.trim();if(!email)return setAuthMessage('authLoginMessage','Escribe primero tu correo.','bad');try{const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:SITE_URL});if(error)throw error;setAuthMessage('authLoginMessage','Te enviamos un enlace para crear una nueva contraseña.','good')}catch(err){setAuthMessage('authLoginMessage',err.message||'No se pudo enviar el correo.','bad')}};
 $('setPasswordForm').onsubmit=async e=>{e.preventDefault();setAuthMessage('authPasswordMessage');const p1=$('newPassword').value,p2=$('newPassword2').value;if(p1.length<8)return setAuthMessage('authPasswordMessage','Usa al menos 8 caracteres.','bad');if(p1!==p2)return setAuthMessage('authPasswordMessage','Las contraseñas no coinciden.','bad');const previousLinkType=INVITE_LINK_TYPE;INVITE_LINK_TYPE='';try{const {data:res,error}=await supabaseClient.auth.updateUser({password:p1});if(error)throw error;history.replaceState(null,'',location.pathname);cloudSession=(await supabaseClient.auth.getSession()).data.session;setAuthMessage('authPasswordMessage','Contraseña guardada.','good');setTimeout(()=>bootstrapCloud(cloudSession),350)}catch(err){INVITE_LINK_TYPE=previousLinkType;setAuthMessage('authPasswordMessage',err.message||'No se pudo guardar la contraseña.','bad')}};
-$('syncNowBtn').onclick=async()=>{if(!cloudSession)return;if(cloudDirty)await cloudSaveState();else await cloudPullState(false);toast('Sincronización completada','Personal Hub está al día.')};
+$('syncNowBtn').onclick=async()=>{if(!cloudSession)return;await cloudSaveState();toast('Sincronización completada','Supabase quedó actualizado.')};
 $('signOutBtn').onclick=async()=>{if(!supabaseClient)return;if(!confirm('¿Cerrar sesión en este dispositivo?'))return;clearInterval(cloudPollTimer);await supabaseClient.auth.signOut();cloudReady=false;showLogin()};
 window.addEventListener('focus',()=>{if(cloudReady)cloudPullState(false)});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudReady)cloudPullState(false)});
-window.addEventListener('online',()=>{if(cloudReady){if(cloudDirty)queueCloudSave();else cloudPullState(false)}});
+window.addEventListener('online',()=>{if(cloudReady){cloudPullState(false);queueCloudSave()}});
 
 $('movementKind').onchange=updateMvForm;$('movementSourceType').onchange=()=>{refreshMvSources();preview()};['movementSourceId','movementDestinationId','movementCardId','movementAmount','movementAppliedAmount'].forEach(id=>$(id).oninput=preview);
 $('recurringKind').onchange=updateRecForm;$('recurringSourceType').onchange=refreshRecSources;
