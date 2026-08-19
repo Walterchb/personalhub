@@ -1196,6 +1196,144 @@ html[data-theme="dark"] .availabilitySwitch button.active{background:#2b5068}
   .periodField label{display:none}
   .topControlRow .pageTop.periodOnly .periodControl{grid-template-columns:minmax(0,.8fr) 1px minmax(0,1.4fr)}
 }
+
+
+/* Personal Hub v5.1 — period controls + dark-mode contrast polish */
+.periodControl{
+  display:grid !important;
+  grid-template-columns:minmax(150px,.92fr) 1px minmax(210px,1.08fr) !important;
+  align-items:center !important;
+  gap:8px !important;
+  padding:5px 7px !important;
+}
+.periodField{
+  display:grid !important;
+  grid-template-columns:auto minmax(0,1fr) !important;
+  align-items:center !important;
+  gap:7px !important;
+  min-width:0;
+}
+.monthPickerWrap{
+  position:relative;
+  min-width:0;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:0 6px;
+  border-radius:4px;
+  color:var(--ink);
+  overflow:hidden;
+}
+.periodDisplay{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:12px;
+  font-weight:700;
+  color:var(--ink);
+}
+.monthPickerWrap>i{font-size:10px;color:var(--muted);flex:0 0 auto}
+.monthPickerWrap input{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  opacity:0 !important;
+  cursor:pointer;
+}
+.cutoffField{min-width:0}
+.cutoffNav{
+  width:100%;
+  min-width:0;
+  height:32px;
+  display:grid !important;
+  grid-template-columns:27px minmax(118px,1fr) 27px !important;
+  align-items:center;
+  gap:2px !important;
+}
+.cutoffNav input{
+  width:100% !important;
+  min-width:0 !important;
+  height:30px !important;
+  min-height:30px !important;
+  padding:2px 4px !important;
+  text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+.cutoffStep{color:var(--muted) !important}
+.cutoffStep:not(:disabled):hover{color:var(--blue) !important;background:var(--surface-2) !important}
+
+/* Native form controls should follow the selected theme. */
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea{color-scheme:dark}
+html[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator,
+html[data-theme="dark"] input[type="month"]::-webkit-calendar-picker-indicator{filter:invert(1) brightness(1.55);opacity:.9}
+html[data-theme="dark"] .sectionHead h2 i,
+html[data-theme="dark"] .iconBlue{color:#8ab4ff !important}
+html[data-theme="dark"] .iconMuted,
+html[data-theme="dark"] .monthPickerWrap>i,
+html[data-theme="dark"] .cutoffStep{color:#b8c6d9 !important}
+html[data-theme="dark"] .headerActions button i{color:#f5f9ff !important}
+html[data-theme="dark"] .availabilitySwitch button{color:#b7c6da}
+html[data-theme="dark"] .availabilitySwitch button.active{background:#365b78 !important;color:#fff !important}
+html[data-theme="dark"] .debtBadge{color:#ffd28a !important;background:rgba(210,135,70,.14) !important;border-color:rgba(255,190,124,.30) !important}
+html[data-theme="dark"] .detailMvAmount.positive,
+html[data-theme="dark"] .trendDelta.up{color:var(--green) !important}
+html[data-theme="dark"] .detailMvAmount.negative,
+html[data-theme="dark"] .trendDelta.down{color:var(--red) !important}
+html[data-theme="dark"] .balanceTile:hover{border-color:#49647b}
+html[data-theme="dark"] .badge{color:var(--ink)}
+html[data-theme="dark"] .metric.primaryMetric{border-color:#6d572d}
+html[data-theme="dark"] .primaryMetric .metricIcon{color:#5eead4}
+
+@media(max-width:700px){
+  .topControlRow{padding-top:7px !important}
+  .topControlRow .pageTop.periodOnly .periodControl{
+    display:grid !important;
+    grid-template-columns:minmax(0,.92fr) minmax(0,1.18fr) !important;
+    align-items:stretch !important;
+    gap:8px !important;
+    min-height:58px !important;
+    padding:6px 7px !important;
+  }
+  .periodDivider{display:none !important}
+  .periodField{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    grid-template-rows:12px 32px !important;
+    align-items:center !important;
+    gap:2px !important;
+    min-width:0;
+  }
+  .periodField label{
+    display:block !important;
+    margin:0 !important;
+    font-size:7.5px !important;
+    line-height:12px !important;
+    letter-spacing:.08em !important;
+    text-align:left;
+  }
+  .monthPickerWrap{height:32px;padding:0 4px}
+  .periodDisplay{font-size:10.5px;line-height:1;letter-spacing:-.01em}
+  .monthPickerWrap>i{font-size:9px}
+  .cutoffNav{height:32px;grid-template-columns:25px minmax(0,1fr) 25px !important;gap:1px !important}
+  .cutoffNav input{height:32px !important;min-height:32px !important;font-size:10.5px !important;padding:1px 2px !important;text-align:center}
+  .cutoffStep{width:25px !important;min-width:25px !important;height:30px !important}
+  .cutoffStep i{font-size:8px !important}
+}
+@media(max-width:380px){
+  .topControlRow .pageTop.periodOnly .periodControl{grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr) !important;gap:6px !important;padding:6px !important}
+  .periodDisplay{font-size:10px}
+  .cutoffNav input{font-size:10px !important}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1280,7 +1418,7 @@ html[data-theme="dark"] .availabilitySwitch button.active{background:#2b5068}
     </nav>
     <div class="pageTop periodOnly">
       <div class="periodControl" aria-label="Periodo y fecha de corte">
-        <div class="periodField monthField"><label for="periodInput">Periodo</label><input id="periodInput" type="month"></div>
+        <div class="periodField monthField"><label for="periodInput">Periodo</label><div class="monthPickerWrap"><span id="periodDisplay" class="periodDisplay" aria-hidden="true">Agosto de 2026</span><i class="fa-regular fa-calendar" aria-hidden="true"></i><input id="periodInput" type="month" aria-label="Seleccionar periodo"></div></div>
         <span class="periodDivider" aria-hidden="true"></span>
         <div class="periodField cutoffField"><label for="cutoffInput">Corte</label><div class="cutoffNav"><button id="cutoffPrevBtn" type="button" class="cutoffStep" title="Día anterior" aria-label="Día anterior"><i class="fa-solid fa-chevron-left"></i></button><input id="cutoffInput" type="date"><button id="cutoffNextBtn" type="button" class="cutoffStep" title="Día siguiente" aria-label="Día siguiente"><i class="fa-solid fa-chevron-right"></i></button></div></div>
       </div>
@@ -1503,10 +1641,12 @@ function cardOpts(blank=true){return (blank?'<option value="">Selecciona...</opt
 function catOpts(blank=true){return (blank?'<option value="">Sin categoría</option>':'')+data.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}
 function lastDayOfMonth(monthKey){const [y,m]=monthKey.split('-').map(Number);return `${y}-${String(m).padStart(2,'0')}-${String(new Date(y,m,0).getDate()).padStart(2,'0')}`}
 function defaultCutoffForPeriod(monthKey){if(monthKey>=monthNow())return today();return lastDayOfMonth(monthKey)}
-function syncCutoffBounds(reset=false){const p=$('periodInput'),c=$('cutoffInput');if(!p||!c)return;p.max=monthNow();if(!p.value||p.value>monthNow())p.value=monthNow();const min=`${p.value}-01`,max=p.value===monthNow()?today():lastDayOfMonth(p.value);c.min=min;c.max=max;if(reset||!c.value||c.value<min||c.value>max)c.value=max;const next=$('cutoffNextBtn');if(next)next.disabled=c.value>=max}
+function syncCutoffBounds(reset=false){const p=$('periodInput'),c=$('cutoffInput');if(!p||!c)return;p.max=monthNow();if(!p.value||p.value>monthNow())p.value=monthNow();const min=`${p.value}-01`,max=p.value===monthNow()?today():lastDayOfMonth(p.value);c.min=min;c.max=max;if(reset||!c.value||c.value<min||c.value>max)c.value=max;const next=$('cutoffNextBtn');if(next)next.disabled=c.value>=max;updatePeriodDisplay()}
 function selectedPeriod(){const v=$('periodInput').value||monthNow(),[y,m]=v.split('-').map(Number);return {year:y,month:m-1,key:v}}
 function selectedCutoff(){const c=$('cutoffInput');return c?.value||defaultCutoffForPeriod(selectedPeriod().key)}
 function prettyDate(s){if(!s)return '—';const [y,m,d]=s.split('-');return `${d}/${m}/${y}`}
+function formatMonthLabel(v){if(!v)return '—';const [y,m]=v.split('-').map(Number),names=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];return `${names[(m||1)-1]} de ${y}`}
+function updatePeriodDisplay(){const el=$('periodDisplay'),input=$('periodInput');if(el&&input)el.textContent=formatMonthLabel(input.value||monthNow())}
 function stepCutoff(delta){const c=$('cutoffInput'),p=$('periodInput');if(!c||!p)return;const d=parseDate(c.value||selectedCutoff());d.setDate(d.getDate()+delta);const next=fmt(d);if(next>today())return;p.value=next.slice(0,7);c.value=next;syncCutoffBounds(false);$('mvMonth').value=p.value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()}
 function pnlValue(catId,year,mi,cutoffDate=''){const prefix=`${year}-${String(mi+1).padStart(2,'0')}`;return data.movements.filter(t=>(t.kind==='expense'||t.kind==='income')&&t.categoryId===catId&&t.date.startsWith(prefix)&&(!cutoffDate||t.date<=cutoffDate)).reduce((s,t)=>s+toPen(t.amount,movementCurrency(t)),0)}
 function groupMonth(group,year,mi,cutoffDate=''){return data.categories.filter(c=>c.group===group).reduce((s,c)=>s+pnlValue(c.id,year,mi,cutoffDate),0)}
@@ -1535,7 +1675,7 @@ function renderAvailability(){
     data.accounts.filter(a=>a.active).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff);items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(a.name)}</div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge"><i class="fa-solid fa-building-columns"></i> Cuenta</span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">Saldo disponible · corte ${prettyDate(cutoff)}</div></div>`)});
     data.cards.filter(c=>c.active).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt);items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge"><i class="fa-solid fa-credit-card"></i> TC</span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · deuda total ${money(debt,c.currency)}</div></div>`)});
   }else{
-    if(sub)sub.textContent=`Pago pendiente y deuda total al ${prettyDate(cutoff)}.`;
+    if(sub)sub.textContent=`Pendiente y deuda total al ${prettyDate(cutoff)}.`;
     data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este corte';items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge"><i class="fa-solid fa-file-invoice-dollar"></i> Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · deuda total ${money(cy.debt,c.currency)}</div></div>`)});
   }
   $('availability').innerHTML=items.join('')||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
