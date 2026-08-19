@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v8-goals-receivables';
+const CACHE='personal-hub-v9-category-hierarchy';
 const APP_SHELL=[
   './',
   './index.html',

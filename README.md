@@ -52,3 +52,10 @@ La app incluye manifest, Service Worker, Apple Touch Icon e iconos PWA de 192 y 
 - Un pendiente no aumenta la caja hasta que se registra el cobro.
 - Al cobrar puedes tratarlo como **Reembolso** (entra a la cuenta y reduce el gasto/inversión de la categoría seleccionada) o como **Ingreso**.
 - Los cobros registrados quedan también en **Movimientos** y respetan la fecha de corte histórica.
+
+## Categorías, subcategorías y etiquetas
+- El P&L usa una jerarquía **Grupo → Categoría → Subcategoría** para mantener el reporte principal limpio.
+- Los movimientos y recurrentes pueden llevar además una **Etiqueta / proyecto** opcional para análisis transversales sin crear categorías nuevas.
+- La estructura inicial incluye ingresos, egresos y **Ahorro / Inversión** con subcategorías predefinidas.
+- Al actualizar desde una versión anterior, Personal Hub migra automáticamente las categorías conocidas (por ejemplo, `Snacks` pasa a `Alimentación → Snacks` y `Ropa` a `Compras personales → Ropa`) y conserva categorías personalizadas.
+- Las subcategorías con historia no se borran al retirarlas desde la edición de una categoría: quedan archivadas para preservar el histórico.
