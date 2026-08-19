@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v7-cutoff-verified';
+const CACHE='personal-hub-v8-goals-receivables';
 const APP_SHELL=[
   './',
   './index.html',

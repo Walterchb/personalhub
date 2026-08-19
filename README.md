@@ -45,3 +45,10 @@ La app incluye manifest, Service Worker, Apple Touch Icon e iconos PWA de 192 y 
 - Resumen, disponibilidad, P&L, movimientos, cuentas, tarjetas y categorías respetan la fecha de corte.
 - En **Disponibilidad** puedes alternar entre **Disponible** (saldo de cuenta / línea libre de tarjeta) y **Deuda** (pago pendiente y deuda total).
 - Al cambiar el ciclo de una tarjeta, el ciclo anterior se archiva automáticamente para que el **pago pendiente histórico** pueda reconstruirse en futuros cortes.
+
+## Objetivos y Pendientes
+- **Objetivos** permite definir una meta, moneda, fecha objetivo, prioridad y registrar aportes o retiros de avance. Estos aportes son de planificación: no alteran caja ni P&L.
+- **Pendientes** controla importes por cobrar de forma puntual o en cuotas mensuales.
+- Un pendiente no aumenta la caja hasta que se registra el cobro.
+- Al cobrar puedes tratarlo como **Reembolso** (entra a la cuenta y reduce el gasto/inversión de la categoría seleccionada) o como **Ingreso**.
+- Los cobros registrados quedan también en **Movimientos** y respetan la fecha de corte histórica.
