@@ -1,12 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="430" height="86" viewBox="0 0 430 86">
-<defs>
-  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#0b5fff"/>
-    <stop offset="1" stop-color="#0d9488"/>
-  </linearGradient>
-</defs>
-<rect x="2" y="8" width="68" height="68" rx="13" fill="url(#g)"/>
-<path d="M17 60V28M17 60H56M20 51L31 41L40 47L54 31" fill="none" stroke="#fff" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="84" y="40" fill="#102133" font-family="Manrope,Arial,sans-serif" font-size="25" font-weight="800">PERSONAL HUB</text>
-<text x="85" y="61" fill="#64748b" font-family="Manrope,Arial,sans-serif" font-size="13" font-weight="600" letter-spacing=".6">CONTROL DIARIO</text>
+  <defs>
+    <linearGradient id="bg" x1="11" y1="8" x2="72" y2="79" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#123B56"/><stop offset="1" stop-color="#061A28"/></linearGradient>
+    <linearGradient id="trend" x1="31" y1="53" x2="61" y2="31" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#34D3BD"/><stop offset="1" stop-color="#5DB6FF"/></linearGradient>
+  </defs>
+  <rect x="2" y="8" width="68" height="68" rx="14" fill="url(#bg)"/>
+  <rect x="2.7" y="8.7" width="66.6" height="66.6" rx="13.3" fill="none" stroke="#5E879D" stroke-opacity=".4" stroke-width="1.4"/>
+  <path d="M20 62V25h17.5C48.5 25 55 30.5 55 39.8 55 49.2 48.5 55 37.5 55H29" fill="none" stroke="#F7FBFF" stroke-width="4.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m28 50 7-6.6 6.8 4 11.1-12.1" fill="none" stroke="url(#trend)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m49.2 35 4.4-.3-.2 4.4" fill="none" stroke="#5DB6FF" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="84" y="39" fill="#102133" font-family="Manrope,Arial,sans-serif" font-size="24" font-weight="800" letter-spacing=".2">PERSONAL HUB</text>
+  <text x="85" y="60" fill="#64748b" font-family="Manrope,Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="1.45">CONTROL DIARIO</text>
 </svg>

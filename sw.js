@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v4-toolbar-privacy';
+const CACHE='personal-hub-v5-cutoff-availability';
 const APP_SHELL=[
   './',
   './index.html',
