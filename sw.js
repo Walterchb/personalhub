@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v9-category-hierarchy';
+const CACHE='personal-hub-v10-admin-mode';
 const APP_SHELL=[
   './',
   './index.html',
