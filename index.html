@@ -2001,12 +2001,26 @@ html[data-theme="dark"] .receivableSplitBox{background:var(--surface)}
 .detailBreakdownRow strong{font-size:12px;color:var(--text);font-variant-numeric:tabular-nums}
 @media(max-width:700px){.subcategoryChips{gap:4px}.subcategoryChip{font-size:9.5px;min-height:22px}.detailBreakdownBlock{padding:10px}.detailBreakdownRow{padding:8px 0}}
 
+
+/* Personal Hub v11 — charts + admin UX + Today tone */
+:root:not([data-theme="dark"]) .topControlRow .cutoffToday.active,
+html[data-theme="dark"] .topControlRow .cutoffToday.active,
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffToday.active{
+  background:#10283a !important;
+  border-color:#10283a !important;
+  color:#ffffff !important;
+}
+.detailChart{position:relative !important;width:100% !important;height:232px !important;min-height:232px !important;display:block !important}
+.detailChart canvas{display:block !important;width:100% !important;height:100% !important}
+@media(max-width:700px){.detailChart{height:190px !important;min-height:190px !important}}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
 </head>
 <body class="authLocked">
 
@@ -2405,8 +2419,6 @@ function toggleAdminMode(){
     toast('Modo normal','Edición protegida. Puedes consultar y navegar sin cambios accidentales.');
     return;
   }
-  const ok=confirm('¿Activar modo Administrador?\n\nMientras esté activo podrás crear, editar, eliminar, conciliar, registrar cobros y modificar parámetros.');
-  if(!ok)return;
   adminMode=true;
   applyAdminMode();
   toast('Modo Administrador activo','Los controles de edición están habilitados.','warn');
@@ -2595,7 +2607,29 @@ function renderDetailMovementRows(rows,mode='entity',type='',id=''){
   if(!rows.length){$('detailMovements').innerHTML='<div class="detailEmpty">No hay movimientos para este detalle.</div>';return}
   const entityCurrency=mode==='entity'?(type==='account'?(account(id)?.currency||'PEN'):(card(id)?.currency||'PEN')):'PEN',shown=rows.slice(0,80);$('detailMovements').innerHTML=shown.map(t=>{let signed=0,display='';if(mode==='entity'){signed=entityMovementDelta(t,type,id);display=`${signed>0?'+':signed<0?'−':''}${money(Math.abs(signed),entityCurrency)}`}else{const p=toPen(t.amount,movementCurrency(t));signed=(t.kind==='income'||t.kind==='reimbursement')?p:-p;display=`${signed>0?'+':'−'}${pen(Math.abs(p))}`}const partyText=party(t),meta=[t.date,kindName(t.kind),t.categoryId?categoryPathText(t.categoryId,t.subcategoryId):partyText,t.tag?`#${t.tag}`:''].filter(Boolean).join(' · ');return `<div class="detailMovementRow"><div class="detailMvIcon"><i class="fa-solid ${movementIcon(t.kind)}"></i></div><div class="detailMvMain"><strong>${esc(t.description||kindName(t.kind))}</strong><span>${esc(meta)}</span></div><div class="detailMvAmount ${signed>0?'positive':signed<0?'negative':''}">${display}</div></div>`}).join('')+(rows.length>shown.length?`<div class="detailEmpty">Mostrando los ${shown.length} movimientos más recientes.</div>`:'')
 }
-function setDetailTrend(points,currency,caption){$('detailChart').innerHTML=makeLineChart(points,currency);$('detailChartCaption').textContent=caption;const first=points[0]?.value||0,last=points[points.length-1]?.value||0,d=last-first;$('detailChartDelta').textContent=points.length>1?`${d>0?'+':''}${compactMoney(d,currency)}`:'';$('detailChartDelta').className=`trendDelta ${d>0?'up':d<0?'down':''}`}
+let detailChartInstance=null;
+let detailTrendState=null;
+function chartThemeTokens(){
+  const cs=getComputedStyle(document.documentElement),dark=document.documentElement.dataset.theme==='dark';
+  return {ink:(cs.getPropertyValue('--ink')||'#17212b').trim(),muted:(cs.getPropertyValue('--muted')||'#697785').trim(),line:(cs.getPropertyValue('--line')||'#dce3e8').trim(),blue:(cs.getPropertyValue('--blue')||'#2f6fed').trim(),green:(cs.getPropertyValue('--green')||'#13866d').trim(),red:(cs.getPropertyValue('--red')||'#c34b4b').trim(),surface:(cs.getPropertyValue('--surface')||'#ffffff').trim(),dark};
+}
+function destroyDetailChart(){if(detailChartInstance){detailChartInstance.destroy();detailChartInstance=null}}
+function detailChartMoney(v,currency='PEN'){if(figuresHidden)return '••••';return new Intl.NumberFormat('es-PE',{style:'currency',currency,maximumFractionDigits:2}).format(Number(v)||0)}
+function renderDetailChart(points,currency='PEN',kind='line'){
+  const host=$('detailChart');if(!host)return;destroyDetailChart();
+  if(!points?.length){host.innerHTML='<div class="detailEmpty">Todavía no hay suficiente historia para graficar.</div>';return}
+  if(typeof Chart==='undefined'){host.innerHTML=makeLineChart(points,currency);return}
+  host.innerHTML='<canvas id="detailChartCanvas" role="img" aria-label="Gráfico de tendencia"></canvas>';
+  const canvas=$('detailChartCanvas'),ctx=canvas.getContext('2d'),t=chartThemeTokens(),values=points.map(p=>Number(p.value)||0),labels=points.map(p=>p.label);
+  let background=t.blue;
+  if(kind==='line'){const gradient=ctx.createLinearGradient(0,0,0,220);gradient.addColorStop(0,t.dark?'rgba(109,158,255,.28)':'rgba(47,111,237,.22)');gradient.addColorStop(1,t.dark?'rgba(109,158,255,.015)':'rgba(47,111,237,.01)');background=gradient}
+  const dataSet=kind==='bar'?{label:'Monto',data:values,backgroundColor:values.map(v=>v<0?t.red:t.blue),hoverBackgroundColor:values.map(v=>v<0?t.red:t.blue),borderWidth:0,borderRadius:5,borderSkipped:false,maxBarThickness:34}:{label:'Monto',data:values,borderColor:t.blue,backgroundColor:background,fill:true,borderWidth:2.25,tension:.32,cubicInterpolationMode:'monotone',pointRadius:0,pointHoverRadius:4,pointHoverBorderWidth:2,pointHoverBackgroundColor:t.surface,pointHoverBorderColor:t.blue};
+  detailChartInstance=new Chart(ctx,{type:kind==='bar'?'bar':'line',data:{labels,datasets:[dataSet]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:260},interaction:{mode:'index',intersect:false},layout:{padding:{top:5,right:4,bottom:0,left:0}},plugins:{legend:{display:false},tooltip:{displayColors:false,backgroundColor:t.dark?'#0d1720':'#10283a',titleColor:'#fff',bodyColor:'#fff',padding:10,cornerRadius:5,callbacks:{label:c=>detailChartMoney(c.parsed.y,currency)}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:t.muted,font:{family:'Manrope, Inter, system-ui, sans-serif',size:10,weight:'600'},maxRotation:0,autoSkip:true,maxTicksLimit:kind==='bar'?12:6}},y:{beginAtZero:kind==='bar',border:{display:false},grid:{color:t.line,drawTicks:false},ticks:{color:t.muted,padding:8,font:{family:'Manrope, Inter, system-ui, sans-serif',size:10,weight:'600'},callback:v=>figuresHidden?'••••':compactMoney(v,currency),maxTicksLimit:5}}}}});
+}
+function setDetailTrend(points,currency,caption,kind='line'){
+  detailTrendState={points:[...(points||[])],currency,caption,kind};$('detailChartCaption').textContent=caption;
+  const first=points[0]?.value||0,last=points[points.length-1]?.value||0,d=last-first;$('detailChartDelta').textContent=points.length>1?`${d>0?'+':''}${compactMoney(d,currency)}`:'';$('detailChartDelta').className=`trendDelta ${d>0?'up':d<0?'down':''}`;renderDetailChart(points,currency,kind)
+}
 function openAvailabilityDetail(type,id){
   $('detailBreakdownBlock')?.classList.add('hidden');
   const isAccount=type==='account',e=isAccount?account(id):card(id);if(!e)return;const cutoff=selectedCutoff(),currency=e.currency||'PEN',rows=entityMovements(type,id,cutoff),points=entityTrend(type,id,90,cutoff),cut=parseDate(cutoff);cut.setDate(cut.getDate()-29);const recent=rows.filter(t=>(t.date||'')>=isoDateLocal(cut));
@@ -2612,7 +2646,7 @@ function openPnlDetail(scope,id,year,mi=null){
   const cutoff=selectedCutoff(),monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],series=pnlMonthlySeries(scope,id,year,cutoff),annual=series.reduce((sum,p)=>sum+p.value,0),selected=mi==null?annual:series[mi].value,rows=pnlDetailMovements(scope,id,year,mi,cutoff);let title='',group='';
   if(scope==='category'){const c=cat(id);if(!c)return;title=c.name;group=c.group==='income'?'Ingresos':c.group==='investment'?'Ahorro / Inversión':'Egresos'}else if(scope==='group'){group=id==='income'?'Ingresos':id==='investment'?'Ahorro / Inversión':'Egresos';title=`Total ${group}`}else{title='Ahorro / Flujo libre';group='Resultado'}
   $('detailEyebrow').textContent='P&L / Flujo';$('detailTitle').textContent=title;$('detailSubtitle').textContent=`${group} · ${mi==null?`Año ${year}`:`${monthNames[mi]} ${year}`} · corte ${prettyDate(cutoff)}`;$('detailChartTitle').textContent='Tendencia mensual';
-  const cutoffMonth=cutoff.startsWith(`${year}-`)?Number(cutoff.slice(5,7)):12,monthsElapsed=Math.max(1,Math.min(12,cutoffMonth)),avg=annual/monthsElapsed,peak=series.slice(0,monthsElapsed).reduce((a,b)=>Math.abs(b.value)>Math.abs(a.value)?b:a,series[0]||{label:'—',value:0});$('detailStats').innerHTML=statCard(mi==null?'Total al Corte':'Periodo',pen(selected))+statCard('Acumulado del año',pen(annual))+statCard('Promedio mensual',pen(avg),`${monthsElapsed} ${monthsElapsed===1?'mes':'meses'} al Corte`)+statCard('Mes de mayor movimiento',peak.label,pen(peak.value));setDetailTrend(series.slice(0,monthsElapsed),'PEN',`Enero – ${prettyDate(cutoff)}`);if(scope==='category')renderPnlBreakdown(id,year,mi,cutoff);else $('detailBreakdownBlock')?.classList.add('hidden');renderDetailMovementRows(rows,'pnl');$('detailDialog').showModal();
+  const cutoffMonth=cutoff.startsWith(`${year}-`)?Number(cutoff.slice(5,7)):12,monthsElapsed=Math.max(1,Math.min(12,cutoffMonth)),avg=annual/monthsElapsed,peak=series.slice(0,monthsElapsed).reduce((a,b)=>Math.abs(b.value)>Math.abs(a.value)?b:a,series[0]||{label:'—',value:0});$('detailStats').innerHTML=statCard(mi==null?'Total al Corte':'Periodo',pen(selected))+statCard('Acumulado del año',pen(annual))+statCard('Promedio mensual',pen(avg),`${monthsElapsed} ${monthsElapsed===1?'mes':'meses'} al Corte`)+statCard('Mes de mayor movimiento',peak.label,pen(peak.value));setDetailTrend(series.slice(0,monthsElapsed),'PEN',`Enero – ${prettyDate(cutoff)}`,'bar');if(scope==='category')renderPnlBreakdown(id,year,mi,cutoff);else $('detailBreakdownBlock')?.classList.add('hidden');renderDetailMovementRows(rows,'pnl');$('detailDialog').showModal();
 }
 
 function renderIndicators(cash,debt,due,inc,exp,inv,saving){
@@ -2713,7 +2747,7 @@ function postRecurringNow(id){if(!requireAdmin('registrar este recurrente'))retu
 function deleteMovement(id){if(!requireAdmin('eliminar este movimiento'))return;const t=data.movements.find(x=>x.id===id);if(!t)return;if(!confirm('¿Eliminar este movimiento? Todo se recalculará automáticamente.'))return;if(t.receivableId&&t.receivablePaymentId){const r=data.receivables.find(x=>x.id===t.receivableId),inst=r?.installments?.find(x=>x.id===t.receivableInstallmentId);if(inst)inst.payments=(inst.payments||[]).filter(p=>p.id!==t.receivablePaymentId)}data.movements=data.movements.filter(x=>x.id!==id);save();toast('Movimiento eliminado','','warn')}
 function deleteCategory(id){if(!requireAdmin('eliminar esta categoría'))return;const used=data.movements.some(x=>x.categoryId===id)||data.recurring.some(x=>x.categoryId===id)||data.receivables.some(x=>x.categoryId===id);if(!confirm(used?'La categoría está en uso. Se quitará de esos registros. ¿Continuar?':'¿Eliminar categoría?'))return;data.categories=data.categories.filter(x=>x.id!==id);for(const collection of [data.movements,data.recurring,data.receivables])collection.forEach(x=>{if(x.categoryId===id){x.categoryId='';x.subcategoryId=''}});save()}
 
-function toggleTheme(){data.settings.theme=data.settings.theme==='dark'?'light':'dark';save()}
+function toggleTheme(){data.settings.theme=data.settings.theme==='dark'?'light':'dark';save();if($('detailDialog')?.open&&detailTrendState)setTimeout(()=>renderDetailChart(detailTrendState.points,detailTrendState.currency,detailTrendState.kind),0)}
 function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`treasuryhub-personal-finance-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}
 function importClick(){if(!requireAdmin('importar datos'))return;$('importFile').click()}
 $('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;if(!requireAdmin('importar datos')){e.target.value='';return;}try{data=normalize(JSON.parse(await f.text()));save();toast('Datos importados','Archivo cargado correctamente.')}catch{toast('No se importó','JSON incompatible.','bad')}e.target.value=''};
