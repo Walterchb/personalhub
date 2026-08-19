@@ -1635,6 +1635,45 @@ html[data-theme="dark"] .cutoffDateBox{
   .cutoffCalendarIcon{right:8px !important}
 }
 
+
+/* Personal Hub v6.3 — definitive cutoff mobile fix */
+.periodControl.cutoffOnly{width:auto !important;display:block !important;background:transparent !important;border:0 !important;box-shadow:none !important;padding:0 !important}
+.periodControl.cutoffOnly .cutoffField{display:flex !important;align-items:center !important;gap:10px !important}
+.periodControl.cutoffOnly .cutoffField label{margin:0 !important;display:block !important;flex:0 0 auto !important;font-size:10.5px !important;font-weight:800 !important;line-height:1.1 !important;letter-spacing:.055em !important;text-transform:uppercase !important;color:var(--muted) !important}
+.periodControl.cutoffOnly .cutoffNav{display:grid !important;grid-template-columns:38px minmax(148px,1fr) 38px 52px !important;gap:6px !important;align-items:center !important;width:auto !important}
+.periodControl.cutoffOnly .cutoffStep,.periodControl.cutoffOnly .cutoffToday,.periodControl.cutoffOnly .cutoffDateBox{height:38px !important;min-height:38px !important;border-radius:5px !important}
+.periodControl.cutoffOnly .cutoffStep,.periodControl.cutoffOnly .cutoffToday{display:inline-flex !important;align-items:center !important;justify-content:center !important;border:1px solid var(--line) !important;background:var(--surface) !important;color:var(--text) !important;padding:0 !important}
+.periodControl.cutoffOnly .cutoffStep{width:38px !important;min-width:38px !important}
+.periodControl.cutoffOnly .cutoffStep i{font-size:12px !important;color:inherit !important}
+.periodControl.cutoffOnly .cutoffToday{min-width:52px !important;padding:0 10px !important;font-size:12px !important;font-weight:800 !important}
+.periodControl.cutoffOnly .cutoffDateBox{position:relative !important;display:flex !important;align-items:center !important;justify-content:center !important;min-width:0 !important;padding:0 34px 0 12px !important;border:1px solid var(--line) !important;background:var(--surface) !important;overflow:hidden !important;cursor:pointer !important}
+.periodControl.cutoffOnly .cutoffDateBox:focus-visible,.periodControl.cutoffOnly .cutoffDateBox:focus-within{outline:none !important;border-color:var(--blue) !important;box-shadow:0 0 0 2px color-mix(in srgb,var(--blue) 15%,transparent) !important}
+.cutoffDisplay{display:block !important;width:100% !important;color:var(--text) !important;font-size:13px !important;font-weight:800 !important;line-height:1 !important;text-align:center !important;white-space:nowrap !important;letter-spacing:0 !important;font-variant-numeric:tabular-nums !important}
+.cutoffCalendarIcon{position:absolute !important;right:11px !important;top:50% !important;transform:translateY(-50%) !important;font-size:12px !important;color:#8a94a6 !important;pointer-events:none !important}
+html[data-theme="dark"] .cutoffCalendarIcon{color:#9aa6b2 !important}
+.periodControl.cutoffOnly .cutoffDateBox input{position:absolute !important;left:-9999px !important;top:auto !important;width:1px !important;height:1px !important;opacity:0 !important;pointer-events:none !important}
+.periodControl.cutoffOnly .cutoffStep:hover:not(:disabled),.periodControl.cutoffOnly .cutoffToday:hover{border-color:var(--blue) !important;color:var(--blue) !important}
+.periodControl.cutoffOnly .cutoffToday.active{background:var(--navy) !important;border-color:var(--navy) !important;color:#fff !important}
+html[data-theme="dark"] .periodControl.cutoffOnly .cutoffStep,html[data-theme="dark"] .periodControl.cutoffOnly .cutoffToday,html[data-theme="dark"] .periodControl.cutoffOnly .cutoffDateBox{background:var(--surface) !important;border-color:#304253 !important;color:#eef4fb !important}
+@media(max-width:700px){
+  .topControlRow{padding:8px 0 10px !important}
+  .topControlRow .pageTop.periodOnly{width:100% !important}
+  .periodControl.cutoffOnly{width:100% !important}
+  .periodControl.cutoffOnly .cutoffField{display:block !important}
+  .periodControl.cutoffOnly .cutoffField label{margin:0 0 6px !important;font-size:10px !important}
+  .periodControl.cutoffOnly .cutoffNav{width:100% !important;grid-template-columns:36px minmax(0,1fr) 36px 50px !important;gap:6px !important}
+  .periodControl.cutoffOnly .cutoffStep,.periodControl.cutoffOnly .cutoffToday,.periodControl.cutoffOnly .cutoffDateBox{height:38px !important;min-height:38px !important}
+  .cutoffDisplay{font-size:13px !important}
+}
+@media(max-width:430px){
+  .periodControl.cutoffOnly .cutoffNav{grid-template-columns:34px minmax(0,1fr) 34px 48px !important;gap:5px !important}
+  .periodControl.cutoffOnly .cutoffStep{width:34px !important;min-width:34px !important}
+  .periodControl.cutoffOnly .cutoffToday{min-width:48px !important;padding:0 8px !important;font-size:11.5px !important}
+  .periodControl.cutoffOnly .cutoffDateBox{padding:0 28px 0 8px !important}
+  .cutoffDisplay{font-size:12px !important}
+  .cutoffCalendarIcon{right:8px !important;font-size:11px !important}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1724,7 +1763,7 @@ html[data-theme="dark"] .cutoffDateBox{
           <label for="cutoffInput">Corte</label>
           <div class="cutoffNav">
             <button id="cutoffPrevBtn" type="button" class="cutoffStep" title="Día anterior" aria-label="Día anterior"><i class="fa-solid fa-caret-left"></i></button>
-            <div class="cutoffDateBox">
+            <div class="cutoffDateBox" id="cutoffDateBox" role="button" tabindex="0" aria-label="Seleccionar fecha de corte">
               <span id="cutoffDisplay" class="cutoffDisplay" aria-hidden="true">18/08/2026</span>
               <i class="fa-regular fa-calendar-days cutoffCalendarIcon" aria-hidden="true"></i>
               <input id="cutoffInput" type="date" aria-label="Fecha de corte">
@@ -1962,6 +2001,7 @@ function formatMonthLabel(v){if(!v)return '—';const [y,m]=v.split('-').map(Num
 function updatePeriodDisplay(){const el=$('periodDisplay'),input=$('periodInput');if(el&&input)el.textContent=formatMonthLabel(input.value||monthNow())}
 function stepCutoff(delta){const c=$('cutoffInput'),p=$('periodInput');if(!c||!p)return;const d=parseDate(c.value||selectedCutoff());d.setDate(d.getDate()+delta);const next=fmt(d);if(next>today())return;p.value=next.slice(0,7);c.value=next;syncCutoffBounds(false);$('mvMonth').value=p.value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()}
 function goCutoffToday(){const c=$('cutoffInput'),p=$('periodInput');if(!c||!p)return;const t=today();p.value=t.slice(0,7);c.value=t;syncCutoffBounds(false);$('mvMonth').value=p.value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()}
+function openCutoffPicker(){const input=$('cutoffInput');if(!input)return;try{if(typeof input.showPicker==='function'){input.showPicker();return}}catch(e){}input.focus();input.click()}
 function pnlValue(catId,year,mi,cutoffDate=''){const prefix=`${year}-${String(mi+1).padStart(2,'0')}`;return data.movements.filter(t=>(t.kind==='expense'||t.kind==='income')&&t.categoryId===catId&&t.date.startsWith(prefix)&&(!cutoffDate||t.date<=cutoffDate)).reduce((s,t)=>s+toPen(t.amount,movementCurrency(t)),0)}
 function groupMonth(group,year,mi,cutoffDate=''){return data.categories.filter(c=>c.group===group).reduce((s,c)=>s+pnlValue(c.id,year,mi,cutoffDate),0)}
 function moneyCell(v){return `<td class="${Math.abs(v)<.005?'zero':''}">${pen(v)}</td>`}
@@ -2217,7 +2257,7 @@ function togglePrivacy(){
 
 $('movementKind').onchange=updateMvForm;$('movementSourceType').onchange=()=>{refreshMvSources();preview()};['movementSourceId','movementDestinationId','movementCardId','movementAmount','movementAppliedAmount'].forEach(id=>$(id).oninput=preview);
 $('recurringKind').onchange=updateRecForm;$('recurringSourceType').onchange=refreshRecSources;
-$('cutoffInput').onchange=()=>{syncCutoffBounds(false);$('mvMonth').value=$('periodInput').value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()};$('cutoffPrevBtn').onclick=()=>stepCutoff(-1);$('cutoffNextBtn').onclick=()=>stepCutoff(1);const cutoffTodayBtn=$('cutoffTodayBtn');if(cutoffTodayBtn)cutoffTodayBtn.onclick=()=>goCutoffToday();$('availabilityAvailableBtn').onclick=()=>setAvailabilityMode('available');$('availabilityDebtBtn').onclick=()=>setAvailabilityMode('debt');$('pnlMonth').onchange=()=>{const {year}=selectedPeriod();renderPnlMobile(year,+$('pnlMonth').value,selectedCutoff())};
+$('cutoffInput').onchange=()=>{syncCutoffBounds(false);$('mvMonth').value=$('periodInput').value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()};$('cutoffPrevBtn').onclick=()=>stepCutoff(-1);$('cutoffNextBtn').onclick=()=>stepCutoff(1);const cutoffTodayBtn=$('cutoffTodayBtn');if(cutoffTodayBtn)cutoffTodayBtn.onclick=()=>goCutoffToday();const cutoffDateBox=$('cutoffDateBox');if(cutoffDateBox){cutoffDateBox.onclick=()=>openCutoffPicker();cutoffDateBox.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCutoffPicker();}}}$('availabilityAvailableBtn').onclick=()=>setAvailabilityMode('available');$('availabilityDebtBtn').onclick=()=>setAvailabilityMode('debt');$('pnlMonth').onchange=()=>{const {year}=selectedPeriod();renderPnlMobile(year,+$('pnlMonth').value,selectedCutoff())};
 $('mvMonth').onchange=renderMovements;$('mvKindFilter').onchange=renderMovements;$('mvCatFilter').onchange=renderMovements;$('mvSearch').oninput=renderMovements;$('recActive').onchange=renderRecurring;$('recSearch').oninput=renderRecurring;
 $('incomeInput').onchange=()=>{data.settings.income=+$('incomeInput').value||0;save()};$('fxInput').onchange=()=>{data.settings.fx=+$('fxInput').value||0;save()};$('lookbackInput').onchange=()=>{data.settings.lookback=+$('lookbackInput').value||6;save()};
 $('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('settingsTheme').onclick=toggleTheme;$('privacyBtn').onclick=togglePrivacy;$('exportBtn').onclick=exportData;$('settingsExport').onclick=exportData;$('importBtn').onclick=importClick;$('settingsImport').onclick=importClick;
