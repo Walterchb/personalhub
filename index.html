@@ -1674,6 +1674,213 @@ html[data-theme="dark"] .periodControl.cutoffOnly .cutoffStep,html[data-theme="d
   .cutoffCalendarIcon{right:8px !important;font-size:11px !important}
 }
 
+
+/* Personal Hub v6.4 — VERIFIED cutoff layout reset */
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly{
+  display:block !important;
+  width:auto !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  grid-template-columns:none !important;
+  grid-template-rows:none !important;
+  gap:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffField{
+  display:flex !important;
+  grid-template-columns:none !important;
+  grid-template-rows:none !important;
+  align-items:center !important;
+  width:auto !important;
+  min-width:0 !important;
+  gap:10px !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffField>label{
+  display:block !important;
+  flex:0 0 auto !important;
+  margin:0 !important;
+  font-size:10.5px !important;
+  font-weight:700 !important;
+  line-height:1.1 !important;
+  letter-spacing:.25px !important;
+  color:var(--muted) !important;
+  text-transform:uppercase !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffNav{
+  display:grid !important;
+  grid-template-columns:38px 150px 38px 52px !important;
+  grid-template-rows:38px !important;
+  align-items:center !important;
+  width:296px !important;
+  min-width:296px !important;
+  height:38px !important;
+  gap:6px !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffStep,
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffToday,
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffDateBox{
+  box-sizing:border-box !important;
+  height:38px !important;
+  min-height:38px !important;
+  max-height:38px !important;
+  border-radius:5px !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffStep,
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffToday{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin:0 !important;
+  border:1px solid var(--line) !important;
+  background:var(--surface) !important;
+  color:var(--text) !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffStep{
+  width:38px !important;
+  min-width:38px !important;
+  padding:0 !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffStep i{
+  font-size:12px !important;
+  color:inherit !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffToday{
+  width:52px !important;
+  min-width:52px !important;
+  padding:0 !important;
+  font-size:12px !important;
+  font-weight:800 !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffDateBox{
+  position:relative !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:150px !important;
+  min-width:150px !important;
+  max-width:150px !important;
+  padding:0 30px 0 10px !important;
+  border:1px solid var(--line) !important;
+  background:var(--surface) !important;
+  overflow:hidden !important;
+  cursor:pointer !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffDisplay{
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+  overflow:hidden !important;
+  color:var(--text) !important;
+  font-size:13px !important;
+  font-weight:800 !important;
+  line-height:1 !important;
+  letter-spacing:0 !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  text-overflow:clip !important;
+  font-variant-numeric:tabular-nums !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffCalendarIcon{
+  position:absolute !important;
+  right:10px !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  z-index:1 !important;
+  color:#7f8b99 !important;
+  font-size:11px !important;
+  pointer-events:none !important;
+}
+html[data-theme="dark"] .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffCalendarIcon{color:#a0acba !important}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffDateBox input{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  opacity:0 !important;
+  cursor:pointer !important;
+  z-index:3 !important;
+  pointer-events:auto !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffStep:hover:not(:disabled),
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffToday:hover{
+  border-color:var(--blue) !important;
+  color:var(--blue) !important;
+}
+.topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffToday.active{
+  background:var(--navy) !important;
+  border-color:var(--navy) !important;
+  color:#fff !important;
+}
+html[data-theme="dark"] .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffStep,
+html[data-theme="dark"] .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffToday,
+html[data-theme="dark"] .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffDateBox{
+  background:var(--surface) !important;
+  border-color:#304253 !important;
+  color:#eef4fb !important;
+}
+@media(max-width:700px){
+  .topControlRow .pageTop.periodOnly{width:100% !important;min-width:0 !important}
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly{width:100% !important}
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffField{
+    display:block !important;
+    width:100% !important;
+  }
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffField>label{
+    margin:0 0 6px !important;
+    font-size:10px !important;
+  }
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffNav{
+    width:100% !important;
+    min-width:0 !important;
+    grid-template-columns:36px minmax(132px,1fr) 36px 50px !important;
+    grid-template-rows:38px !important;
+    gap:6px !important;
+  }
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffDateBox{
+    width:100% !important;
+    min-width:132px !important;
+    max-width:none !important;
+  }
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffStep{
+    width:36px !important;
+    min-width:36px !important;
+  }
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffToday{
+    width:50px !important;
+    min-width:50px !important;
+  }
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffDisplay{font-size:13px !important}
+}
+@media(max-width:360px){
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffNav{
+    grid-template-columns:34px minmax(118px,1fr) 34px 46px !important;
+    gap:5px !important;
+  }
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffDateBox{
+    min-width:118px !important;
+    padding:0 27px 0 7px !important;
+  }
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffStep{
+    width:34px !important;
+    min-width:34px !important;
+  }
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffToday{
+    width:46px !important;
+    min-width:46px !important;
+    font-size:11px !important;
+  }
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffDisplay{font-size:12px !important}
+  .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffCalendarIcon{right:8px !important;font-size:10px !important}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
