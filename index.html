@@ -1334,6 +1334,170 @@ html[data-theme="dark"] .primaryMetric .metricIcon{color:#5eead4}
   .cutoffNav input{font-size:10px !important}
 }
 
+
+/* Personal Hub v6.1 — cutoff-only UI, 5px geometry and mobile nav polish */
+:root{--radius:5px}
+
+/* The date is the single source of the visible period. The hidden month input is kept only for internal P&L grouping. */
+.topControlRow .pageTop.periodOnly{flex:0 0 auto !important}
+.periodControl.cutoffOnly{
+  display:block !important;
+  width:248px !important;
+  min-height:42px !important;
+  padding:4px 6px !important;
+  border:1px solid var(--line) !important;
+  border-radius:5px !important;
+  background:var(--surface) !important;
+}
+.periodControl.cutoffOnly .cutoffField{
+  display:grid !important;
+  grid-template-columns:auto minmax(0,1fr) !important;
+  grid-template-rows:none !important;
+  align-items:center !important;
+  gap:7px !important;
+}
+.periodControl.cutoffOnly .cutoffField label{
+  display:block !important;
+  margin:0 !important;
+  font-size:8px !important;
+  line-height:1 !important;
+  letter-spacing:.08em !important;
+  color:var(--muted) !important;
+}
+.periodControl.cutoffOnly .cutoffNav{
+  width:100% !important;
+  height:32px !important;
+  display:grid !important;
+  grid-template-columns:27px minmax(0,1fr) 27px !important;
+  align-items:center !important;
+  gap:2px !important;
+}
+.periodControl.cutoffOnly .cutoffNav input{
+  width:100% !important;
+  min-width:0 !important;
+  height:30px !important;
+  min-height:30px !important;
+  padding:2px 3px !important;
+  border:0 !important;
+  background:transparent !important;
+  text-align:center !important;
+  font-size:11px !important;
+  font-weight:700 !important;
+  font-variant-numeric:tabular-nums;
+}
+.periodControl.cutoffOnly .cutoffStep{
+  width:27px !important;
+  min-width:27px !important;
+  height:28px !important;
+  min-height:28px !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:5px !important;
+}
+
+/* iOS Safari zooms focused text fields below 16px. Keep auth fields at the minimum no-zoom size. */
+.authForm input{font-size:16px !important}
+
+/* Consistent 5px geometry throughout rectangular UI elements. */
+.brandIcon,.brandMark,.authCard,.authBrand img,
+.btn,.headerActions button,.mobileTheme,.tab,.mobileTab,
+.card,.metric,.metricIcon,.balanceTile,.badge,.entityCard,.creditCard,.statBox,.cycleBox,
+.filters input,.filters select,.ledgerRow,.typePill,
+.settingCard,.settingCard input,.settingCard select,
+.mobilePnlToolbar select,.pnlGroupCard,.pnlFree,
+dialog,.formGrid input,.formGrid select,.formGrid textarea,.notice,
+.toast,.availabilitySwitch,.availabilitySwitch button,.cutoffStep,
+.detailStat,.detailChartBlock,.detailMovementsBlock,.detailMvIcon,.detailClose,.authPrimary,.authSecondary,.authMessage,
+.monthPickerWrap,.periodControl.cutoffOnly .cutoffNav input,.creditProgress,.creditProgress>div{
+  border-radius:5px !important;
+}
+
+/* Mobile bottom navigation: equal-height hit areas and correct safe-area spacing. */
+@media(max-width:700px){
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom)) !important}
+  .topControlRow{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    min-height:0 !important;
+    padding:7px 0 !important;
+    margin-bottom:8px !important;
+  }
+  .topControlRow .tabs{display:none !important}
+  .topControlRow .pageTop.periodOnly{width:100% !important}
+  .periodControl.cutoffOnly{
+    width:100% !important;
+    min-height:44px !important;
+    padding:5px 7px !important;
+  }
+  .periodControl.cutoffOnly .cutoffField{
+    grid-template-columns:42px minmax(0,1fr) !important;
+    gap:5px !important;
+  }
+  .periodControl.cutoffOnly .cutoffField label{
+    font-size:8px !important;
+    text-align:left !important;
+    line-height:1 !important;
+  }
+  .periodControl.cutoffOnly .cutoffNav{
+    height:32px !important;
+    grid-template-columns:30px minmax(0,1fr) 30px !important;
+    gap:2px !important;
+  }
+  .periodControl.cutoffOnly .cutoffNav input{
+    height:32px !important;
+    min-height:32px !important;
+    font-size:12px !important;
+    padding:1px 3px !important;
+  }
+  .periodControl.cutoffOnly .cutoffStep{
+    width:30px !important;
+    min-width:30px !important;
+    height:30px !important;
+    min-height:30px !important;
+  }
+
+  .mobileNav{
+    display:grid !important;
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    align-items:start !important;
+    gap:2px !important;
+    height:auto !important;
+    min-height:calc(70px + env(safe-area-inset-bottom)) !important;
+    padding:6px 5px calc(7px + env(safe-area-inset-bottom)) !important;
+    overflow:visible !important;
+    box-sizing:border-box !important;
+  }
+  .mobileTab{
+    min-width:0 !important;
+    width:100% !important;
+    height:56px !important;
+    min-height:56px !important;
+    padding:6px 1px 5px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:4px !important;
+    line-height:1 !important;
+    font-size:8.5px !important;
+    font-weight:750 !important;
+    overflow:hidden;
+  }
+  .mobileTab i{font-size:15px !important;line-height:17px !important;flex:0 0 17px}
+  .mobileTab span{
+    display:block;
+    width:100%;
+    min-height:11px;
+    line-height:11px;
+    text-align:center;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .toastWrap{bottom:calc(78px + env(safe-area-inset-bottom)) !important}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1417,10 +1581,9 @@ html[data-theme="dark"] .primaryMetric .metricIcon{color:#5eead4}
       <button class="tab" data-view="categories"><i class="fa-solid fa-tags"></i><span>Categorías</span></button>
     </nav>
     <div class="pageTop periodOnly">
-      <div class="periodControl" aria-label="Periodo y fecha de corte">
-        <div class="periodField monthField"><label for="periodInput">Periodo</label><div class="monthPickerWrap"><span id="periodDisplay" class="periodDisplay" aria-hidden="true">Agosto de 2026</span><i class="fa-regular fa-calendar" aria-hidden="true"></i><input id="periodInput" type="month" aria-label="Seleccionar periodo"></div></div>
-        <span class="periodDivider" aria-hidden="true"></span>
-        <div class="periodField cutoffField"><label for="cutoffInput">Corte</label><div class="cutoffNav"><button id="cutoffPrevBtn" type="button" class="cutoffStep" title="Día anterior" aria-label="Día anterior"><i class="fa-solid fa-chevron-left"></i></button><input id="cutoffInput" type="date"><button id="cutoffNextBtn" type="button" class="cutoffStep" title="Día siguiente" aria-label="Día siguiente"><i class="fa-solid fa-chevron-right"></i></button></div></div>
+      <div class="periodControl cutoffOnly" aria-label="Fecha de corte">
+        <input id="periodInput" type="month" hidden aria-hidden="true" tabindex="-1">
+        <div class="periodField cutoffField"><label for="cutoffInput">Corte</label><div class="cutoffNav"><button id="cutoffPrevBtn" type="button" class="cutoffStep" title="Día anterior" aria-label="Día anterior"><i class="fa-solid fa-chevron-left"></i></button><input id="cutoffInput" type="date" aria-label="Fecha de corte"><button id="cutoffNextBtn" type="button" class="cutoffStep" title="Día siguiente" aria-label="Día siguiente"><i class="fa-solid fa-chevron-right"></i></button></div></div>
       </div>
     </div>
   </div>
@@ -1435,7 +1598,7 @@ html[data-theme="dark"] .primaryMetric .metricIcon{color:#5eead4}
     </div>
 
     <div class="card section">
-      <div class="sectionHead"><div><h2><i class="fa-solid fa-wallet"></i>Disponibilidad</h2><p id="availabilitySubtitle">Saldo y línea disponible al corte seleccionado.</p></div><div class="availabilitySwitch" role="group" aria-label="Vista de disponibilidad"><button id="availabilityAvailableBtn" type="button" class="active" aria-pressed="true"><i class="fa-solid fa-wallet"></i> Disponible</button><button id="availabilityDebtBtn" type="button" aria-pressed="false"><i class="fa-solid fa-credit-card"></i> Deuda</button></div></div>
+      <div class="sectionHead"><div><h2><i class="fa-solid fa-wallet"></i>Disponibilidad</h2><p id="availabilitySubtitle">Saldo y línea disponible al Corte seleccionado.</p></div><div class="availabilitySwitch" role="group" aria-label="Vista de disponibilidad"><button id="availabilityAvailableBtn" type="button" class="active" aria-pressed="true"><i class="fa-solid fa-wallet"></i> Disponible</button><button id="availabilityDebtBtn" type="button" aria-pressed="false"><i class="fa-solid fa-credit-card"></i> Deuda</button></div></div>
       <div class="sectionBody"><div id="availability" class="availabilityScroller"></div></div>
     </div>
 
@@ -1641,7 +1804,7 @@ function cardOpts(blank=true){return (blank?'<option value="">Selecciona...</opt
 function catOpts(blank=true){return (blank?'<option value="">Sin categoría</option>':'')+data.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}
 function lastDayOfMonth(monthKey){const [y,m]=monthKey.split('-').map(Number);return `${y}-${String(m).padStart(2,'0')}-${String(new Date(y,m,0).getDate()).padStart(2,'0')}`}
 function defaultCutoffForPeriod(monthKey){if(monthKey>=monthNow())return today();return lastDayOfMonth(monthKey)}
-function syncCutoffBounds(reset=false){const p=$('periodInput'),c=$('cutoffInput');if(!p||!c)return;p.max=monthNow();if(!p.value||p.value>monthNow())p.value=monthNow();const min=`${p.value}-01`,max=p.value===monthNow()?today():lastDayOfMonth(p.value);c.min=min;c.max=max;if(reset||!c.value||c.value<min||c.value>max)c.value=max;const next=$('cutoffNextBtn');if(next)next.disabled=c.value>=max;updatePeriodDisplay()}
+function syncCutoffBounds(reset=false){const p=$('periodInput'),c=$('cutoffInput');if(!p||!c)return;const max=today();c.max=max;if(reset||!c.value||c.value>max)c.value=max;p.value=(c.value||max).slice(0,7);p.max=monthNow();const next=$('cutoffNextBtn');if(next)next.disabled=c.value>=max;updatePeriodDisplay()}
 function selectedPeriod(){const v=$('periodInput').value||monthNow(),[y,m]=v.split('-').map(Number);return {year:y,month:m-1,key:v}}
 function selectedCutoff(){const c=$('cutoffInput');return c?.value||defaultCutoffForPeriod(selectedPeriod().key)}
 function prettyDate(s){if(!s)return '—';const [y,m,d]=s.split('-');return `${d}/${m}/${y}`}
@@ -1672,11 +1835,11 @@ function renderAvailability(){
   const items=[],cutoff=selectedCutoff(),sub=$('availabilitySubtitle');
   if(availabilityMode==='available'){
     if(sub)sub.textContent=`Saldo y línea disponible al ${prettyDate(cutoff)}.`;
-    data.accounts.filter(a=>a.active).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff);items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(a.name)}</div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge"><i class="fa-solid fa-building-columns"></i> Cuenta</span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">Saldo disponible · corte ${prettyDate(cutoff)}</div></div>`)});
-    data.cards.filter(c=>c.active).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt);items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge"><i class="fa-solid fa-credit-card"></i> TC</span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · deuda total ${money(debt,c.currency)}</div></div>`)});
+    data.accounts.filter(a=>a.active).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff);items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(a.name)}</div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge"><i class="fa-solid fa-building-columns"></i> Cuenta</span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">Saldo disponible · Corte ${prettyDate(cutoff)}</div></div>`)});
+    data.cards.filter(c=>c.active).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt);items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge"><i class="fa-solid fa-credit-card"></i> TC</span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · Deuda total ${money(debt,c.currency)}</div></div>`)});
   }else{
-    if(sub)sub.textContent=`Pendiente y deuda total al ${prettyDate(cutoff)}.`;
-    data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este corte';items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge"><i class="fa-solid fa-file-invoice-dollar"></i> Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · deuda total ${money(cy.debt,c.currency)}</div></div>`)});
+    if(sub)sub.textContent=`Pendiente y Deuda total al ${prettyDate(cutoff)}.`;
+    data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este Corte';items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge"><i class="fa-solid fa-file-invoice-dollar"></i> Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · Deuda total ${money(cy.debt,c.currency)}</div></div>`)});
   }
   $('availability').innerHTML=items.join('')||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
 }
@@ -1731,8 +1894,8 @@ function renderDetailMovementRows(rows,mode='entity',type='',id=''){
 function setDetailTrend(points,currency,caption){$('detailChart').innerHTML=makeLineChart(points,currency);$('detailChartCaption').textContent=caption;const first=points[0]?.value||0,last=points[points.length-1]?.value||0,d=last-first;$('detailChartDelta').textContent=points.length>1?`${d>0?'+':''}${compactMoney(d,currency)}`:'';$('detailChartDelta').className=`trendDelta ${d>0?'up':d<0?'down':''}`}
 function openAvailabilityDetail(type,id){
   const isAccount=type==='account',e=isAccount?account(id):card(id);if(!e)return;const cutoff=selectedCutoff(),currency=e.currency||'PEN',rows=entityMovements(type,id,cutoff),points=entityTrend(type,id,90,cutoff),cut=parseDate(cutoff);cut.setDate(cut.getDate()-29);const recent=rows.filter(t=>(t.date||'')>=isoDateLocal(cut));
-  $('detailEyebrow').textContent=`Disponibilidad · ${isAccount?'Cuenta':'Tarjeta'}`;$('detailTitle').textContent=e.name;$('detailSubtitle').textContent=(isAccount?`${e.institution||e.type||'Cuenta'} · ${currency}`:`${e.bank||'Tarjeta'} · ${currency}`)+` · corte ${prettyDate(cutoff)}`;
-  if(isAccount){const current=accountBalanceAt(id,cutoff),ins=recent.reduce((sum,t)=>sum+Math.max(0,entityMovementDelta(t,type,id)),0),outs=recent.reduce((sum,t)=>sum+Math.max(0,-entityMovementDelta(t,type,id)),0);$('detailStats').innerHTML=statCard('Saldo al corte',money(current,currency))+statCard('Entradas 30 días',money(ins,currency))+statCard('Salidas 30 días',money(outs,currency))+statCard('Movimientos',String(rows.length),'Hasta la fecha de corte');$('detailChartTitle').textContent='Tendencia del saldo';setDetailTrend(points,currency,`Saldo diario · 90 días hasta ${prettyDate(cutoff)}`)}
+  $('detailEyebrow').textContent=`Disponibilidad · ${isAccount?'Cuenta':'Tarjeta'}`;$('detailTitle').textContent=e.name;$('detailSubtitle').textContent=(isAccount?`${e.institution||e.type||'Cuenta'} · ${currency}`:`${e.bank||'Tarjeta'} · ${currency}`)+` · Corte ${prettyDate(cutoff)}`;
+  if(isAccount){const current=accountBalanceAt(id,cutoff),ins=recent.reduce((sum,t)=>sum+Math.max(0,entityMovementDelta(t,type,id)),0),outs=recent.reduce((sum,t)=>sum+Math.max(0,-entityMovementDelta(t,type,id)),0);$('detailStats').innerHTML=statCard('Saldo al Corte',money(current,currency))+statCard('Entradas 30 días',money(ins,currency))+statCard('Salidas 30 días',money(outs,currency))+statCard('Movimientos',String(rows.length),'Hasta la fecha de Corte');$('detailChartTitle').textContent='Tendencia del saldo';setDetailTrend(points,currency,`Saldo diario · 90 días hasta ${prettyDate(cutoff)}`)}
   else{const cy=cardCycleAt(id,cutoff),availableLimit=Math.max(0,(+e.limit||0)-cy.debt);$('detailStats').innerHTML=statCard('Línea disponible',money(availableLimit,currency))+statCard('Pago pendiente',money(cy.remaining,currency),cy.cycleActive?(cy.dueDate?`Vence ${prettyDate(cy.dueDate)}`:'Ciclo actual'):`Ciclo cargado desde ${prettyDate(cy.startDate)}`)+statCard('Deuda total',money(cy.debt,currency))+statCard('No facturado',money(cy.unbilled,currency));$('detailChartTitle').textContent='Tendencia de deuda total';setDetailTrend(points,currency,`Deuda diaria · 90 días hasta ${prettyDate(cutoff)}`)}
   renderDetailMovementRows(rows,'entity',type,id);$('detailDialog').showModal();
 }
@@ -1742,7 +1905,7 @@ function openPnlDetail(scope,id,year,mi=null){
   const cutoff=selectedCutoff(),monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],series=pnlMonthlySeries(scope,id,year,cutoff),annual=series.reduce((sum,p)=>sum+p.value,0),selected=mi==null?annual:series[mi].value,rows=pnlDetailMovements(scope,id,year,mi,cutoff);let title='',group='';
   if(scope==='category'){const c=cat(id);if(!c)return;title=c.name;group=c.group==='income'?'Ingresos':c.group==='investment'?'Inversiones':'Egresos'}else if(scope==='group'){group=id==='income'?'Ingresos':id==='investment'?'Inversiones':'Egresos';title=`Total ${group}`}else{title='Ahorro / Flujo libre';group='Resultado'}
   $('detailEyebrow').textContent='P&L / Flujo';$('detailTitle').textContent=title;$('detailSubtitle').textContent=`${group} · ${mi==null?`Año ${year}`:`${monthNames[mi]} ${year}`} · corte ${prettyDate(cutoff)}`;$('detailChartTitle').textContent='Tendencia mensual';
-  const cutoffMonth=cutoff.startsWith(`${year}-`)?Number(cutoff.slice(5,7)):12,monthsElapsed=Math.max(1,Math.min(12,cutoffMonth)),avg=annual/monthsElapsed,peak=series.slice(0,monthsElapsed).reduce((a,b)=>Math.abs(b.value)>Math.abs(a.value)?b:a,series[0]||{label:'—',value:0});$('detailStats').innerHTML=statCard(mi==null?'Total al corte':'Periodo',pen(selected))+statCard('Acumulado del año',pen(annual))+statCard('Promedio mensual',pen(avg),`${monthsElapsed} ${monthsElapsed===1?'mes':'meses'} al corte`)+statCard('Mes de mayor movimiento',peak.label,pen(peak.value));setDetailTrend(series.slice(0,monthsElapsed),'PEN',`Enero – ${prettyDate(cutoff)}`);renderDetailMovementRows(rows,'pnl');$('detailDialog').showModal();
+  const cutoffMonth=cutoff.startsWith(`${year}-`)?Number(cutoff.slice(5,7)):12,monthsElapsed=Math.max(1,Math.min(12,cutoffMonth)),avg=annual/monthsElapsed,peak=series.slice(0,monthsElapsed).reduce((a,b)=>Math.abs(b.value)>Math.abs(a.value)?b:a,series[0]||{label:'—',value:0});$('detailStats').innerHTML=statCard(mi==null?'Total al Corte':'Periodo',pen(selected))+statCard('Acumulado del año',pen(annual))+statCard('Promedio mensual',pen(avg),`${monthsElapsed} ${monthsElapsed===1?'mes':'meses'} al Corte`)+statCard('Mes de mayor movimiento',peak.label,pen(peak.value));setDetailTrend(series.slice(0,monthsElapsed),'PEN',`Enero – ${prettyDate(cutoff)}`);renderDetailMovementRows(rows,'pnl');$('detailDialog').showModal();
 }
 
 function renderIndicators(cash,debt,due,inc,exp,inv,saving){
@@ -1758,7 +1921,7 @@ function renderMovements(){const m=$('mvMonth').value||monthNow(),cutoff=selecte
 
 function renderAccounts(){const cutoff=selectedCutoff(),isToday=cutoff===today();$('accountsGrid').innerHTML=data.accounts.length?data.accounts.map(a=>{const b=accountBalanceAt(a.id,cutoff);return `<div class="entityCard"><div class="entityHeader"><div><div class="entityTitle"><i class="fa-solid fa-building-columns iconBlue"></i> ${esc(a.name)}</div><div class="entitySub">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge ${a.active?'good':'warn'}">${a.active?'Activa':'Archivada'}</span></div><div class="entityValueLabel">Saldo al ${prettyDate(cutoff)}</div><div class="entityValue ${b<0?'bad':''}">${money(b,a.currency)}</div><div class="entityStats"><div class="statBox"><div class="statLabel">Saldo base</div><div class="statValue">${money(a.openingBalance,a.currency)}</div></div><div class="statBox"><div class="statLabel">Fecha base</div><div class="statValue">${a.openingDate}</div></div></div><div class="entityActions"><button class="btn small" onclick="openAccount('${a.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar</button><button class="btn small" onclick="reconcileAccount('${a.id}')"><i class="fa-solid fa-scale-balanced"></i> Conciliar ${isToday?'':'hoy'}</button><button class="btn small" onclick="toggleEntity('accounts','${a.id}')">${a.active?'Archivar':'Activar'}</button></div></div>`}).join(''):'<div class="empty">Agrega tu primera cuenta.</div>'}
 
-function renderCards(){const cutoff=selectedCutoff(),isToday=cutoff===today();$('cardsGrid').innerHTML=data.cards.length?data.cards.map(c=>{const cy=cardCycleAt(c.id,cutoff),usage=c.limit?Math.min(100,cy.debt/c.limit*100):0,av=Math.max(0,c.limit-cy.debt);return `<div class="creditCard"><div class="creditHeader"><div><div class="creditName"><i class="fa-solid fa-credit-card iconBlue"></i> ${esc(c.name)}</div><div class="creditBank">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge">${figuresHidden?'••••':usage.toFixed(0)+'%'} uso</span></div><div class="creditDebtLabel">Deuda total al ${prettyDate(cutoff)}</div><div class="creditDebt">${money(cy.debt,c.currency)}</div><div class="creditProgress"><div style="width:${usage}%"></div></div><div class="tileMeta">Disponible ${money(av,c.currency)} de ${money(c.limit,c.currency)}</div><div class="creditCycle"><div class="cycleBox"><div class="cycleLabel">Pago ciclo</div><div class="cycleValue">${money(cy.amount,c.currency)}</div></div><div class="cycleBox"><div class="cycleLabel">Pagado al corte</div><div class="cycleValue">${money(cy.paid,c.currency)}</div></div><div class="cycleBox"><div class="cycleLabel">Pendiente</div><div class="cycleValue ${cy.remaining>0?'warn':'good'}">${money(cy.remaining,c.currency)}</div></div></div><div class="creditFooter"><div class="dueText">Vence: <strong>${cy.dueDate||'—'}</strong></div><div class="actions"><button class="btn small" onclick="openCard('${c.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar ciclo</button><button class="btn small" onclick="reconcileCard('${c.id}')"><i class="fa-solid fa-scale-balanced"></i> Conciliar ${isToday?'':'hoy'}</button></div></div></div>`}).join(''):'<div class="empty">Agrega tu primera tarjeta.</div>'}
+function renderCards(){const cutoff=selectedCutoff(),isToday=cutoff===today();$('cardsGrid').innerHTML=data.cards.length?data.cards.map(c=>{const cy=cardCycleAt(c.id,cutoff),usage=c.limit?Math.min(100,cy.debt/c.limit*100):0,av=Math.max(0,c.limit-cy.debt);return `<div class="creditCard"><div class="creditHeader"><div><div class="creditName"><i class="fa-solid fa-credit-card iconBlue"></i> ${esc(c.name)}</div><div class="creditBank">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge">${figuresHidden?'••••':usage.toFixed(0)+'%'} uso</span></div><div class="creditDebtLabel">Deuda total al ${prettyDate(cutoff)}</div><div class="creditDebt">${money(cy.debt,c.currency)}</div><div class="creditProgress"><div style="width:${usage}%"></div></div><div class="tileMeta">Disponible ${money(av,c.currency)} de ${money(c.limit,c.currency)}</div><div class="creditCycle"><div class="cycleBox"><div class="cycleLabel">Pago ciclo</div><div class="cycleValue">${money(cy.amount,c.currency)}</div></div><div class="cycleBox"><div class="cycleLabel">Pagado al Corte</div><div class="cycleValue">${money(cy.paid,c.currency)}</div></div><div class="cycleBox"><div class="cycleLabel">Pendiente</div><div class="cycleValue ${cy.remaining>0?'warn':'good'}">${money(cy.remaining,c.currency)}</div></div></div><div class="creditFooter"><div class="dueText">Vence: <strong>${cy.dueDate||'—'}</strong></div><div class="actions"><button class="btn small" onclick="openCard('${c.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar ciclo</button><button class="btn small" onclick="reconcileCard('${c.id}')"><i class="fa-solid fa-scale-balanced"></i> Conciliar ${isToday?'':'hoy'}</button></div></div></div>`}).join(''):'<div class="empty">Agrega tu primera tarjeta.</div>'}
 
 function renderRecurring(){const f=$('recActive').value,q=$('recSearch').value.toLowerCase(),rows=data.recurring.filter(r=>(f===''||String(r.active)===f)&&(!q||r.name.toLowerCase().includes(q)));$('recurringGrid').innerHTML=rows.length?rows.map(r=>`<div class="entityCard"><div class="entityHeader"><div><div class="entityTitle"><i class="fa-solid fa-rotate iconBlue"></i> ${esc(r.name)}</div><div class="entitySub">${r.period==='weekly'?'Semanal':r.period==='annual'?'Anual':'Mensual'} · ${esc(catName(r.categoryId))}</div></div><span class="badge ${r.autoPost?'good':'warn'}">${r.autoPost?'Auto':'Manual'}</span></div><div class="entityValueLabel">${r.kind==='income'?'Ingreso':'Gasto / inversión'}</div><div class="entityValue">${money(r.amount,r.sourceType==='card'?(card(r.sourceId)?.currency||'PEN'):(account(r.sourceId)?.currency||'PEN'))}</div><div class="entityStats"><div class="statBox"><div class="statLabel">Fuente</div><div class="statValue">${esc(srcName(r.sourceType,r.sourceId))}</div></div><div class="statBox"><div class="statLabel">Próxima</div><div class="statValue">${nextDue(r)?fmt(nextDue(r)):'—'}</div></div></div><div class="entityActions"><button class="btn small primary" onclick="postRecurringNow('${r.id}')"><i class="fa-solid fa-circle-check"></i> Registrar</button><button class="btn small" onclick="openRecurring('${r.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar</button><button class="btn small" onclick="toggleRecurring('${r.id}')">${r.active?'Pausar':'Activar'}</button></div></div>`).join(''):'<div class="empty">No hay recurrentes.</div>'}
 
@@ -1903,7 +2066,7 @@ function togglePrivacy(){
 
 $('movementKind').onchange=updateMvForm;$('movementSourceType').onchange=()=>{refreshMvSources();preview()};['movementSourceId','movementDestinationId','movementCardId','movementAmount','movementAppliedAmount'].forEach(id=>$(id).oninput=preview);
 $('recurringKind').onchange=updateRecForm;$('recurringSourceType').onchange=refreshRecSources;
-$('periodInput').onchange=()=>{syncCutoffBounds(true);$('mvMonth').value=$('periodInput').value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()};$('cutoffInput').onchange=()=>{syncCutoffBounds(false);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()};$('cutoffPrevBtn').onclick=()=>stepCutoff(-1);$('cutoffNextBtn').onclick=()=>stepCutoff(1);$('availabilityAvailableBtn').onclick=()=>setAvailabilityMode('available');$('availabilityDebtBtn').onclick=()=>setAvailabilityMode('debt');$('pnlMonth').onchange=()=>{const {year}=selectedPeriod();renderPnlMobile(year,+$('pnlMonth').value,selectedCutoff())};
+$('cutoffInput').onchange=()=>{syncCutoffBounds(false);$('mvMonth').value=$('periodInput').value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()};$('cutoffPrevBtn').onclick=()=>stepCutoff(-1);$('cutoffNextBtn').onclick=()=>stepCutoff(1);$('availabilityAvailableBtn').onclick=()=>setAvailabilityMode('available');$('availabilityDebtBtn').onclick=()=>setAvailabilityMode('debt');$('pnlMonth').onchange=()=>{const {year}=selectedPeriod();renderPnlMobile(year,+$('pnlMonth').value,selectedCutoff())};
 $('mvMonth').onchange=renderMovements;$('mvKindFilter').onchange=renderMovements;$('mvCatFilter').onchange=renderMovements;$('mvSearch').oninput=renderMovements;$('recActive').onchange=renderRecurring;$('recSearch').oninput=renderRecurring;
 $('incomeInput').onchange=()=>{data.settings.income=+$('incomeInput').value||0;save()};$('fxInput').onchange=()=>{data.settings.fx=+$('fxInput').value||0;save()};$('lookbackInput').onchange=()=>{data.settings.lookback=+$('lookbackInput').value||6;save()};
 $('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('settingsTheme').onclick=toggleTheme;$('privacyBtn').onclick=togglePrivacy;$('exportBtn').onclick=exportData;$('settingsExport').onclick=exportData;$('importBtn').onclick=importClick;$('settingsImport').onclick=importClick;

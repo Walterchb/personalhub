@@ -40,8 +40,8 @@ La app incluye manifest, Service Worker, Apple Touch Icon e iconos PWA de 192 y 
 > La clave incluida en `index.html` es la **Publishable key** de Supabase. No agregues nunca una Secret key o `service_role` al repositorio.
 
 ## Vista por fecha de corte
-- El selector superior permite elegir **mes** y **día de corte**.
-- Las flechas junto al día permiten recorrer la información día por día, incluso entre meses.
+- El selector superior usa únicamente la **fecha de corte**.
+- Las flechas permiten recorrer la información día por día, incluso entre meses y años.
 - Resumen, disponibilidad, P&L, movimientos, cuentas, tarjetas y categorías respetan la fecha de corte.
 - En **Disponibilidad** puedes alternar entre **Disponible** (saldo de cuenta / línea libre de tarjeta) y **Deuda** (pago pendiente y deuda total).
 - Al cambiar el ciclo de una tarjeta, el ciclo anterior se archiva automáticamente para que el **pago pendiente histórico** pueda reconstruirse en futuros cortes.
