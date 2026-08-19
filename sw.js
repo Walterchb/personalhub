@@ -1,3 +1,4 @@
+const CACHE='personal-hub-v1';
 const CACHE='personal-hub-v6-1-cutoff-only';
 const APP_SHELL=[
   './',

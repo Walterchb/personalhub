@@ -1498,6 +1498,25 @@ dialog,.formGrid input,.formGrid select,.formGrid textarea,.notice,
   .toastWrap{bottom:calc(78px + env(safe-area-inset-bottom)) !important}
 }
 
+
+/* Personal Hub v6.2 — refined cutoff control */
+.periodControl.cutoffOnly{display:block !important;width:356px !important;min-height:0 !important;padding:0 !important;border:0 !important;background:transparent !important;box-shadow:none !important}
+.periodControl.cutoffOnly .cutoffField{display:block !important}
+.periodControl.cutoffOnly .cutoffField label{display:block !important;margin:0 0 6px !important;font-size:10px !important;font-weight:800 !important;line-height:1.1 !important;letter-spacing:.055em !important;text-transform:uppercase !important;color:var(--muted) !important}
+.periodControl.cutoffOnly .cutoffNav{width:100% !important;height:auto !important;display:grid !important;grid-template-columns:36px minmax(0,1fr) 36px 50px !important;align-items:center !important;gap:6px !important}
+.periodControl.cutoffOnly .cutoffNav input,.periodControl.cutoffOnly .cutoffStep,.periodControl.cutoffOnly .cutoffToday{height:38px !important;min-height:38px !important;border:1px solid var(--line) !important;background:var(--surface) !important;box-shadow:none !important}
+.periodControl.cutoffOnly .cutoffNav input{width:100% !important;min-width:0 !important;padding:0 10px !important;font-size:13px !important;font-weight:800 !important;color:var(--text) !important;text-align:center !important;font-variant-numeric:tabular-nums;text-transform:uppercase}
+.periodControl.cutoffOnly .cutoffStep,.periodControl.cutoffOnly .cutoffToday{display:inline-flex !important;align-items:center !important;justify-content:center !important;padding:0 !important;color:var(--text) !important}
+.periodControl.cutoffOnly .cutoffStep{width:36px !important;min-width:36px !important}
+.periodControl.cutoffOnly .cutoffStep i{font-size:12px !important;color:inherit !important}
+.periodControl.cutoffOnly .cutoffToday{min-width:50px !important;padding:0 10px !important;font-size:12px !important;font-weight:800 !important}
+.periodControl.cutoffOnly .cutoffStep:hover:not(:disabled),.periodControl.cutoffOnly .cutoffToday:hover{border-color:var(--blue) !important;color:var(--blue) !important}
+.periodControl.cutoffOnly .cutoffToday.active{background:var(--navy) !important;border-color:var(--navy) !important;color:#fff !important}
+html[data-theme="dark"] .periodControl.cutoffOnly .cutoffNav input,html[data-theme="dark"] .periodControl.cutoffOnly .cutoffStep,html[data-theme="dark"] .periodControl.cutoffOnly .cutoffToday{background:var(--surface) !important;border-color:#304253 !important;color:#eef4fb !important}
+html[data-theme="dark"] .periodControl.cutoffOnly .cutoffStep:hover:not(:disabled),html[data-theme="dark"] .periodControl.cutoffOnly .cutoffToday:hover{border-color:#6ea8ff !important;color:#6ea8ff !important}
+@media(max-width:700px){.topControlRow{padding:8px 0 10px !important}.periodControl.cutoffOnly{width:100% !important}.periodControl.cutoffOnly .cutoffField label{font-size:10px !important;margin-bottom:6px !important}.periodControl.cutoffOnly .cutoffNav{grid-template-columns:34px minmax(0,1fr) 34px 52px !important;gap:6px !important}.periodControl.cutoffOnly .cutoffNav input,.periodControl.cutoffOnly .cutoffStep,.periodControl.cutoffOnly .cutoffToday{height:40px !important;min-height:40px !important}.periodControl.cutoffOnly .cutoffNav input{font-size:14px !important;padding:0 10px !important}.periodControl.cutoffOnly .cutoffToday{font-size:12px !important}}
+@media(max-width:390px){.periodControl.cutoffOnly .cutoffNav{grid-template-columns:32px minmax(0,1fr) 32px 48px !important;gap:5px !important}.periodControl.cutoffOnly .cutoffNav input{font-size:13px !important;padding:0 8px !important}}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1583,7 +1602,15 @@ dialog,.formGrid input,.formGrid select,.formGrid textarea,.notice,
     <div class="pageTop periodOnly">
       <div class="periodControl cutoffOnly" aria-label="Fecha de corte">
         <input id="periodInput" type="month" hidden aria-hidden="true" tabindex="-1">
-        <div class="periodField cutoffField"><label for="cutoffInput">Corte</label><div class="cutoffNav"><button id="cutoffPrevBtn" type="button" class="cutoffStep" title="Día anterior" aria-label="Día anterior"><i class="fa-solid fa-chevron-left"></i></button><input id="cutoffInput" type="date" aria-label="Fecha de corte"><button id="cutoffNextBtn" type="button" class="cutoffStep" title="Día siguiente" aria-label="Día siguiente"><i class="fa-solid fa-chevron-right"></i></button></div></div>
+        <div class="periodField cutoffField">
+          <label for="cutoffInput">Corte</label>
+          <div class="cutoffNav">
+            <button id="cutoffPrevBtn" type="button" class="cutoffStep" title="Día anterior" aria-label="Día anterior"><i class="fa-solid fa-caret-left"></i></button>
+            <input id="cutoffInput" type="date" aria-label="Fecha de corte">
+            <button id="cutoffNextBtn" type="button" class="cutoffStep" title="Día siguiente" aria-label="Día siguiente"><i class="fa-solid fa-caret-right"></i></button>
+            <button id="cutoffTodayBtn" type="button" class="cutoffToday" title="Ir a hoy" aria-label="Ir a hoy">Hoy</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1804,13 +1831,14 @@ function cardOpts(blank=true){return (blank?'<option value="">Selecciona...</opt
 function catOpts(blank=true){return (blank?'<option value="">Sin categoría</option>':'')+data.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}
 function lastDayOfMonth(monthKey){const [y,m]=monthKey.split('-').map(Number);return `${y}-${String(m).padStart(2,'0')}-${String(new Date(y,m,0).getDate()).padStart(2,'0')}`}
 function defaultCutoffForPeriod(monthKey){if(monthKey>=monthNow())return today();return lastDayOfMonth(monthKey)}
-function syncCutoffBounds(reset=false){const p=$('periodInput'),c=$('cutoffInput');if(!p||!c)return;const max=today();c.max=max;if(reset||!c.value||c.value>max)c.value=max;p.value=(c.value||max).slice(0,7);p.max=monthNow();const next=$('cutoffNextBtn');if(next)next.disabled=c.value>=max;updatePeriodDisplay()}
+function syncCutoffBounds(reset=false){const p=$('periodInput'),c=$('cutoffInput');if(!p||!c)return;const max=today();c.max=max;if(reset||!c.value||c.value>max)c.value=max;p.value=(c.value||max).slice(0,7);p.max=monthNow();const next=$('cutoffNextBtn');if(next)next.disabled=c.value>=max;const todayBtn=$('cutoffTodayBtn');if(todayBtn)todayBtn.classList.toggle('active',c.value===today());updatePeriodDisplay()}
 function selectedPeriod(){const v=$('periodInput').value||monthNow(),[y,m]=v.split('-').map(Number);return {year:y,month:m-1,key:v}}
 function selectedCutoff(){const c=$('cutoffInput');return c?.value||defaultCutoffForPeriod(selectedPeriod().key)}
 function prettyDate(s){if(!s)return '—';const [y,m,d]=s.split('-');return `${d}/${m}/${y}`}
 function formatMonthLabel(v){if(!v)return '—';const [y,m]=v.split('-').map(Number),names=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];return `${names[(m||1)-1]} de ${y}`}
 function updatePeriodDisplay(){const el=$('periodDisplay'),input=$('periodInput');if(el&&input)el.textContent=formatMonthLabel(input.value||monthNow())}
 function stepCutoff(delta){const c=$('cutoffInput'),p=$('periodInput');if(!c||!p)return;const d=parseDate(c.value||selectedCutoff());d.setDate(d.getDate()+delta);const next=fmt(d);if(next>today())return;p.value=next.slice(0,7);c.value=next;syncCutoffBounds(false);$('mvMonth').value=p.value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()}
+function goCutoffToday(){const c=$('cutoffInput'),p=$('periodInput');if(!c||!p)return;const t=today();p.value=t.slice(0,7);c.value=t;syncCutoffBounds(false);$('mvMonth').value=p.value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()}
 function pnlValue(catId,year,mi,cutoffDate=''){const prefix=`${year}-${String(mi+1).padStart(2,'0')}`;return data.movements.filter(t=>(t.kind==='expense'||t.kind==='income')&&t.categoryId===catId&&t.date.startsWith(prefix)&&(!cutoffDate||t.date<=cutoffDate)).reduce((s,t)=>s+toPen(t.amount,movementCurrency(t)),0)}
 function groupMonth(group,year,mi,cutoffDate=''){return data.categories.filter(c=>c.group===group).reduce((s,c)=>s+pnlValue(c.id,year,mi,cutoffDate),0)}
 function moneyCell(v){return `<td class="${Math.abs(v)<.005?'zero':''}">${pen(v)}</td>`}
@@ -2066,7 +2094,7 @@ function togglePrivacy(){
 
 $('movementKind').onchange=updateMvForm;$('movementSourceType').onchange=()=>{refreshMvSources();preview()};['movementSourceId','movementDestinationId','movementCardId','movementAmount','movementAppliedAmount'].forEach(id=>$(id).oninput=preview);
 $('recurringKind').onchange=updateRecForm;$('recurringSourceType').onchange=refreshRecSources;
-$('cutoffInput').onchange=()=>{syncCutoffBounds(false);$('mvMonth').value=$('periodInput').value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()};$('cutoffPrevBtn').onclick=()=>stepCutoff(-1);$('cutoffNextBtn').onclick=()=>stepCutoff(1);$('availabilityAvailableBtn').onclick=()=>setAvailabilityMode('available');$('availabilityDebtBtn').onclick=()=>setAvailabilityMode('debt');$('pnlMonth').onchange=()=>{const {year}=selectedPeriod();renderPnlMobile(year,+$('pnlMonth').value,selectedCutoff())};
+$('cutoffInput').onchange=()=>{syncCutoffBounds(false);$('mvMonth').value=$('periodInput').value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderAccounts();renderCards();renderCategories()};$('cutoffPrevBtn').onclick=()=>stepCutoff(-1);$('cutoffNextBtn').onclick=()=>stepCutoff(1);const cutoffTodayBtn=$('cutoffTodayBtn');if(cutoffTodayBtn)cutoffTodayBtn.onclick=()=>goCutoffToday();$('availabilityAvailableBtn').onclick=()=>setAvailabilityMode('available');$('availabilityDebtBtn').onclick=()=>setAvailabilityMode('debt');$('pnlMonth').onchange=()=>{const {year}=selectedPeriod();renderPnlMobile(year,+$('pnlMonth').value,selectedCutoff())};
 $('mvMonth').onchange=renderMovements;$('mvKindFilter').onchange=renderMovements;$('mvCatFilter').onchange=renderMovements;$('mvSearch').oninput=renderMovements;$('recActive').onchange=renderRecurring;$('recSearch').oninput=renderRecurring;
 $('incomeInput').onchange=()=>{data.settings.income=+$('incomeInput').value||0;save()};$('fxInput').onchange=()=>{data.settings.fx=+$('fxInput').value||0;save()};$('lookbackInput').onchange=()=>{data.settings.lookback=+$('lookbackInput').value||6;save()};
 $('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('settingsTheme').onclick=toggleTheme;$('privacyBtn').onclick=togglePrivacy;$('exportBtn').onclick=exportData;$('settingsExport').onclick=exportData;$('importBtn').onclick=importClick;$('settingsImport').onclick=importClick;
