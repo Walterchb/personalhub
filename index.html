@@ -2014,6 +2014,55 @@ html[data-theme="dark"] .topControlRow .cutoffToday.active,
 .detailChart canvas{display:block !important;width:100% !important;height:100% !important}
 @media(max-width:700px){.detailChart{height:190px !important;min-height:190px !important}}
 
+
+/* Personal Hub v12 — modal scroll isolation + chart switch */
+body.modalPageLocked{
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  width:100% !important;
+  overflow:hidden !important;
+}
+dialog[open]{
+  overflow:hidden !important;
+  overscroll-behavior:contain !important;
+}
+dialog[open] > .modal{
+  max-height:min(92dvh,900px) !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  overscroll-behavior-y:contain !important;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+}
+#detailDialog[open] > .detailModal{max-height:min(92dvh,900px) !important}
+.detailMovementList{overscroll-behavior-y:auto}
+.detailChartHead{align-items:center !important;flex-wrap:wrap !important}
+.detailChartCopy{min-width:0;flex:1 1 180px}
+.detailChartActions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:0 0 auto}
+.detailChartSwitch{display:inline-flex;align-items:center;padding:2px;border:1px solid var(--line);border-radius:5px;background:var(--surface-2);gap:2px}
+.detailChartSwitch.hidden{display:none !important}
+.detailChartSwitch button{height:27px;min-height:27px;padding:0 9px;border:0;border-radius:4px;background:transparent;color:var(--muted);font:700 9.5px/1 Manrope,Arial,sans-serif;cursor:pointer}
+.detailChartSwitch button:hover{color:var(--text);background:var(--surface)}
+.detailChartSwitch button.active{background:#10283a;color:#fff;box-shadow:0 1px 2px rgba(15,23,42,.12)}
+html[data-theme="dark"] .detailChartSwitch{border-color:#304253;background:var(--surface-2)}
+html[data-theme="dark"] .detailChartSwitch button{color:#9aa9b7}
+html[data-theme="dark"] .detailChartSwitch button:hover{color:#fff;background:#152534}
+html[data-theme="dark"] .detailChartSwitch button.active{background:#10283a;color:#fff}
+#detailBreakdownBlock{margin-bottom:10px}
+#detailBreakdown .detailMovementRow{cursor:default}
+#detailBreakdown .detailMvIcon{color:var(--blue)}
+#detailBreakdown .detailMvMain span{font-variant-numeric:tabular-nums}
+@media(max-width:700px){
+  dialog[open] > .modal{max-height:94dvh !important}
+  #detailDialog[open] > .detailModal{max-height:94dvh !important}
+  .detailChartHead{gap:7px !important}
+  .detailChartCopy{flex:1 1 100%;width:100%}
+  .detailChartActions{width:100%;justify-content:space-between}
+  .detailChartSwitch{flex:0 0 auto}
+  .detailChartSwitch button{height:29px;min-height:29px;padding:0 10px;font-size:9.5px}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2337,12 +2386,21 @@ Restaurantes"></textarea><small class="fieldHint">Mantén pocas y útiles. Las s
   </div>
   <div id="detailStats" class="detailStats"></div>
   <div class="detailChartBlock">
-    <div class="detailChartHead"><div><strong id="detailChartTitle">Tendencia</strong><span id="detailChartCaption"></span></div><span id="detailChartDelta" class="trendDelta"></span></div>
+    <div class="detailChartHead">
+      <div class="detailChartCopy"><strong id="detailChartTitle">Tendencia</strong><span id="detailChartCaption"></span></div>
+      <div class="detailChartActions">
+        <div id="detailChartSwitch" class="detailChartSwitch hidden" role="group" aria-label="Tipo de gráfico">
+          <button id="detailTrendBtn" type="button" class="active" onclick="setDetailChartMode('trend')">Tendencia</button>
+          <button id="detailShareBtn" type="button" onclick="setDetailChartMode('share')">Proporción</button>
+        </div>
+        <span id="detailChartDelta" class="trendDelta"></span>
+      </div>
+    </div>
     <div id="detailChart" class="detailChart"></div>
   </div>
-  <div id="detailBreakdownBlock" class="detailBreakdownBlock hidden">
+  <div id="detailBreakdownBlock" class="detailMovementsBlock hidden">
     <div class="detailMovementsHead"><strong>Subcategorías</strong><span id="detailBreakdownCount"></span></div>
-    <div id="detailBreakdown" class="detailBreakdown"></div>
+    <div id="detailBreakdown" class="detailMovementList"></div>
   </div>
   <div class="detailMovementsBlock">
     <div class="detailMovementsHead"><strong>Movimientos</strong><span id="detailMovementCount"></span></div>
@@ -2484,6 +2542,22 @@ function normalize(d){
 }
 
 let data;try{data=normalize(JSON.parse(localStorage.getItem(KEY))||starter())}catch{data=starter()}
+
+let modalPageScrollY=0,modalPageIsLocked=false;
+function syncModalPageLock(){
+  const hasOpen=!!document.querySelector('dialog[open]');
+  if(hasOpen&&!modalPageIsLocked){
+    modalPageScrollY=window.scrollY||document.documentElement.scrollTop||0;modalPageIsLocked=true;document.body.classList.add('modalPageLocked');document.body.style.top=`-${modalPageScrollY}px`;
+  }else if(!hasOpen&&modalPageIsLocked){
+    modalPageIsLocked=false;document.body.classList.remove('modalPageLocked');document.body.style.top='';window.scrollTo(0,modalPageScrollY);
+  }
+}
+function initModalScrollIsolation(){
+  const dialogs=[...document.querySelectorAll('dialog')];if(!dialogs.length)return;
+  const observer=new MutationObserver(()=>requestAnimationFrame(syncModalPageLock));dialogs.forEach(d=>{observer.observe(d,{attributes:true,attributeFilter:['open']});d.addEventListener('close',()=>requestAnimationFrame(syncModalPageLock));d.addEventListener('cancel',()=>requestAnimationFrame(syncModalPageLock))});syncModalPageLock();
+}
+initModalScrollIsolation();
+
 function persist(){localStorage.setItem(KEY,JSON.stringify(data))}
 persist();
 function save(){persist();syncRecurring();persist();renderAll();if(!cloudApplyingRemote)queueCloudSave()}
@@ -2609,6 +2683,8 @@ function renderDetailMovementRows(rows,mode='entity',type='',id=''){
 }
 let detailChartInstance=null;
 let detailTrendState=null;
+let detailBreakdownState=null;
+let detailChartMode='trend';
 function chartThemeTokens(){
   const cs=getComputedStyle(document.documentElement),dark=document.documentElement.dataset.theme==='dark';
   return {ink:(cs.getPropertyValue('--ink')||'#17212b').trim(),muted:(cs.getPropertyValue('--muted')||'#697785').trim(),line:(cs.getPropertyValue('--line')||'#dce3e8').trim(),blue:(cs.getPropertyValue('--blue')||'#2f6fed').trim(),green:(cs.getPropertyValue('--green')||'#13866d').trim(),red:(cs.getPropertyValue('--red')||'#c34b4b').trim(),surface:(cs.getPropertyValue('--surface')||'#ffffff').trim(),dark};
@@ -2626,12 +2702,39 @@ function renderDetailChart(points,currency='PEN',kind='line'){
   const dataSet=kind==='bar'?{label:'Monto',data:values,backgroundColor:values.map(v=>v<0?t.red:t.blue),hoverBackgroundColor:values.map(v=>v<0?t.red:t.blue),borderWidth:0,borderRadius:5,borderSkipped:false,maxBarThickness:34}:{label:'Monto',data:values,borderColor:t.blue,backgroundColor:background,fill:true,borderWidth:2.25,tension:.32,cubicInterpolationMode:'monotone',pointRadius:0,pointHoverRadius:4,pointHoverBorderWidth:2,pointHoverBackgroundColor:t.surface,pointHoverBorderColor:t.blue};
   detailChartInstance=new Chart(ctx,{type:kind==='bar'?'bar':'line',data:{labels,datasets:[dataSet]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:260},interaction:{mode:'index',intersect:false},layout:{padding:{top:5,right:4,bottom:0,left:0}},plugins:{legend:{display:false},tooltip:{displayColors:false,backgroundColor:t.dark?'#0d1720':'#10283a',titleColor:'#fff',bodyColor:'#fff',padding:10,cornerRadius:5,callbacks:{label:c=>detailChartMoney(c.parsed.y,currency)}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:t.muted,font:{family:'Manrope, Inter, system-ui, sans-serif',size:10,weight:'600'},maxRotation:0,autoSkip:true,maxTicksLimit:kind==='bar'?12:6}},y:{beginAtZero:kind==='bar',border:{display:false},grid:{color:t.line,drawTicks:false},ticks:{color:t.muted,padding:8,font:{family:'Manrope, Inter, system-ui, sans-serif',size:10,weight:'600'},callback:v=>figuresHidden?'••••':compactMoney(v,currency),maxTicksLimit:5}}}}});
 }
+function renderDetailShareChart(rows,currency='PEN'){
+  const host=$('detailChart');if(!host)return;destroyDetailChart();
+  const clean=(rows||[]).filter(x=>Math.abs(Number(x.value)||0)>.005);
+  if(!clean.length){host.innerHTML='<div class="detailEmpty">No hay subcategorías con movimiento para mostrar.</div>';return}
+  if(typeof Chart==='undefined'){host.innerHTML='<div class="detailEmpty">El gráfico proporcional requiere Chart.js.</div>';return}
+  host.innerHTML='<canvas id="detailChartCanvas" role="img" aria-label="Gráfico proporcional por subcategorías"></canvas>';
+  const canvas=$('detailChartCanvas'),ctx=canvas.getContext('2d'),t=chartThemeTokens();
+  const actual=clean.map(x=>Number(x.value)||0),values=actual.map(v=>Math.abs(v)),labels=clean.map(x=>x.name),total=values.reduce((a,b)=>a+b,0)||1;
+  const palette=t.dark?['#6d9eff','#36b9aa','#f2b366','#b58cff','#60c98d','#f17b7b','#8fa6ba','#d58bd2','#74b9dd','#d6c66f']:['#2f6fed','#0d9488','#d9892b','#815ac0','#2e9b68','#c65353','#6f8799','#b05fa6','#3989b5','#a8912f'];
+  detailChartInstance=new Chart(ctx,{type:'doughnut',data:{labels,datasets:[{data:values,backgroundColor:clean.map((_,i)=>palette[i%palette.length]),borderColor:t.surface,borderWidth:2,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',animation:{duration:260},layout:{padding:{top:2,bottom:0,left:2,right:2}},plugins:{legend:{display:true,position:'bottom',labels:{color:t.muted,usePointStyle:true,pointStyle:'circle',boxWidth:7,boxHeight:7,padding:12,font:{family:'Manrope, Inter, system-ui, sans-serif',size:9,weight:'600'}}},tooltip:{backgroundColor:t.dark?'#0d1720':'#10283a',titleColor:'#fff',bodyColor:'#fff',padding:10,cornerRadius:5,displayColors:true,callbacks:{label:c=>{const i=c.dataIndex,pct=values[i]/total*100,val=actual[i];return figuresHidden?`${labels[i]} · ${pct.toFixed(1)}%`:`${labels[i]} · ${detailChartMoney(val,currency)} · ${pct.toFixed(1)}%`}}}}}});
+}
+function updateDetailTrendDelta(points,currency){
+  const first=points?.[0]?.value||0,last=points?.[points.length-1]?.value||0,d=last-first,el=$('detailChartDelta');if(!el)return;
+  el.style.display='';el.textContent=points?.length>1?`${d>0?'+':''}${compactMoney(d,currency)}`:'';el.className=`trendDelta ${d>0?'up':d<0?'down':''}`;
+}
+function updateDetailChartSwitch(){
+  const sw=$('detailChartSwitch'),trend=$('detailTrendBtn'),share=$('detailShareBtn'),canShare=!!detailBreakdownState?.rows?.length;
+  if(sw)sw.classList.toggle('hidden',!canShare);if(trend)trend.classList.toggle('active',detailChartMode==='trend');if(share)share.classList.toggle('active',detailChartMode==='share');
+}
+function setDetailChartMode(mode='trend'){
+  if(mode==='share'&&!detailBreakdownState?.rows?.length)mode='trend';detailChartMode=mode;updateDetailChartSwitch();
+  if(mode==='share'){
+    $('detailChartTitle').textContent='Distribución por subcategorías';$('detailChartCaption').textContent=detailBreakdownState.caption||'Participación sobre el total';const delta=$('detailChartDelta');if(delta){delta.textContent='';delta.style.display='none'};renderDetailShareChart(detailBreakdownState.rows,detailBreakdownState.currency||'PEN');
+  }else if(detailTrendState){
+    $('detailChartTitle').textContent=detailTrendState.title||'Tendencia';$('detailChartCaption').textContent=detailTrendState.caption||'';updateDetailTrendDelta(detailTrendState.points,detailTrendState.currency);renderDetailChart(detailTrendState.points,detailTrendState.currency,detailTrendState.kind);
+  }
+}
+function clearDetailBreakdownState(){detailBreakdownState=null;detailChartMode='trend';const sw=$('detailChartSwitch');if(sw)sw.classList.add('hidden');updateDetailChartSwitch()}
 function setDetailTrend(points,currency,caption,kind='line'){
-  detailTrendState={points:[...(points||[])],currency,caption,kind};$('detailChartCaption').textContent=caption;
-  const first=points[0]?.value||0,last=points[points.length-1]?.value||0,d=last-first;$('detailChartDelta').textContent=points.length>1?`${d>0?'+':''}${compactMoney(d,currency)}`:'';$('detailChartDelta').className=`trendDelta ${d>0?'up':d<0?'down':''}`;renderDetailChart(points,currency,kind)
+  detailChartMode='trend';detailTrendState={points:[...(points||[])],currency,caption,kind,title:$('detailChartTitle').textContent||'Tendencia'};$('detailChartCaption').textContent=caption;updateDetailTrendDelta(points,currency);updateDetailChartSwitch();renderDetailChart(points,currency,kind)
 }
 function openAvailabilityDetail(type,id){
-  $('detailBreakdownBlock')?.classList.add('hidden');
+  clearDetailBreakdownState();$('detailBreakdownBlock')?.classList.add('hidden');
   const isAccount=type==='account',e=isAccount?account(id):card(id);if(!e)return;const cutoff=selectedCutoff(),currency=e.currency||'PEN',rows=entityMovements(type,id,cutoff),points=entityTrend(type,id,90,cutoff),cut=parseDate(cutoff);cut.setDate(cut.getDate()-29);const recent=rows.filter(t=>(t.date||'')>=isoDateLocal(cut));
   $('detailEyebrow').textContent=`Disponibilidad · ${isAccount?'Cuenta':'Tarjeta'}`;$('detailTitle').textContent=e.name;$('detailSubtitle').textContent=(isAccount?`${e.institution||e.type||'Cuenta'} · ${currency}`:`${e.bank||'Tarjeta'} · ${currency}`)+` · Corte ${prettyDate(cutoff)}`;
   if(isAccount){const current=accountBalanceAt(id,cutoff),ins=recent.reduce((sum,t)=>sum+Math.max(0,entityMovementDelta(t,type,id)),0),outs=recent.reduce((sum,t)=>sum+Math.max(0,-entityMovementDelta(t,type,id)),0);$('detailStats').innerHTML=statCard('Saldo al Corte',money(current,currency))+statCard('Entradas 30 días',money(ins,currency))+statCard('Salidas 30 días',money(outs,currency))+statCard('Movimientos',String(rows.length),'Hasta la fecha de Corte');$('detailChartTitle').textContent='Tendencia del saldo';setDetailTrend(points,currency,`Saldo diario · 90 días hasta ${prettyDate(cutoff)}`)}
@@ -2641,12 +2744,19 @@ function openAvailabilityDetail(type,id){
 function pnlMonthlySeries(scope,id,year,cutoff=selectedCutoff()){const names=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];return names.map((label,mi)=>({label,value:scope==='category'?pnlValue(id,year,mi,cutoff):scope==='group'?groupMonth(id,year,mi,cutoff):groupMonth('income',year,mi,cutoff)-groupMonth('expense',year,mi,cutoff)-groupMonth('investment',year,mi,cutoff)}))}
 function pnlDetailMovements(scope,id,year,mi,cutoff=selectedCutoff()){const prefix=mi==null?`${year}-`:`${year}-${String(mi+1).padStart(2,'0')}`,groupIds=scope==='group'?new Set(data.categories.filter(c=>c.group===id).map(c=>c.id)):null;return data.movements.filter(t=>(t.kind==='expense'||t.kind==='income'||t.kind==='reimbursement')&&(t.date||'').startsWith(prefix)&&(t.date||'')<=cutoff&&(scope==='free'||(scope==='category'&&t.categoryId===id)||(scope==='group'&&groupIds.has(t.categoryId)))).sort((a,b)=>(b.date||'').localeCompare(a.date||''))}
 function pnlSubcategoryBreakdown(catId,year,mi,cutoff=selectedCutoff()){const c=cat(catId);if(!c)return[];const months=mi==null?[0,1,2,3,4,5,6,7,8,9,10,11]:[mi],rows=(c.subcategories||[]).map(sc=>({id:sc.id,name:sc.name,value:months.reduce((sum,m)=>sum+pnlSubValue(catId,sc.id,year,m,cutoff),0)})),uncategorized=months.reduce((sum,m)=>sum+pnlSubValue(catId,'',year,m,cutoff),0);if(Math.abs(uncategorized)>.005)rows.push({id:'',name:'Sin subcategoría',value:uncategorized});return rows.filter(x=>Math.abs(x.value)>.005).sort((a,b)=>Math.abs(b.value)-Math.abs(a.value))}
-function renderPnlBreakdown(catId,year,mi,cutoff){const block=$('detailBreakdownBlock'),body=$('detailBreakdown'),count=$('detailBreakdownCount');if(!block||!body)return;const rows=pnlSubcategoryBreakdown(catId,year,mi,cutoff);block.classList.toggle('hidden',!rows.length);if(count)count.textContent=rows.length?`${rows.length} ${rows.length===1?'subcategoría':'subcategorías'}`:'';body.innerHTML=rows.length?rows.map(x=>`<div class="detailBreakdownRow"><span>${esc(x.name)}</span><strong>${pen(x.value)}</strong></div>`).join(''):''}
+function renderPnlBreakdown(catId,year,mi,cutoff,caption=''){
+  const block=$('detailBreakdownBlock'),body=$('detailBreakdown'),count=$('detailBreakdownCount');if(!block||!body)return[];
+  const rows=pnlSubcategoryBreakdown(catId,year,mi,cutoff),totalAbs=rows.reduce((sum,x)=>sum+Math.abs(Number(x.value)||0),0)||1;
+  block.classList.toggle('hidden',!rows.length);if(count)count.textContent=rows.length?`${rows.length} ${rows.length===1?'subcategoría':'subcategorías'}`:'';
+  body.innerHTML=rows.length?rows.map(x=>{const pct=Math.abs(Number(x.value)||0)/totalAbs*100;return `<div class="detailMovementRow"><div class="detailMvIcon"><i class="fa-solid fa-chart-pie"></i></div><div class="detailMvMain"><strong>${esc(x.name)}</strong><span>${pct.toFixed(1)}% del total</span></div><div class="detailMvAmount ${x.value<0?'negative':''}">${pen(x.value)}</div></div>`}).join(''):'';
+  detailBreakdownState=rows.length?{rows:[...rows],currency:'PEN',caption:caption||'Participación sobre el total del período'}:null;updateDetailChartSwitch();return rows
+}
 function openPnlDetail(scope,id,year,mi=null){
+  clearDetailBreakdownState();
   const cutoff=selectedCutoff(),monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],series=pnlMonthlySeries(scope,id,year,cutoff),annual=series.reduce((sum,p)=>sum+p.value,0),selected=mi==null?annual:series[mi].value,rows=pnlDetailMovements(scope,id,year,mi,cutoff);let title='',group='';
   if(scope==='category'){const c=cat(id);if(!c)return;title=c.name;group=c.group==='income'?'Ingresos':c.group==='investment'?'Ahorro / Inversión':'Egresos'}else if(scope==='group'){group=id==='income'?'Ingresos':id==='investment'?'Ahorro / Inversión':'Egresos';title=`Total ${group}`}else{title='Ahorro / Flujo libre';group='Resultado'}
   $('detailEyebrow').textContent='P&L / Flujo';$('detailTitle').textContent=title;$('detailSubtitle').textContent=`${group} · ${mi==null?`Año ${year}`:`${monthNames[mi]} ${year}`} · corte ${prettyDate(cutoff)}`;$('detailChartTitle').textContent='Tendencia mensual';
-  const cutoffMonth=cutoff.startsWith(`${year}-`)?Number(cutoff.slice(5,7)):12,monthsElapsed=Math.max(1,Math.min(12,cutoffMonth)),avg=annual/monthsElapsed,peak=series.slice(0,monthsElapsed).reduce((a,b)=>Math.abs(b.value)>Math.abs(a.value)?b:a,series[0]||{label:'—',value:0});$('detailStats').innerHTML=statCard(mi==null?'Total al Corte':'Periodo',pen(selected))+statCard('Acumulado del año',pen(annual))+statCard('Promedio mensual',pen(avg),`${monthsElapsed} ${monthsElapsed===1?'mes':'meses'} al Corte`)+statCard('Mes de mayor movimiento',peak.label,pen(peak.value));setDetailTrend(series.slice(0,monthsElapsed),'PEN',`Enero – ${prettyDate(cutoff)}`,'bar');if(scope==='category')renderPnlBreakdown(id,year,mi,cutoff);else $('detailBreakdownBlock')?.classList.add('hidden');renderDetailMovementRows(rows,'pnl');$('detailDialog').showModal();
+  const cutoffMonth=cutoff.startsWith(`${year}-`)?Number(cutoff.slice(5,7)):12,monthsElapsed=Math.max(1,Math.min(12,cutoffMonth)),avg=annual/monthsElapsed,peak=series.slice(0,monthsElapsed).reduce((a,b)=>Math.abs(b.value)>Math.abs(a.value)?b:a,series[0]||{label:'—',value:0});$('detailStats').innerHTML=statCard(mi==null?'Total al Corte':'Periodo',pen(selected))+statCard('Acumulado del año',pen(annual))+statCard('Promedio mensual',pen(avg),`${monthsElapsed} ${monthsElapsed===1?'mes':'meses'} al Corte`)+statCard('Mes de mayor movimiento',peak.label,pen(peak.value));setDetailTrend(series.slice(0,monthsElapsed),'PEN',`Enero – ${prettyDate(cutoff)}`,'bar');if(scope==='category'){const periodCaption=mi==null?`Año ${year} · participación por subcategoría`:`${monthNames[mi]} ${year} · participación por subcategoría`;renderPnlBreakdown(id,year,mi,cutoff,periodCaption)}else{clearDetailBreakdownState();$('detailBreakdownBlock')?.classList.add('hidden')}renderDetailMovementRows(rows,'pnl');$('detailDialog').showModal();
 }
 
 function renderIndicators(cash,debt,due,inc,exp,inv,saving){
@@ -2747,7 +2857,7 @@ function postRecurringNow(id){if(!requireAdmin('registrar este recurrente'))retu
 function deleteMovement(id){if(!requireAdmin('eliminar este movimiento'))return;const t=data.movements.find(x=>x.id===id);if(!t)return;if(!confirm('¿Eliminar este movimiento? Todo se recalculará automáticamente.'))return;if(t.receivableId&&t.receivablePaymentId){const r=data.receivables.find(x=>x.id===t.receivableId),inst=r?.installments?.find(x=>x.id===t.receivableInstallmentId);if(inst)inst.payments=(inst.payments||[]).filter(p=>p.id!==t.receivablePaymentId)}data.movements=data.movements.filter(x=>x.id!==id);save();toast('Movimiento eliminado','','warn')}
 function deleteCategory(id){if(!requireAdmin('eliminar esta categoría'))return;const used=data.movements.some(x=>x.categoryId===id)||data.recurring.some(x=>x.categoryId===id)||data.receivables.some(x=>x.categoryId===id);if(!confirm(used?'La categoría está en uso. Se quitará de esos registros. ¿Continuar?':'¿Eliminar categoría?'))return;data.categories=data.categories.filter(x=>x.id!==id);for(const collection of [data.movements,data.recurring,data.receivables])collection.forEach(x=>{if(x.categoryId===id){x.categoryId='';x.subcategoryId=''}});save()}
 
-function toggleTheme(){data.settings.theme=data.settings.theme==='dark'?'light':'dark';save();if($('detailDialog')?.open&&detailTrendState)setTimeout(()=>renderDetailChart(detailTrendState.points,detailTrendState.currency,detailTrendState.kind),0)}
+function toggleTheme(){data.settings.theme=data.settings.theme==='dark'?'light':'dark';save();if($('detailDialog')?.open&&detailTrendState)setTimeout(()=>setDetailChartMode(detailChartMode),0)}
 function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`treasuryhub-personal-finance-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}
 function importClick(){if(!requireAdmin('importar datos'))return;$('importFile').click()}
 $('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;if(!requireAdmin('importar datos')){e.target.value='';return;}try{data=normalize(JSON.parse(await f.text()));save();toast('Datos importados','Archivo cargado correctamente.')}catch{toast('No se importó','JSON incompatible.','bad')}e.target.value=''};

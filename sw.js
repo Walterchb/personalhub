@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v11-charts-admin';
+const CACHE='personal-hub-v12-modal-chart-switch';
 const APP_SHELL=[
   './',
   './index.html',
