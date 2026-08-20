@@ -1,25 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
   <defs>
-    <linearGradient id="bg" x1="18" y1="12" x2="111" y2="119" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#123B56"/>
-      <stop offset="1" stop-color="#061A28"/>
+    <linearGradient id="bg" x1="18" y1="10" x2="112" y2="118" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#15344A"/>
+      <stop offset="1" stop-color="#10283A"/>
     </linearGradient>
-    <linearGradient id="trend" x1="49" y1="76" x2="96" y2="42" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#34D3BD"/>
-      <stop offset="1" stop-color="#5DB6FF"/>
+    <linearGradient id="accent" x1="42" y1="28" x2="92" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9DEFD8"/>
+      <stop offset="1" stop-color="#45C0A6"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(31 24) rotate(46) scale(86)" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2B6D93" stop-opacity=".46"/>
-      <stop offset="1" stop-color="#2B6D93" stop-opacity="0"/>
-    </radialGradient>
   </defs>
-  <rect x="3" y="3" width="122" height="122" rx="25" fill="url(#bg)"/>
-  <rect x="3.75" y="3.75" width="120.5" height="120.5" rx="24.25" fill="none" stroke="#5E879D" stroke-opacity=".38" stroke-width="1.5"/>
-  <rect x="4" y="4" width="120" height="120" rx="24" fill="url(#glow)"/>
-  <path d="M35 96V32h30.5C84.7 32 96 41.6 96 57.8 96 74.1 84.7 84 65.5 84H51" fill="none" stroke="#F7FBFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M49 75.5 61 64l12 7 19-21" fill="none" stroke="url(#trend)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="m85.5 49.5 7.6-.6-.4 7.6" fill="none" stroke="#5DB6FF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="49" cy="75.5" r="3.1" fill="#34D3BD"/>
-  <circle cx="61" cy="64" r="3.1" fill="#41C9C5"/>
-  <circle cx="73" cy="71" r="3.1" fill="#4BBFD2"/>
+  <rect x="10" y="10" width="108" height="108" rx="24" fill="url(#bg)"/>
+  <path d="M41 28V98" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>
+  <path d="M47 35C68 35 82 47 82 62C82 77 68 89 47 89" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M49 65L86 31" stroke="url(#accent)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M86 31V54" stroke="url(#accent)" stroke-width="10" stroke-linecap="round"/>
 </svg>
