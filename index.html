@@ -2143,6 +2143,28 @@ html[data-theme="dark"] input[type="month"]::-webkit-calendar-picker-indicator{
   .analyticsSidebar .analyticsWorkbench:not([open])>.analyticsWorkbenchBody{display:block !important}
 }
 
+
+/* Mobile quick movement action */
+@media(max-width:700px){
+  .mobileQuickAdd{
+    min-width:0 !important;width:100% !important;height:56px !important;min-height:56px !important;
+    padding:2px 1px 4px !important;border:0 !important;background:transparent !important;color:var(--text) !important;
+    display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important;
+    gap:2px !important;font:inherit;font-size:8.5px !important;font-weight:800 !important;line-height:1 !important;cursor:pointer;
+    overflow:visible !important;
+  }
+  .mobileQuickAddIcon{
+    width:38px;height:38px;flex:0 0 38px;border-radius:50% !important;
+    display:flex;align-items:center;justify-content:center;background:#10283a;color:#fff;
+    border:1px solid color-mix(in srgb,#fff 18%,transparent);box-shadow:0 5px 14px rgba(16,40,58,.25);
+    transform:translateY(-5px);
+  }
+  .mobileQuickAddIcon i{font-size:17px !important;line-height:1 !important}
+  .mobileQuickAdd>span:last-child{display:block;width:100%;line-height:10px;min-height:10px;text-align:center;white-space:nowrap;transform:translateY(-3px)}
+  .mobileQuickAdd:active .mobileQuickAddIcon{transform:translateY(-4px) scale(.96)}
+  html[data-theme="dark"] .mobileQuickAddIcon{background:#15344a;color:#fff;border-color:#385164}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2429,13 +2451,13 @@ html[data-theme="dark"] input[type="month"]::-webkit-calendar-picker-indicator{
 
   <section id="more" class="view">
     <div class="card section">
-      <div class="sectionHead"><div><h2><i class="fa-solid fa-grip"></i>Más</h2><p>Administración de tus productos, recurrentes y categorías.</p></div></div>
+      <div class="sectionHead"><div><h2><i class="fa-solid fa-grip"></i>Más</h2><p>Objetivos, indicadores y administración de tu estructura financiera.</p></div></div>
       <div class="sectionBody"><div class="moreGrid">
         <button class="moreCard" onclick="navigateTo('accounts')"><i class="fa-solid fa-building-columns"></i><span>Cuentas</span><small>Saldos y conciliación</small></button>
-        <button class="moreCard" onclick="navigateTo('cards')"><i class="fa-solid fa-credit-card"></i><span>Tarjetas</span><small>Deuda y ciclos</small></button>
+        <button class="moreCard" onclick="navigateTo('goals')"><i class="fa-solid fa-bullseye"></i><span>Objetivos</span><small>Metas y avance</small></button>
+        <button class="moreCard" onclick="navigateTo('analytics')"><i class="fa-solid fa-chart-simple"></i><span>Indicadores</span><small>Motor de análisis</small></button>
         <button class="moreCard" onclick="navigateTo('recurring')"><i class="fa-solid fa-rotate"></i><span>Recurrentes</span><small>Pagos e ingresos fijos</small></button>
         <button class="moreCard" onclick="navigateTo('categories')"><i class="fa-solid fa-tags"></i><span>Categorías</span><small>Clasificación del P&L</small></button>
-        <button class="moreCard" onclick="navigateTo('analytics')"><i class="fa-solid fa-chart-simple"></i><span>Indicadores</span><small>Motor de análisis</small></button>
       </div></div>
     </div>
   </section>
@@ -2463,9 +2485,9 @@ html[data-theme="dark"] input[type="month"]::-webkit-calendar-picker-indicator{
 <nav class="mobileNav" aria-label="Navegación móvil">
   <button class="mobileTab active" data-view="dashboard"><i class="fa-solid fa-gauge-high"></i><span>Resumen</span></button>
   <button class="mobileTab" data-view="movements"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Movs.</span></button>
-  <button class="mobileTab" data-view="analytics"><i class="fa-solid fa-chart-simple"></i><span>Indic.</span></button>
+  <button id="mobileQuickMovement" class="mobileQuickAdd" type="button" aria-label="Registrar movimiento" title="Registrar movimiento"><span class="mobileQuickAddIcon"><i class="fa-solid fa-plus"></i></span><span>Movimiento</span></button>
+  <button class="mobileTab" data-view="cards"><i class="fa-solid fa-credit-card"></i><span>Tarjetas</span></button>
   <button class="mobileTab" data-view="receivables"><i class="fa-solid fa-hand-holding-dollar"></i><span>Pendientes</span></button>
-  <button class="mobileTab" data-view="goals"><i class="fa-solid fa-bullseye"></i><span>Objetivos</span></button>
   <button class="mobileTab" data-view="more"><i class="fa-solid fa-grip"></i><span>Más</span></button>
 </nav>
 
@@ -2774,6 +2796,7 @@ function syncRecurring(){const n=parseDate(today()),low=new Date(n);low.setMonth
 
 function navigateTo(view){const target=$(view);if(!target)return;document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));target.classList.add('active');if(view==='analytics')renderAnalytics(true);window.scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(b=>b.onclick=()=>navigateTo(b.dataset.view));
+const mobileQuickMovement=$('mobileQuickMovement');if(mobileQuickMovement)mobileQuickMovement.onclick=()=>openMovement();
 
 function accountOpts(blank=true){return (blank?'<option value="">Selecciona...</option>':'')+data.accounts.filter(x=>x.active).map(a=>`<option value="${a.id}">${esc(a.name)} · ${a.currency} · ${money(accountBalance(a.id),a.currency)}</option>`).join('')}
 function cardOpts(blank=true){return (blank?'<option value="">Selecciona...</option>':'')+data.cards.filter(x=>x.active).map(c=>`<option value="${c.id}">${esc(c.name)} · ${c.currency} · deuda ${money(cardDebt(c.id),c.currency)}</option>`).join('')}

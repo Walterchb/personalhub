@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v17-analytics-groups';
+const CACHE='personal-hub-v17-mobile-quick-add';
 const APP_SHELL=[
   './',
   './index.html',
