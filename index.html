@@ -2270,7 +2270,7 @@ html[data-theme="dark"] .detailChartSwitch button.active{background:#10283a;colo
         <div class="card settingCard"><label>Tipo de cambio USD → PEN</label><input id="fxInput" data-admin-field type="number" step=".0001"></div>
         <div class="card settingCard"><label>Histórico automático</label><select id="lookbackInput" data-admin-field><option value="3">3 meses</option><option value="6">6 meses</option><option value="12">12 meses</option><option value="24">24 meses</option></select></div>
         <div class="card settingCard"><label>Protección de edición</label><div class="cloudLine"><i class="fa-solid fa-shield-halved"></i><span>La app inicia siempre en <strong>Modo normal</strong>. Activa Administrador desde el header solo cuando necesites registrar o modificar información.</span></div></div>
-        <div class="card settingCard"><label>Sincronización en la nube</label><div class="cloudLine"><span id="cloudDot" class="cloudDot"></span><span id="cloudStateLabel" class="cloudStateText">Conectando…</span></div><div id="cloudAccount" class="cloudAccount"></div><div class="cloudActions"><button id="syncNowBtn" class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Sincronizar</button><button id="signOutBtn" class="btn"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button></div><div id="cloudMeta" class="cloudMeta">Supabase es la fuente principal; este dispositivo conserva una copia local.</div></div>
+        <div class="card settingCard"><label>Sincronización en la nube</label><div class="cloudLine"><span id="cloudDot" class="cloudDot"></span><span id="cloudStateLabel" class="cloudStateText">Conectando…</span></div><div id="cloudAccount" class="cloudAccount"></div><div class="cloudActions"><button id="syncNowBtn" class="btn"><i class="fa-solid fa-cloud-arrow-down"></i> Recargar nube</button><button id="signOutBtn" class="btn"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button></div><div id="cloudMeta" class="cloudMeta">Supabase es la única fuente de datos financieros. No se guarda una copia local en este dispositivo.</div></div>
         <div class="card settingCard"><label>Respaldo opcional</label><div class="backupActions"><button id="settingsExport" class="btn"><i class="fa-solid fa-file-export"></i> Exportar JSON</button><button id="settingsImport" class="btn" data-admin-action><i class="fa-solid fa-file-import"></i> Importar JSON</button></div></div>
         <div class="card settingCard"><label>Apariencia</label><button id="settingsTheme" class="btn"><i class="fa-solid fa-circle-half-stroke"></i> Cambiar claro / oscuro</button></div>
         <div class="card settingCard"><label>Mantenimiento</label><button id="resetBtn" class="btn danger" data-admin-action><i class="fa-solid fa-rotate-left"></i> Reiniciar herramienta</button></div>
@@ -2414,13 +2414,13 @@ const SUPABASE_URL='https://zewuynfpogzdmpjkkzuf.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_fngZWDMJzvyfD_Q3yZNyYA_rbMHOAbP';
 const SITE_URL='https://walterchb.github.io/personalhub/';
 const CLOUD_TABLE='personal_hub_state';
-const CLOUD_META_KEY='personal-hub-cloud-meta-v1';
+const LEGACY_LOCAL_KEYS=['control-financiero-ledger-v2','personal-hub-cloud-meta-v1','personal-hub-hide-figures-v1'];
 let INVITE_LINK_TYPE=(()=>{try{const h=new URLSearchParams(location.hash.replace(/^#/,'')),q=new URLSearchParams(location.search);return h.get('type')||q.get('type')||''}catch{return ''}})();
-let supabaseClient=null,cloudSession=null,cloudReady=false,cloudBusy=false,cloudSaveTimer=null,cloudLastUpdated='',cloudPollTimer=null,cloudApplyingRemote=false;
+let supabaseClient=null,cloudSession=null,cloudReady=false,cloudOnline=false,cloudBusy=false,cloudSaveTimer=null,cloudSavePending=false,cloudLastUpdated='',cloudPollTimer=null,cloudApplyingRemote=false,lastCloudSnapshot=null;
 
-const KEY='control-financiero-ledger-v2';
-const PRIVACY_KEY='personal-hub-hide-figures-v1';
-let figuresHidden=localStorage.getItem(PRIVACY_KEY)==='1';
+/* Financial data is cloud-only. Remove legacy app-owned browser copies once this version loads. */
+try{LEGACY_LOCAL_KEYS.forEach(k=>localStorage.removeItem(k))}catch{}
+let figuresHidden=false;
 let adminMode=false; // Safety mode: always starts in Normal on each app load.
 let availabilityMode='available';
 const $=id=>document.getElementById(id);
@@ -2434,6 +2434,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&
 function toast(title,message='',type='good'){const wrap=$('toastWrap'),el=document.createElement('div');el.className='toast '+(type==='warn'?'warnToast':type==='bad'?'badToast':'');el.innerHTML=`<strong>${esc(title)}</strong>${message?`<small>${esc(message)}</small>`:''}`;wrap.appendChild(el);setTimeout(()=>el.remove(),3200)}
 
 function requireAdmin(action='hacer cambios'){
+  if(!cloudReady||!cloudOnline){toast('Solo nube',`No se puede ${action} sin conexión activa con Supabase.`,'warn');return false}
   if(adminMode)return true;
   toast('Modo normal activo',`Activa Administrador para ${action}.`,'warn');
   return false;
@@ -2460,12 +2461,13 @@ function closeEditingDialogs(){
 }
 function applyAdminMode(){
   document.documentElement.dataset.editMode=adminMode?'admin':'normal';
+  const canEdit=adminMode&&cloudReady&&cloudOnline;
   for(const el of adminControlledElements()){
     if(el.dataset.adminBaseDisabled===undefined)el.dataset.adminBaseDisabled=el.disabled?'1':'0';
     const baseDisabled=el.dataset.adminBaseDisabled==='1';
-    el.disabled=!adminMode||baseDisabled;
-    el.classList.toggle('adminLockedControl',!adminMode);
-    if(!adminMode&&el.tagName==='BUTTON'&&!el.title)el.title='Disponible en modo Administrador';
+    el.disabled=!canEdit||baseDisabled;
+    el.classList.toggle('adminLockedControl',!canEdit);
+    if(!canEdit&&el.tagName==='BUTTON'&&!el.title)el.title=cloudOnline?'Disponible en modo Administrador':'Requiere conexión con Supabase';
   }
   updateAdminModeButton();
 }
@@ -2524,11 +2526,11 @@ function migrateCategoryModel(d){
   d.categories=next;d.settings=d.settings||{};d.settings.categoryModelVersion=2;
 }
 function starter(){
-  return {version:6,settings:{income:3700,fx:3.5,theme:'light',lookback:6,categoryModelVersion:2},accounts:[],cards:[],categories:buildCategoryModel(),movements:[],recurring:[],goals:[],receivables:[]};
+  return {version:6,settings:{income:3700,fx:3.5,theme:'light',lookback:6,categoryModelVersion:2,hideFigures:false},accounts:[],cards:[],categories:buildCategoryModel(),movements:[],recurring:[],goals:[],receivables:[]};
 }
 function normalize(d){
   if(!d||typeof d!=='object')d=starter();
-  d.version=6;d.settings=d.settings||{income:3700,fx:3.5,theme:'light',lookback:6};
+  d.version=6;d.settings=d.settings||{income:3700,fx:3.5,theme:'light',lookback:6,hideFigures:false};if(typeof d.settings.hideFigures!=='boolean')d.settings.hideFigures=false;
   d.accounts=Array.isArray(d.accounts)?d.accounts:[];d.cards=Array.isArray(d.cards)?d.cards:[];d.categories=Array.isArray(d.categories)?d.categories:[];
   d.movements=Array.isArray(d.movements)?d.movements:[];d.recurring=Array.isArray(d.recurring)?d.recurring:[];d.goals=Array.isArray(d.goals)?d.goals:[];d.receivables=Array.isArray(d.receivables)?d.receivables:[];
   if((+d.settings.categoryModelVersion||0)<2)migrateCategoryModel(d);
@@ -2541,7 +2543,7 @@ function normalize(d){
   return d;
 }
 
-let data;try{data=normalize(JSON.parse(localStorage.getItem(KEY))||starter())}catch{data=starter()}
+let data=normalize(starter()); // Ephemeral placeholder only; replaced by Supabase before the app is shown.
 
 let modalPageScrollY=0,modalPageIsLocked=false;
 function syncModalPageLock(){
@@ -2558,9 +2560,10 @@ function initModalScrollIsolation(){
 }
 initModalScrollIsolation();
 
-function persist(){localStorage.setItem(KEY,JSON.stringify(data))}
-persist();
-function save(){persist();syncRecurring();persist();renderAll();if(!cloudApplyingRemote)queueCloudSave()}
+function save(){
+  if(!cloudReady||!cloudOnline||!cloudSession){restoreCloudSnapshot();toast('Cambio no guardado','Personal Hub funciona en modo solo nube. Reconecta con Supabase e inténtalo nuevamente.','bad');return}
+  syncRecurring();renderAll();updatePrivacyButton();applyAdminMode();if(!cloudApplyingRemote)queueCloudSave();
+}
 
 const account=id=>data.accounts.find(x=>x.id===id), card=id=>data.cards.find(x=>x.id===id), cat=id=>data.categories.find(x=>x.id===id);
 const catName=id=>cat(id)?.name||'Sin categoría';
@@ -2579,8 +2582,7 @@ function parseDate(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m
 function fmt(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function addPeriod(d,p){d=new Date(d);if(p==='weekly')d.setDate(d.getDate()+7);else if(p==='monthly'){const day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+1);d.setDate(Math.min(day,new Date(d.getFullYear(),d.getMonth()+1,0).getDate()))}else{const m=d.getMonth(),day=d.getDate();d.setFullYear(d.getFullYear()+1);d.setMonth(m);d.setDate(Math.min(day,new Date(d.getFullYear(),m+1,0).getDate()))}return d}
 function nextDue(r){if(!r.startDate)return null;let d=parseDate(r.startDate),n=parseDate(today()),g=0;while(d<n&&g++<2000)d=addPeriod(d,r.period);if(r.autoPost){while(data.movements.some(t=>t.recurringKey===`${r.id}|${fmt(d)}`)&&g++<2000)d=addPeriod(d,r.period)}return d}
-function syncRecurring(){const n=parseDate(today()),low=new Date(n);low.setMonth(low.getMonth()-(+data.settings.lookback||6));let made=0;for(const r of data.recurring.filter(x=>x.active&&x.autoPost&&x.sourceId)){let d=parseDate(r.startDate),g=0;while(d<low&&g++<2000)d=addPeriod(d,r.period);while(d<=n&&g++<2500){const ds=fmt(d),key=`${r.id}|${ds}`;if(!data.movements.some(t=>t.recurringKey===key)){data.movements.push({id:uid(),date:ds,kind:r.kind,description:r.name,sourceType:r.kind==='income'?'account':r.sourceType,sourceId:r.sourceId,destinationId:'',cardId:'',categoryId:r.categoryId,subcategoryId:r.subcategoryId||'',tag:r.tag||'',amount:+r.amount||0,appliedAmount:null,note:r.comment||'',recurringKey:key,recurringId:r.id,manualRecurring:false});made++}d=addPeriod(d,r.period)}}if(made)persist();return made}
-syncRecurring();
+function syncRecurring(){const n=parseDate(today()),low=new Date(n);low.setMonth(low.getMonth()-(+data.settings.lookback||6));let made=0;for(const r of data.recurring.filter(x=>x.active&&x.autoPost&&x.sourceId)){let d=parseDate(r.startDate),g=0;while(d<low&&g++<2000)d=addPeriod(d,r.period);while(d<=n&&g++<2500){const ds=fmt(d),key=`${r.id}|${ds}`;if(!data.movements.some(t=>t.recurringKey===key)){data.movements.push({id:uid(),date:ds,kind:r.kind,description:r.name,sourceType:r.kind==='income'?'account':r.sourceType,sourceId:r.sourceId,destinationId:'',cardId:'',categoryId:r.categoryId,subcategoryId:r.subcategoryId||'',tag:r.tag||'',amount:+r.amount||0,appliedAmount:null,note:r.comment||'',recurringKey:key,recurringId:r.id,manualRecurring:false});made++}d=addPeriod(d,r.period)}}return made}
 
 function navigateTo(view){const target=$(view);if(!target)return;document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));target.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(b=>b.onclick=()=>navigateTo(b.dataset.view));
@@ -2857,7 +2859,7 @@ function postRecurringNow(id){if(!requireAdmin('registrar este recurrente'))retu
 function deleteMovement(id){if(!requireAdmin('eliminar este movimiento'))return;const t=data.movements.find(x=>x.id===id);if(!t)return;if(!confirm('¿Eliminar este movimiento? Todo se recalculará automáticamente.'))return;if(t.receivableId&&t.receivablePaymentId){const r=data.receivables.find(x=>x.id===t.receivableId),inst=r?.installments?.find(x=>x.id===t.receivableInstallmentId);if(inst)inst.payments=(inst.payments||[]).filter(p=>p.id!==t.receivablePaymentId)}data.movements=data.movements.filter(x=>x.id!==id);save();toast('Movimiento eliminado','','warn')}
 function deleteCategory(id){if(!requireAdmin('eliminar esta categoría'))return;const used=data.movements.some(x=>x.categoryId===id)||data.recurring.some(x=>x.categoryId===id)||data.receivables.some(x=>x.categoryId===id);if(!confirm(used?'La categoría está en uso. Se quitará de esos registros. ¿Continuar?':'¿Eliminar categoría?'))return;data.categories=data.categories.filter(x=>x.id!==id);for(const collection of [data.movements,data.recurring,data.receivables])collection.forEach(x=>{if(x.categoryId===id){x.categoryId='';x.subcategoryId=''}});save()}
 
-function toggleTheme(){data.settings.theme=data.settings.theme==='dark'?'light':'dark';save();if($('detailDialog')?.open&&detailTrendState)setTimeout(()=>setDetailChartMode(detailChartMode),0)}
+function toggleTheme(){if(!cloudReady||!cloudOnline)return toast('Solo nube','Conéctate a Supabase para guardar el cambio de tema.','warn');data.settings.theme=data.settings.theme==='dark'?'light':'dark';save();if($('detailDialog')?.open&&detailTrendState)setTimeout(()=>setDetailChartMode(detailChartMode),0)}
 function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`treasuryhub-personal-finance-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}
 function importClick(){if(!requireAdmin('importar datos'))return;$('importFile').click()}
 $('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;if(!requireAdmin('importar datos')){e.target.value='';return;}try{data=normalize(JSON.parse(await f.text()));save();toast('Datos importados','Archivo cargado correctamente.')}catch{toast('No se importó','JSON incompatible.','bad')}e.target.value=''};
@@ -2873,64 +2875,116 @@ function setCloudStatus(state,label,detail=''){
 function showApp(){document.body.classList.remove('authLocked');$('authGate')?.classList.add('hidden')}
 function showLogin(message=''){document.body.classList.add('authLocked');$('authGate')?.classList.remove('hidden');setAuthPanel('authLoginPanel');if(cloudSession?.user?.email&&!$('authEmail').value)$('authEmail').value=cloudSession.user.email;if(message)setAuthMessage('authLoginMessage',message,'bad')}
 function showPasswordSetup(){document.body.classList.add('authLocked');$('authGate')?.classList.remove('hidden');setAuthPanel('authPasswordPanel')}
-function localCloudMeta(){try{return JSON.parse(localStorage.getItem(CLOUD_META_KEY)||'{}')}catch{return {}}}
-function saveCloudMeta(meta){localStorage.setItem(CLOUD_META_KEY,JSON.stringify(meta))}
 function rawRemoteLooksEmpty(v){return !v||typeof v!=='object'||(!v.version&&!Array.isArray(v.accounts)&&!Array.isArray(v.cards)&&!Array.isArray(v.movements)&&!Array.isArray(v.recurring))}
-function queueCloudSave(){if(!cloudReady||!cloudSession||cloudApplyingRemote)return;clearTimeout(cloudSaveTimer);setCloudStatus('busy','Guardando…');cloudSaveTimer=setTimeout(()=>cloudSaveState(),650)}
+function cloneState(v){try{return typeof structuredClone==='function'?structuredClone(v):JSON.parse(JSON.stringify(v))}catch{return JSON.parse(JSON.stringify(v))}}
+function setCloudOnline(value){cloudOnline=!!value;applyAdminMode()}
+function restoreCloudSnapshot(){
+  if(!lastCloudSnapshot)return;
+  cloudApplyingRemote=true;data=normalize(cloneState(lastCloudSnapshot));figuresHidden=!!data.settings.hideFigures;renderAll();updatePrivacyButton();cloudApplyingRemote=false;applyAdminMode();
+}
+function applyRemoteState(remoteData,updatedAt=''){
+  const needsCategoryUpgrade=(+remoteData?.settings?.categoryModelVersion||0)<2;
+  cloudApplyingRemote=true;
+  data=normalize(cloneState(remoteData));figuresHidden=!!data.settings.hideFigures;cloudLastUpdated=updatedAt||'';lastCloudSnapshot=cloneState(data);
+  const made=syncRecurring();renderAll();updatePrivacyButton();cloudApplyingRemote=false;applyAdminMode();
+  return made||needsCategoryUpgrade;
+}
+function schedulePendingCloudSave(delay=90){
+  if(!cloudReady||!cloudSession||!cloudOnline||cloudApplyingRemote)return;
+  cloudSavePending=true;clearTimeout(cloudSaveTimer);setCloudStatus('busy','Guardando…','Guardando directamente en Supabase…');
+  cloudSaveTimer=setTimeout(()=>{cloudSaveTimer=null;flushCloudSave()},delay);
+}
+function queueCloudSave(){schedulePendingCloudSave(90)}
+async function flushCloudSave(){
+  if(!cloudSavePending||!cloudReady||!cloudSession||!cloudOnline)return false;
+  if(cloudBusy)return false;
+  cloudSavePending=false;
+  const ok=await cloudSaveState();
+  if(cloudSavePending&&cloudOnline)schedulePendingCloudSave(60);
+  return ok;
+}
 async function cloudSaveState(){
-  if(!supabaseClient||!cloudSession||cloudBusy)return;
-  cloudBusy=true;setCloudStatus('busy','Guardando…');
+  if(!supabaseClient||!cloudSession||cloudBusy)return false;
+  cloudBusy=true;setCloudStatus('busy','Guardando…','Guardando directamente en Supabase…');
+  const snapshot=cloneState(data),expected=cloudLastUpdated;let conflict=false,ok=false;
   try{
-    const stamp=new Date().toISOString();
-    const {data:row,error}=await supabaseClient.from(CLOUD_TABLE).upsert({user_id:cloudSession.user.id,data,updated_at:stamp},{onConflict:'user_id'}).select('updated_at').single();
-    if(error)throw error;
-    cloudLastUpdated=row?.updated_at||stamp;saveCloudMeta({userId:cloudSession.user.id,remoteUpdatedAt:cloudLastUpdated});
-    setCloudStatus('good','Sincronizado',`Última sincronización: ${new Date(cloudLastUpdated).toLocaleString('es-PE')}. Supabase es la fuente principal; este dispositivo conserva una copia local.`);
-  }catch(err){console.error('Cloud save',err);setCloudStatus('bad','Sin conexión','Los cambios siguen guardados en este dispositivo y se volverán a intentar al recuperar conexión.');}
-  finally{cloudBusy=false}
+    const stamp=new Date().toISOString();let row=null,error=null;
+    if(expected){
+      const result=await supabaseClient.from(CLOUD_TABLE).update({data:snapshot,updated_at:stamp}).eq('user_id',cloudSession.user.id).eq('updated_at',expected).select('updated_at').maybeSingle();
+      row=result.data;error=result.error;if(error)throw error;if(!row){conflict=true;return false}
+    }else{
+      const result=await supabaseClient.from(CLOUD_TABLE).upsert({user_id:cloudSession.user.id,data:snapshot,updated_at:stamp},{onConflict:'user_id'}).select('updated_at').single();
+      row=result.data;error=result.error;if(error)throw error;
+    }
+    cloudLastUpdated=row?.updated_at||stamp;lastCloudSnapshot=cloneState(snapshot);setCloudOnline(true);ok=true;
+    setCloudStatus('good','Sincronizado',`Última sincronización: ${new Date(cloudLastUpdated).toLocaleString('es-PE')}. Datos financieros almacenados únicamente en Supabase.`);
+    return true;
+  }catch(err){
+    console.error('Cloud save',err);cloudSavePending=false;setCloudOnline(false);restoreCloudSnapshot();
+    setCloudStatus('bad','No guardado','No se pudo guardar en Supabase. El cambio fue descartado para mantener la nube como única fuente de verdad.');
+    toast('Cambio descartado','No se pudo confirmar el cambio en Supabase. No se conservó una copia local.','bad');return false;
+  }finally{
+    cloudBusy=false;
+    if(conflict){
+      cloudSavePending=false;setCloudStatus('busy','Actualizando…','Se detectó un cambio más reciente en Supabase.');
+      await cloudPullState(true);
+      toast('Datos actualizados','Otro dispositivo tenía una versión más reciente. Se recargó Supabase para evitar sobrescribirla.','warn');
+    }else if(ok&&cloudSavePending&&cloudOnline)schedulePendingCloudSave(60);
+  }
 }
 async function cloudPullState(force=false){
-  if(!supabaseClient||!cloudSession||cloudBusy)return;
+  if(!supabaseClient||!cloudSession||cloudBusy)return false;
+  if((cloudSaveTimer||cloudSavePending)&&!force)return false;
+  if(force&&cloudSaveTimer){clearTimeout(cloudSaveTimer);cloudSaveTimer=null;await flushCloudSave()}
+  if(cloudBusy)return false;
+  cloudBusy=true;
   try{
     const {data:row,error}=await supabaseClient.from(CLOUD_TABLE).select('data,updated_at').eq('user_id',cloudSession.user.id).maybeSingle();
     if(error)throw error;
-    if(!row){if(force)await cloudSaveState();return}
+    if(!row||rawRemoteLooksEmpty(row.data)){setCloudOnline(false);setCloudStatus('bad','Sin datos en nube','No existe un estado válido en Supabase para esta cuenta.');return false}
     const remoteTime=row.updated_at||'';
-    if(force||(!cloudLastUpdated||remoteTime>cloudLastUpdated)){
-      const needsCategoryUpgrade=(+row.data?.settings?.categoryModelVersion||0)<2;
-      cloudApplyingRemote=true;data=normalize(row.data);persist();const made=syncRecurring();persist();renderAll();cloudApplyingRemote=false;
-      cloudLastUpdated=remoteTime;saveCloudMeta({userId:cloudSession.user.id,remoteUpdatedAt:cloudLastUpdated});
-      if(made||needsCategoryUpgrade)queueCloudSave();
-    }
-    setCloudStatus('good','Sincronizado',`Última sincronización: ${remoteTime?new Date(remoteTime).toLocaleString('es-PE'):'ahora'}. Supabase es la fuente principal; este dispositivo conserva una copia local.`);
-  }catch(err){cloudApplyingRemote=false;console.error('Cloud pull',err);setCloudStatus('bad','Sin conexión','No se pudo consultar Supabase. Puedes volver a intentar desde Ajustes.');}
+    let needsSave=false;
+    if(force||!cloudLastUpdated||remoteTime!==cloudLastUpdated)needsSave=applyRemoteState(row.data,remoteTime);
+    setCloudOnline(true);
+    setCloudStatus('good','Sincronizado',`Última sincronización: ${remoteTime?new Date(remoteTime).toLocaleString('es-PE'):'ahora'}. Datos financieros almacenados únicamente en Supabase.`);
+    if(needsSave)cloudSavePending=true;
+    return true;
+  }catch(err){
+    cloudApplyingRemote=false;console.error('Cloud pull',err);setCloudOnline(false);setCloudStatus('bad','Sin conexión','No se pudo consultar Supabase. Personal Hub queda en modo lectura y no conserva cambios locales.');return false;
+  }finally{
+    cloudBusy=false;if(cloudSavePending&&cloudOnline)schedulePendingCloudSave(60);
+  }
 }
 async function bootstrapCloud(session){
-  cloudSession=session;cloudReady=false;clearInterval(cloudPollTimer);
+  cloudSession=session;cloudReady=false;cloudOnline=false;cloudSavePending=false;clearTimeout(cloudSaveTimer);cloudSaveTimer=null;clearInterval(cloudPollTimer);
   if(!session?.user){showLogin();return}
   if($('cloudAccount'))$('cloudAccount').textContent=session.user.email||session.user.id;
-  setCloudStatus('busy','Conectando…');
+  setCloudStatus('busy','Conectando…','Leyendo la información directamente desde Supabase…');
   try{
     const {data:row,error}=await supabaseClient.from(CLOUD_TABLE).select('data,updated_at').eq('user_id',session.user.id).maybeSingle();
     if(error)throw error;
     if(!row||rawRemoteLooksEmpty(row.data)){
-      cloudReady=true;showApp();await cloudSaveState();toast('Personal Hub Cloud activado','Tus datos locales ya están guardados en Supabase.');
+      data=normalize(starter());figuresHidden=!!data.settings.hideFigures;cloudLastUpdated='';lastCloudSnapshot=null;cloudReady=true;cloudOnline=true;
+      const made=syncRecurring();renderAll();updatePrivacyButton();applyAdminMode();
+      const saved=await cloudSaveState();if(!saved)throw new Error('No se pudo crear el estado inicial en Supabase.');
+      showApp();toast('Personal Hub Cloud activado','Supabase quedó configurado como única fuente de datos.');
     }else{
-      const needsCategoryUpgrade=(+row.data?.settings?.categoryModelVersion||0)<2;
-      cloudApplyingRemote=true;data=normalize(row.data);persist();const made=syncRecurring();persist();renderAll();cloudApplyingRemote=false;
-      cloudLastUpdated=row.updated_at||'';saveCloudMeta({userId:session.user.id,remoteUpdatedAt:cloudLastUpdated});cloudReady=true;showApp();
-      setCloudStatus('good','Sincronizado',`Última sincronización: ${cloudLastUpdated?new Date(cloudLastUpdated).toLocaleString('es-PE'):'ahora'}. Supabase es la fuente principal; este dispositivo conserva una copia local.`);
-      if(made||needsCategoryUpgrade)queueCloudSave();
+      cloudReady=true;cloudOnline=true;const needsSave=applyRemoteState(row.data,row.updated_at||'');showApp();
+      setCloudStatus('good','Sincronizado',`Última sincronización: ${row.updated_at?new Date(row.updated_at).toLocaleString('es-PE'):'ahora'}. Datos financieros almacenados únicamente en Supabase.`);
+      if(needsSave){cloudSavePending=true;await flushCloudSave()}
     }
-    cloudPollTimer=setInterval(()=>{if(document.visibilityState==='visible')cloudPullState(false)},20000);
-  }catch(err){cloudApplyingRemote=false;console.error('Cloud bootstrap',err);cloudReady=false;setAuthPanel('authFatalPanel');$('authFatalText').textContent='No se pudo leer tu información de Supabase. Revisa tu conexión y vuelve a cargar la página.';}
+    cloudPollTimer=setInterval(()=>{if(document.visibilityState==='visible')cloudPullState(false)},15000);
+  }catch(err){
+    cloudApplyingRemote=false;console.error('Cloud bootstrap',err);cloudReady=false;cloudOnline=false;setAuthPanel('authFatalPanel');$('authFatalText').textContent='No se pudo leer tu información de Supabase. Personal Hub no usará una copia local. Revisa tu conexión y vuelve a cargar la página.';
+  }
 }
 async function initCloud(){
   if(!window.supabase?.createClient){setAuthPanel('authFatalPanel');$('authFatalText').textContent='No se pudo cargar el conector de Supabase. Revisa tu conexión a internet y vuelve a cargar.';return}
+  /* Supabase may persist only the authentication session token so you do not need to log in on every reload. Financial data is never persisted by Personal Hub in browser storage. */
   supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   supabaseClient.auth.onAuthStateChange((event,session)=>{
     cloudSession=session||null;
-    if(event==='SIGNED_OUT'){cloudReady=false;showLogin();return}
+    if(event==='SIGNED_OUT'){cloudReady=false;cloudOnline=false;cloudLastUpdated='';lastCloudSnapshot=null;data=normalize(starter());figuresHidden=false;showLogin();return}
     if(session&&(INVITE_LINK_TYPE==='invite'||INVITE_LINK_TYPE==='recovery'||event==='PASSWORD_RECOVERY')){showPasswordSetup();return}
     if(session&&!cloudReady)bootstrapCloud(session);
   });
@@ -2945,11 +2999,12 @@ async function initCloud(){
 $('loginForm').onsubmit=async e=>{e.preventDefault();setAuthMessage('authLoginMessage');const email=$('authEmail').value.trim(),password=$('authPassword').value;$('loginBtn').disabled=true;$('loginBtn').innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Ingresando…';try{const {data:res,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;cloudSession=res.session;await bootstrapCloud(res.session)}catch(err){setAuthMessage('authLoginMessage',err.message||'No se pudo iniciar sesión.','bad')}finally{$('loginBtn').disabled=false;$('loginBtn').innerHTML='<i class="fa-solid fa-right-to-bracket"></i> Ingresar'}};
 $('forgotPasswordBtn').onclick=async()=>{const email=$('authEmail').value.trim();if(!email)return setAuthMessage('authLoginMessage','Escribe primero tu correo.','bad');try{const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:SITE_URL});if(error)throw error;setAuthMessage('authLoginMessage','Te enviamos un enlace para crear una nueva contraseña.','good')}catch(err){setAuthMessage('authLoginMessage',err.message||'No se pudo enviar el correo.','bad')}};
 $('setPasswordForm').onsubmit=async e=>{e.preventDefault();setAuthMessage('authPasswordMessage');const p1=$('newPassword').value,p2=$('newPassword2').value;if(p1.length<8)return setAuthMessage('authPasswordMessage','Usa al menos 8 caracteres.','bad');if(p1!==p2)return setAuthMessage('authPasswordMessage','Las contraseñas no coinciden.','bad');const previousLinkType=INVITE_LINK_TYPE;INVITE_LINK_TYPE='';try{const {data:res,error}=await supabaseClient.auth.updateUser({password:p1});if(error)throw error;history.replaceState(null,'',location.pathname);cloudSession=(await supabaseClient.auth.getSession()).data.session;setAuthMessage('authPasswordMessage','Contraseña guardada.','good');setTimeout(()=>bootstrapCloud(cloudSession),350)}catch(err){INVITE_LINK_TYPE=previousLinkType;setAuthMessage('authPasswordMessage',err.message||'No se pudo guardar la contraseña.','bad')}};
-$('syncNowBtn').onclick=async()=>{if(!cloudSession)return;await cloudSaveState();toast('Sincronización completada','Supabase quedó actualizado.')};
-$('signOutBtn').onclick=async()=>{if(!supabaseClient)return;if(!confirm('¿Cerrar sesión en este dispositivo?'))return;clearInterval(cloudPollTimer);await supabaseClient.auth.signOut();cloudReady=false;showLogin()};
-window.addEventListener('focus',()=>{if(cloudReady)cloudPullState(false)});
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudReady)cloudPullState(false)});
-window.addEventListener('online',()=>{if(cloudReady){cloudPullState(false);queueCloudSave()}});
+$('syncNowBtn').onclick=async()=>{if(!cloudSession)return;const ok=await cloudPullState(true);toast(ok?'Datos actualizados':'No se pudo actualizar',ok?'Se recargó la versión guardada en Supabase.':'Revisa tu conexión con Supabase.',ok?'good':'bad')};
+$('signOutBtn').onclick=async()=>{if(!supabaseClient)return;if(!confirm('¿Cerrar sesión en este dispositivo?'))return;clearInterval(cloudPollTimer);clearTimeout(cloudSaveTimer);cloudSavePending=false;await supabaseClient.auth.signOut();cloudReady=false;cloudOnline=false;showLogin()};
+window.addEventListener('focus',()=>{if(cloudReady&&cloudOnline)cloudPullState(false)});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudReady&&cloudOnline)cloudPullState(false)});
+window.addEventListener('offline',()=>{if(!cloudReady)return;setCloudOnline(false);setCloudStatus('bad','Sin conexión','Modo lectura: los datos financieros solo existen en Supabase y no se guardarán cambios locales.')});
+window.addEventListener('online',async()=>{if(!cloudReady)return;setCloudStatus('busy','Reconectando…','Consultando Supabase…');await cloudPullState(true)});
 
 function updatePrivacyButton(){
   const b=$('privacyBtn');if(!b)return;
@@ -2960,12 +3015,10 @@ function updatePrivacyButton(){
   b.innerHTML=figuresHidden?'<i class="fa-solid fa-eye"></i><span>Mostrar</span>':'<i class="fa-solid fa-eye-slash"></i><span>Ocultar</span>';
 }
 function togglePrivacy(){
-  figuresHidden=!figuresHidden;
-  localStorage.setItem(PRIVACY_KEY,figuresHidden?'1':'0');
-  updatePrivacyButton();
-  const d=$('detailDialog');if(d&&d.open)d.close();
-  renderAll();
-  toast(figuresHidden?'Cifras ocultas':'Cifras visibles',figuresHidden?'Los importes y ratios están protegidos en pantalla.':'Se volvieron a mostrar los importes y ratios.');
+  if(!cloudReady||!cloudOnline)return toast('Solo nube','Conéctate a Supabase para guardar esta preferencia.','warn');
+  figuresHidden=!figuresHidden;if(data?.settings)data.settings.hideFigures=figuresHidden;
+  const d=$('detailDialog');if(d&&d.open)d.close();save();
+  toast(figuresHidden?'Cifras ocultas':'Cifras visibles',figuresHidden?'La preferencia quedó guardada en Supabase.':'La preferencia quedó guardada en Supabase.');
 }
 
 $('movementKind').onchange=updateMvForm;$('movementCategory').onchange=()=>fillSubcategorySelect('movementSubcategory',$('movementCategory').value);$('movementSourceType').onchange=()=>{refreshMvSources();preview()};['movementSourceId','movementDestinationId','movementCardId','movementAmount','movementAppliedAmount'].forEach(id=>$(id).oninput=preview);
@@ -2976,7 +3029,6 @@ $('incomeInput').onchange=()=>{if(!requireAdmin('cambiar parámetros'))return re
 $('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('settingsTheme').onclick=toggleTheme;$('privacyBtn').onclick=togglePrivacy;$('adminModeBtn').onclick=toggleAdminMode;$('settingsExport').onclick=exportData;$('settingsImport').onclick=importClick;
 $('resetBtn').onclick=()=>{if(!requireAdmin('reiniciar la herramienta'))return;if(confirm('¿Reiniciar toda la herramienta?')){data=starter();save();toast('Herramienta reiniciada','','warn')}};
 updatePrivacyButton();
-renderAll();
 applyAdminMode();
 const adminModeObserver=new MutationObserver(()=>applyAdminMode());
 const adminObserveRoot=document.querySelector('main');if(adminObserveRoot)adminModeObserver.observe(adminObserveRoot,{childList:true,subtree:true});

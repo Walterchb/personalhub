@@ -29,15 +29,17 @@ La app incluye manifest, Service Worker, Apple Touch Icon e iconos PWA de 192 y 
 - `icons/`: iconos de instalación.
 
 
-## Sincronización cloud
+## Sincronización cloud (solo nube)
 - Frontend: GitHub Pages.
 - Backend: Supabase (`personal_hub_state`).
-- El primer inicio de sesión, si la nube está vacía, sube automáticamente los datos existentes de este navegador.
-- Después, cada cambio se guarda en Supabase y se conserva una copia local como caché.
+- Si una cuenta nueva todavía no tiene estado en Supabase, Personal Hub crea allí una estructura inicial vacía; nunca toma una copia financiera del navegador.
+- Supabase es la única fuente de datos financieros. Personal Hub no guarda cuentas, tarjetas, movimientos, pendientes, objetivos ni configuraciones financieras en `localStorage`.
 - Al abrir o volver a la app se consulta la versión más reciente de la nube; además se comprueba periódicamente mientras está abierta.
 - **Exportar JSON** queda solo como respaldo opcional.
 
 > La clave incluida en `index.html` es la **Publishable key** de Supabase. No agregues nunca una Secret key o `service_role` al repositorio.
+>
+> El navegador puede conservar la **sesión de autenticación de Supabase** para evitar pedir login en cada recarga. Esa sesión no contiene tu información financiera. La PWA también puede cachear archivos estáticos (HTML, JS, iconos), pero no el estado financiero.
 
 ## Vista por fecha de corte
 - El selector superior usa únicamente la **fecha de corte**.
