@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v16-analytics';
+const CACHE='personal-hub-v17-analytics-groups';
 const APP_SHELL=[
   './',
   './index.html',
