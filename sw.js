@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v17-mobile-quick-add';
+const CACHE='personal-hub-v18-mobile-nav-center';
 const APP_SHELL=[
   './',
   './index.html',

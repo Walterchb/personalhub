@@ -1482,7 +1482,7 @@ dialog,.formGrid input,.formGrid select,.formGrid textarea,.notice,
 
   .mobileNav{
     display:grid !important;
-    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
     align-items:start !important;
     gap:2px !important;
     height:auto !important;
@@ -2095,7 +2095,7 @@ html[data-theme="dark"] .analyticsPresetRow button.active,html[data-theme="dark"
   .analyticsChartGrid,.analyticsLowerGrid{grid-template-columns:1fr;gap:8px;margin-top:8px}.analyticsCanvasWrap.main{height:260px}.analyticsCanvasWrap{height:235px;padding-left:1px;padding-right:3px}.analyticsMiniSelect{min-width:132px;font-size:10px}
   .analyticsLegend{grid-template-columns:1fr;padding-left:11px;padding-right:11px}.analyticsRatioSection{margin-top:8px}.analyticsRatioGrid{grid-template-columns:1fr 1fr;gap:6px;padding:0 10px 10px}.analyticsRatio{padding:8px}.analyticsRatioValue{font-size:17px}.analyticsInsights{padding:0 10px 10px}
   .analyticsBreakdownSection{margin-top:8px}.analyticsBreakdownHead{align-items:flex-start}.analyticsBreakdownControls{width:100%;display:grid;grid-template-columns:1fr 1fr}.analyticsBreakdownControls select{width:100%;min-width:0;height:36px}.analyticsBreakdownHeader{display:none}.analyticsBreakdown{padding:0 10px 10px;display:flex;flex-direction:column;gap:6px}.analyticsBreakdownRow{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-areas:"name name amount" "share count avg" "change change change";gap:5px 8px;padding:9px;border:1px solid var(--line);border-radius:5px;min-height:0}.analyticsBreakdownName{grid-area:name}.analyticsBreakdownRow>.analyticsBreakdownCell:nth-child(2){grid-area:amount;font-size:12px}.analyticsBreakdownRow>.analyticsBreakdownCell:nth-child(3){grid-area:share}.analyticsBreakdownRow>.analyticsBreakdownCell:nth-child(4){grid-area:count}.analyticsBreakdownRow>.analyticsBreakdownCell:nth-child(5){grid-area:avg}.analyticsBreakdownRow>.analyticsBreakdownCell:nth-child(6){grid-area:change;text-align:left;padding-top:5px;border-top:1px dashed var(--line)}.analyticsBreakdownCell{text-align:right;font-size:9px}.analyticsBreakdownCell::before{display:block;color:var(--muted);font-size:7.5px;font-weight:700;text-transform:uppercase;margin-bottom:1px}.analyticsBreakdownRow>.analyticsBreakdownCell:nth-child(2)::before{content:"Importe"}.analyticsBreakdownRow>.analyticsBreakdownCell:nth-child(3)::before{content:"Participación"}.analyticsBreakdownRow>.analyticsBreakdownCell:nth-child(4)::before{content:"Movs."}.analyticsBreakdownRow>.analyticsBreakdownCell:nth-child(5)::before{content:"Promedio"}.analyticsBreakdownRow>.analyticsBreakdownCell:nth-child(6)::before{content:"Vs. periodo anterior"}
-  .mobileNav{grid-template-columns:repeat(6,minmax(0,1fr)) !important}.mobileTab{font-size:8.5px!important;min-width:0!important;padding-left:1px!important;padding-right:1px!important}.mobileTab i{font-size:14px!important}
+  .mobileNav{grid-template-columns:repeat(5,minmax(0,1fr)) !important}.mobileTab{font-size:8.5px!important;min-width:0!important;padding-left:1px!important;padding-right:1px!important}.mobileTab i{font-size:14px!important}
 }
 @media(max-width:370px){.analyticsPresetRow button{font-size:8px}.analyticsKpi{flex-basis:47%}.analyticsRatioGrid{grid-template-columns:1fr}.mobileTab span{font-size:8px}}
 
@@ -2163,6 +2163,16 @@ html[data-theme="dark"] input[type="month"]::-webkit-calendar-picker-indicator{
   .mobileQuickAdd>span:last-child{display:block;width:100%;line-height:10px;min-height:10px;text-align:center;white-space:nowrap;transform:translateY(-3px)}
   .mobileQuickAdd:active .mobileQuickAddIcon{transform:translateY(-4px) scale(.96)}
   html[data-theme="dark"] .mobileQuickAddIcon{background:#15344a;color:#fff;border-color:#385164}
+}
+
+
+/* Personal Hub v18 — centered five-item mobile nav */
+@media(max-width:700px){
+  .mobileNav{
+    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    gap:2px !important;
+  }
+  .mobileQuickAdd{grid-column:3 !important;}
 }
 
 </style>
@@ -2451,8 +2461,9 @@ html[data-theme="dark"] input[type="month"]::-webkit-calendar-picker-indicator{
 
   <section id="more" class="view">
     <div class="card section">
-      <div class="sectionHead"><div><h2><i class="fa-solid fa-grip"></i>Más</h2><p>Objetivos, indicadores y administración de tu estructura financiera.</p></div></div>
+      <div class="sectionHead"><div><h2><i class="fa-solid fa-grip"></i>Más</h2><p>Pendientes, objetivos, indicadores y administración de tu estructura financiera.</p></div></div>
       <div class="sectionBody"><div class="moreGrid">
+        <button class="moreCard" onclick="navigateTo('receivables')"><i class="fa-solid fa-hand-holding-dollar"></i><span>Pendientes</span><small>Cobros por recibir</small></button>
         <button class="moreCard" onclick="navigateTo('accounts')"><i class="fa-solid fa-building-columns"></i><span>Cuentas</span><small>Saldos y conciliación</small></button>
         <button class="moreCard" onclick="navigateTo('goals')"><i class="fa-solid fa-bullseye"></i><span>Objetivos</span><small>Metas y avance</small></button>
         <button class="moreCard" onclick="navigateTo('analytics')"><i class="fa-solid fa-chart-simple"></i><span>Indicadores</span><small>Motor de análisis</small></button>
@@ -2487,7 +2498,6 @@ html[data-theme="dark"] input[type="month"]::-webkit-calendar-picker-indicator{
   <button class="mobileTab" data-view="movements"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Movs.</span></button>
   <button id="mobileQuickMovement" class="mobileQuickAdd" type="button" aria-label="Registrar movimiento" title="Registrar movimiento"><span class="mobileQuickAddIcon"><i class="fa-solid fa-plus"></i></span><span>Movimiento</span></button>
   <button class="mobileTab" data-view="cards"><i class="fa-solid fa-credit-card"></i><span>Tarjetas</span></button>
-  <button class="mobileTab" data-view="receivables"><i class="fa-solid fa-hand-holding-dollar"></i><span>Pendientes</span></button>
   <button class="mobileTab" data-view="more"><i class="fa-solid fa-grip"></i><span>Más</span></button>
 </nav>
 
