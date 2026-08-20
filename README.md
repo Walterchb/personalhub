@@ -61,3 +61,7 @@ La app incluye manifest, Service Worker, Apple Touch Icon e iconos PWA de 192 y 
 - La estructura inicial incluye ingresos, egresos y **Ahorro / Inversión** con subcategorías predefinidas.
 - Al actualizar desde una versión anterior, Personal Hub migra automáticamente las categorías conocidas (por ejemplo, `Snacks` pasa a `Alimentación → Snacks` y `Ropa` a `Compras personales → Ropa`) y conserva categorías personalizadas.
 - Las subcategorías con historia no se borran al retirarlas desde la edición de una categoría: quedan archivadas para preservar el histórico.
+
+## Indicadores / motor de análisis
+
+La pestaña **Indicadores** permite analizar rangos personalizados, comparar contra el periodo anterior, alternar variables financieras, filtrar categorías y productos, revisar ratios, composición, rankings y desglose por categoría o subcategoría. La configuración analítica es temporal en la interfaz; los datos financieros continúan siendo **solo nube en Supabase**.
