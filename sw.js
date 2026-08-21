@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v25-pnl-sticky';
+const CACHE='personal-hub-v26-pnl-sticky-precision';
 const APP_SHELL=[
   './',
   './index.html',

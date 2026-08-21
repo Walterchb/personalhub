@@ -2369,6 +2369,47 @@ html[data-theme="dark"] .pnlSection.pnlBarsEnabled .matrix .pnlValueCell.pnlHasB
   .pnlLine.pnlSubLine{padding-left:16px !important}
 }
 
+
+
+/* Personal Hub v26 — P&L typography + natural page sticky refinement */
+/* Keep the original compact P&L typography: category values 11px, subcategory values 10px. */
+@media(min-width:961px){
+  .pnlDesktop .matrix{font-size:11px !important}
+  .pnlDesktop .matrix td:not(:first-child){font-size:11px !important}
+  .pnlDesktop .matrix tr.pnlSubRow td{font-size:10px !important}
+  .pnlDesktop .matrix thead th{
+    font-size:10px !important;
+    font-weight:800 !important;
+    letter-spacing:.03em !important;
+    background:var(--surface-2) !important;
+    color:var(--muted) !important;
+  }
+  .pnlDesktop .matrix thead th:first-child{background:var(--surface-2) !important;color:var(--muted) !important}
+  .pnlDesktop .matrix thead .pnlTotalHead{background:color-mix(in srgb,#0d9488 8%,var(--surface-2)) !important;color:var(--muted) !important}
+
+  /* Page scroll remains natural. The P&L heading sits only one standard 8px gap below the main header. */
+  .pnlSection>.sectionHead{
+    top:var(--pnl-sticky-head-top,72px) !important;
+    z-index:38 !important;
+    background:var(--surface-2) !important;
+    box-shadow:0 1px 0 var(--line) !important;
+  }
+  .pnlSection>.sectionHead::before{
+    content:'';
+    position:absolute;
+    left:-1px;right:-1px;
+    top:-8px;height:8px;
+    background:var(--bg);
+    pointer-events:none;
+  }
+  .pnlDesktop .matrix thead th{
+    top:var(--pnl-sticky-month-top,120px) !important;
+    z-index:34 !important;
+    box-shadow:0 1px 0 var(--line) !important;
+  }
+  .pnlDesktop .matrix thead th:first-child{z-index:36 !important}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2502,7 +2543,7 @@ html[data-theme="dark"] .pnlSection.pnlBarsEnabled .matrix .pnlValueCell.pnlHasB
 
     <div class="dashboardGrid">
       <div class="card section pnlSection" id="pnlSection">
-        <div class="sectionHead"><div><h2><i class="fa-solid fa-chart-column"></i>P&L / Flujo</h2><p>Las compras se reconocen al ocurrir. El pago de tarjeta solo reduce caja y deuda.</p></div><div class="pnlTools" aria-label="Herramientas de P&L"><button id="pnlToggleSubsBtn" class="pnlIconBtn" type="button" title="Desplegar subcategorías" aria-label="Desplegar subcategorías" aria-pressed="false"><i class="fa-solid fa-layer-group"></i></button><button id="pnlToggleDecimalsBtn" class="pnlIconBtn pnlDecimalBtn active" type="button" title="Mostrar sin decimales" aria-label="Mostrar sin decimales" aria-pressed="true"><i class="fa-solid fa-list-ol" aria-hidden="true"></i></button><button id="pnlToggleBarsBtn" class="pnlIconBtn" type="button" title="Mostrar barras de proporción" aria-label="Mostrar barras de proporción" aria-pressed="false"><i class="fa-solid fa-bars-progress"></i></button></div></div>
+        <div class="sectionHead"><div><h2><i class="fa-solid fa-chart-column"></i>P&L / Flujo</h2><p>Las compras se reconocen al ocurrir. El pago de tarjeta solo reduce caja y deuda.</p></div><div class="pnlTools" aria-label="Herramientas de P&L"><button id="pnlToggleSubsBtn" class="pnlIconBtn" type="button" title="Desplegar subcategorías" aria-label="Desplegar subcategorías" aria-pressed="false"><i class="fa-solid fa-layer-group"></i></button><button id="pnlToggleDecimalsBtn" class="pnlIconBtn pnlDecimalBtn" type="button" title="Ocultar decimales" aria-label="Ocultar decimales" aria-pressed="false"><i class="fa-solid fa-list-ol" aria-hidden="true"></i></button><button id="pnlToggleBarsBtn" class="pnlIconBtn" type="button" title="Mostrar barras de proporción" aria-label="Mostrar barras de proporción" aria-pressed="false"><i class="fa-solid fa-bars-progress"></i></button></div></div>
         <div class="pnlDesktop"><table class="matrix" id="pnlMatrix"></table></div>
         <div class="pnlMobile"><div class="mobilePnlToolbar"><label for="pnlMonth">Detalle del mes</label><select id="pnlMonth"></select></div><div id="pnlMobileBody"></div></div>
       </div>
@@ -3080,12 +3121,13 @@ function handlePnlCategoryDoubleClick(event,id,year,mi){event?.preventDefault();
 function handlePnlCategoryKey(event,id,year,mi){if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePnlCategory(id)}}
 function toggleAllPnlSubcategories(){const cats=data.categories||[],allOpen=cats.length>0&&cats.every(c=>pnlExpandedCategories.has(c.id));pnlExpandedCategories=allOpen?new Set():new Set(cats.map(c=>c.id));for(const c of cats)setPnlCategoryExpandedDom(c.id,!allOpen);updatePnlToolButtons()}
 function syncPnlUiState(){const section=$('pnlSection');if(section)section.classList.toggle('pnlBarsEnabled',pnlShowBars);for(const c of data.categories||[])setPnlCategoryExpandedDom(c.id,pnlExpandedCategories.has(c.id))}
+function syncPnlStickyOffsets(){const section=$('pnlSection'),head=section?.querySelector(':scope > .sectionHead'),appHeader=document.querySelector('.appHeader');if(!section||!head||!appHeader)return;const isDesktop=window.matchMedia('(min-width:961px)').matches;if(!isDesktop){section.style.removeProperty('--pnl-sticky-head-top');section.style.removeProperty('--pnl-sticky-month-top');return}const headerH=Math.round(appHeader.getBoundingClientRect().height||64),gap=8,headH=Math.round(head.getBoundingClientRect().height||48);section.style.setProperty('--pnl-sticky-head-top',`${headerH+gap}px`);section.style.setProperty('--pnl-sticky-month-top',`${headerH+gap+headH}px`)}
 function togglePnlBars(){pnlShowBars=!pnlShowBars;syncPnlUiState();updatePnlToolButtons()}
 function togglePnlDecimals(){pnlShowDecimals=!pnlShowDecimals;pnlRerender()}
-function updatePnlToolButtons(){const sub=$('pnlToggleSubsBtn'),decimals=$('pnlToggleDecimalsBtn'),bars=$('pnlToggleBarsBtn'),cats=data.categories||[],allOpen=cats.length>0&&cats.every(c=>pnlExpandedCategories.has(c.id));if(sub){sub.classList.toggle('active',allOpen);sub.setAttribute('aria-pressed',String(allOpen));sub.title=allOpen?'Ocultar subcategorías':'Desplegar subcategorías';sub.setAttribute('aria-label',sub.title)}if(decimals){decimals.classList.toggle('active',pnlShowDecimals);decimals.setAttribute('aria-pressed',String(pnlShowDecimals));decimals.title=pnlShowDecimals?'Mostrar sin decimales':'Mostrar 2 decimales';decimals.setAttribute('aria-label',decimals.title)}if(bars){bars.classList.toggle('active',pnlShowBars);bars.setAttribute('aria-pressed',String(pnlShowBars));bars.title=pnlShowBars?'Ocultar barras de proporción':'Mostrar barras de proporción';bars.setAttribute('aria-label',bars.title)}}
+function updatePnlToolButtons(){const sub=$('pnlToggleSubsBtn'),decimals=$('pnlToggleDecimalsBtn'),bars=$('pnlToggleBarsBtn'),cats=data.categories||[],allOpen=cats.length>0&&cats.every(c=>pnlExpandedCategories.has(c.id));if(sub){sub.classList.toggle('active',allOpen);sub.setAttribute('aria-pressed',String(allOpen));sub.title=allOpen?'Ocultar subcategorías':'Desplegar subcategorías';sub.setAttribute('aria-label',sub.title)}if(decimals){const compact=!pnlShowDecimals;decimals.classList.toggle('active',compact);decimals.setAttribute('aria-pressed',String(compact));decimals.title=pnlShowDecimals?'Ocultar decimales':'Mostrar 2 decimales';decimals.setAttribute('aria-label',decimals.title)}if(bars){bars.classList.toggle('active',pnlShowBars);bars.setAttribute('aria-pressed',String(pnlShowBars));bars.title=pnlShowBars?'Ocultar barras de proporción':'Mostrar barras de proporción';bars.setAttribute('aria-label',bars.title)}}
 
 function renderPnlDesktop(year,cutoff=selectedCutoff()){
-  const months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],monthShort=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];let h=`<thead><tr><th><span class="pnlHeaderLabel">P&L <span class="pnlUnit">EN S/</span></span></th>${months.map((m,i)=>`<th title="${m}">${monthShort[i]}</th>`).join('')}<th class="pnlTotalHead">Total</th></tr></thead><tbody>`,totals={};
+  const months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];let h=`<thead><tr><th><span class="pnlHeaderLabel">P&L <span class="pnlUnit">EN S/</span></span></th>${months.map(m=>`<th>${m}</th>`).join('')}<th class="pnlTotalHead">Total</th></tr></thead><tbody>`,totals={};
   for(const [g,label] of [['income','Ingresos'],['expense','Egresos'],['investment','Ahorro / Inversión']]){
     h+=`<tr class="group"><td><div class="pnlLabelAligned"><span>${label}</span></div></td>${months.map(()=>'<td></td>').join('')}<td class="pnlTotalCol"></td></tr>`;
     const groupVals=months.map((_,i)=>groupMonth(g,year,i,cutoff)),groupAnnual=groupVals.reduce((a,b)=>a+b,0);
@@ -3096,10 +3138,10 @@ function renderPnlDesktop(year,cutoff=selectedCutoff()){
     });
     totals[g]=groupVals;const rowMax=Math.max(...groupVals.map(v=>Math.abs(v)),.005);h+=`<tr class="total"><td class="pnlClick pnlModalLabelCell" role="button" tabindex="0" onclick="openPnlDetail('group','${g}',${year},null)"><div class="pnlLabelAligned"><span>Total ${label}</span></div></td>${groupVals.map((v,i)=>pnlCell(v,{scope:'group',id:g,year,mi:i,bar:Math.abs(v)/rowMax*100})).join('')}${pnlCell(groupAnnual,{scope:'group',id:g,year,mi:null,total:true,bar:100})}</tr>`
   }
-  const free=months.map((_,i)=>(totals.income[i]||0)-(totals.expense[i]||0)-(totals.investment[i]||0)),freeTotal=free.reduce((a,b)=>a+b,0),freeMax=Math.max(...free.map(v=>Math.abs(v)),.005);h+=`<tr class="cash"><td class="pnlClick pnlModalLabelCell" role="button" tabindex="0" onclick="openPnlDetail('free','',${year},null)"><div class="pnlLabelAligned"><span>Ahorro / Flujo libre</span></div></td>${free.map((v,i)=>pnlCell(v,{scope:'free',id:'',year,mi:i,bar:Math.abs(v)/freeMax*100})).join('')}${pnlCell(freeTotal,{scope:'free',id:'',year,mi:null,total:true,bar:100})}</tr></tbody>`;$('pnlMatrix').innerHTML=h;syncPnlUiState();updatePnlToolButtons();
+  const free=months.map((_,i)=>(totals.income[i]||0)-(totals.expense[i]||0)-(totals.investment[i]||0)),freeTotal=free.reduce((a,b)=>a+b,0),freeMax=Math.max(...free.map(v=>Math.abs(v)),.005);h+=`<tr class="cash"><td class="pnlClick pnlModalLabelCell" role="button" tabindex="0" onclick="openPnlDetail('free','',${year},null)"><div class="pnlLabelAligned"><span>Ahorro / Flujo libre</span></div></td>${free.map((v,i)=>pnlCell(v,{scope:'free',id:'',year,mi:i,bar:Math.abs(v)/freeMax*100})).join('')}${pnlCell(freeTotal,{scope:'free',id:'',year,mi:null,total:true,bar:100})}</tr></tbody>`;$('pnlMatrix').innerHTML=h;syncPnlUiState();updatePnlToolButtons();requestAnimationFrame(syncPnlStickyOffsets);
 }
 function renderPnlMobile(year,mi,cutoff=selectedCutoff()){
-  let h='';for(const [g,label] of [['income','Ingresos'],['expense','Egresos'],['investment','Ahorro / Inversión']]){const cats=data.categories.filter(c=>c.group===g),total=groupMonth(g,year,mi,cutoff);h+=`<div class="pnlGroupCard"><div class="pnlGroupTitle drillable" role="button" tabindex="0" onclick="openPnlDetail('group','${g}',${year},${mi})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><span>${label}</span><strong>${pnlDisplay(total,true)}</strong></div>`;for(const c of cats){const value=pnlValue(c.id,year,mi,cutoff),expanded=pnlExpandedCategories.has(c.id),bar=pnlBarRatio(value,total);h+=`<div class="pnlLine pnlCategoryLine drillable ${expanded?'expanded':''}${Math.abs(value)>=.005?' pnlHasBar':''}"${Math.abs(value)>=.005?` style="--pnl-bar:${bar.toFixed(1)}%"`:''} data-pnl-category="${c.id}" role="button" tabindex="0" title="1 toque: subcategorías · doble toque/click: detalle" onclick="handlePnlCategoryClick(event,'${c.id}',${year},${mi})" ondblclick="handlePnlCategoryDoubleClick(event,'${c.id}',${year},${mi})" onkeydown="handlePnlCategoryKey(event,'${c.id}',${year},${mi})"><span class="pnlMobileLabel"><span class="pnlCategoryText">${esc(c.name)}</span></span><strong>${pnlDisplay(value,true)}</strong></div>`;for(const sc of pnlVisibleSubcategories(c,year,cutoff)){const sv=pnlSubValue(c.id,sc.id,year,mi,cutoff),sb=pnlBarRatio(sv,value);h+=`<div class="pnlLine pnlSubLine${expanded?'':' pnlSubHidden'}${Math.abs(sv)>=.005?' pnlHasBar':''}"${Math.abs(sv)>=.005?` style="--pnl-bar:${sb.toFixed(1)}%"`:''} data-pnl-sub-parent="${c.id}"${expanded?'':' hidden'}><span>${esc(sc.name)}</span><strong>${pnlDisplay(sv,true)}</strong></div>`}}h+='</div>'}const saving=groupMonth('income',year,mi,cutoff)-groupMonth('expense',year,mi,cutoff)-groupMonth('investment',year,mi,cutoff);h+=`<div class="pnlFree drillable" role="button" tabindex="0" onclick="openPnlDetail('free','',${year},${mi})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><span>Ahorro / Flujo libre</span><strong class="${saving<0?'bad':''}">${pnlDisplay(saving,true)}</strong></div>`;$('pnlMobileBody').innerHTML=h;syncPnlUiState();updatePnlToolButtons();
+  let h='';for(const [g,label] of [['income','Ingresos'],['expense','Egresos'],['investment','Ahorro / Inversión']]){const cats=data.categories.filter(c=>c.group===g),total=groupMonth(g,year,mi,cutoff);h+=`<div class="pnlGroupCard"><div class="pnlGroupTitle drillable" role="button" tabindex="0" onclick="openPnlDetail('group','${g}',${year},${mi})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><span>${label}</span><strong>${pnlDisplay(total,true)}</strong></div>`;for(const c of cats){const value=pnlValue(c.id,year,mi,cutoff),expanded=pnlExpandedCategories.has(c.id),bar=pnlBarRatio(value,total);h+=`<div class="pnlLine pnlCategoryLine drillable ${expanded?'expanded':''}${Math.abs(value)>=.005?' pnlHasBar':''}"${Math.abs(value)>=.005?` style="--pnl-bar:${bar.toFixed(1)}%"`:''} data-pnl-category="${c.id}" role="button" tabindex="0" title="1 toque: subcategorías · doble toque/click: detalle" onclick="handlePnlCategoryClick(event,'${c.id}',${year},${mi})" ondblclick="handlePnlCategoryDoubleClick(event,'${c.id}',${year},${mi})" onkeydown="handlePnlCategoryKey(event,'${c.id}',${year},${mi})"><span class="pnlMobileLabel"><span class="pnlCategoryText">${esc(c.name)}</span></span><strong>${pnlDisplay(value,true)}</strong></div>`;for(const sc of pnlVisibleSubcategories(c,year,cutoff)){const sv=pnlSubValue(c.id,sc.id,year,mi,cutoff),sb=pnlBarRatio(sv,value);h+=`<div class="pnlLine pnlSubLine${expanded?'':' pnlSubHidden'}${Math.abs(sv)>=.005?' pnlHasBar':''}"${Math.abs(sv)>=.005?` style="--pnl-bar:${sb.toFixed(1)}%"`:''} data-pnl-sub-parent="${c.id}"${expanded?'':' hidden'}><span>${esc(sc.name)}</span><strong>${pnlDisplay(sv,true)}</strong></div>`}}h+='</div>'}const saving=groupMonth('income',year,mi,cutoff)-groupMonth('expense',year,mi,cutoff)-groupMonth('investment',year,mi,cutoff);h+=`<div class="pnlFree drillable" role="button" tabindex="0" onclick="openPnlDetail('free','',${year},${mi})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><span>Ahorro / Flujo libre</span><strong class="${saving<0?'bad':''}">${pnlDisplay(saving,true)}</strong></div>`;$('pnlMobileBody').innerHTML=h;syncPnlUiState();updatePnlToolButtons();requestAnimationFrame(syncPnlStickyOffsets);
 }
 
 function isoDateLocal(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
@@ -3552,6 +3594,7 @@ $('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('set
 $('resetBtn').onclick=()=>{if(!requireAdmin('reiniciar la herramienta'))return;if(confirm('¿Reiniciar toda la herramienta?')){data=starter();save();toast('Herramienta reiniciada','','warn')}};
 updatePrivacyButton();
 applyAdminMode();
+window.addEventListener('resize',()=>requestAnimationFrame(syncPnlStickyOffsets),{passive:true});
 const adminModeObserver=new MutationObserver(()=>applyAdminMode());
 const adminObserveRoot=document.querySelector('main');if(adminObserveRoot)adminModeObserver.observe(adminObserveRoot,{childList:true,subtree:true});
 initCloud();
