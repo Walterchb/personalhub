@@ -2461,6 +2461,48 @@ html[data-theme="dark"] .pnlSection.pnlBarsEnabled .matrix .pnlValueCell.pnlHasB
 
 /* v32 — hard clipping for all availability logos */
 .brandLogo,.brandLogo[class*="brand-"]{border-radius:5px !important;overflow:hidden !important;clip-path:inset(0 round 5px) !important;background-clip:padding-box !important}
+
+/* Personal Hub v33 — explicit availability two-row identity */
+.tileIdentity{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  justify-content:flex-start !important;
+  min-width:0 !important;
+  padding:0 !important;
+  gap:0 !important;
+}
+.tileIdentityTop{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:7px !important;
+  min-width:0 !important;
+  width:100% !important;
+}
+.tileIdentityTop>.brandLogo{flex:0 0 18px !important}
+.tileIdentityTop>.tileName{
+  min-width:0 !important;
+  margin:0 !important;
+  line-height:18px !important;
+  text-align:left !important;
+}
+.tileIdentity>.tileType{
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+  margin:5px 0 0 0 !important;
+  padding:0 !important;
+  line-height:1.15 !important;
+  text-align:left !important;
+}
+@media(max-width:700px){
+  .tileIdentityTop{gap:6px !important}
+  .tileIdentityTop>.brandLogo{flex-basis:17px !important}
+  .tileIdentityTop>.tileName{line-height:17px !important}
+  .tileIdentity>.tileType{margin-top:4px !important}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3127,11 +3169,11 @@ function renderAvailability(){
   const items=[],cutoff=selectedCutoff(),sub=$('availabilitySubtitle');
   if(availabilityMode==='available'){
     if(sub)sub.textContent=`Saldo y línea disponible al ${prettyDate(cutoff)}.`;
-    data.accounts.filter(a=>a.active).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff),brand=a.institution||a.name;items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileName">${esc(a.name)}</div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge availabilityKindIcon" title="Cuenta" aria-label="Cuenta"><i class="fa-solid fa-building-columns"></i></span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">Saldo disponible · Corte ${prettyDate(cutoff)}</div></div>`)});
-    data.cards.filter(c=>c.active).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt),brand=c.bank||c.name;items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge availabilityKindIcon" title="Tarjeta de crédito" aria-label="Tarjeta de crédito"><i class="fa-solid fa-credit-card"></i></span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · Deuda total ${money(debt,c.currency)}</div></div>`)});
+    data.accounts.filter(a=>a.active).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff),brand=a.institution||a.name;items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity"><div class="tileIdentityTop">${financialBrandLogo(brand)}<div class="tileName">${esc(a.name)}</div></div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge availabilityKindIcon" title="Cuenta" aria-label="Cuenta"><i class="fa-solid fa-building-columns"></i></span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">Saldo disponible · Corte ${prettyDate(cutoff)}</div></div>`)});
+    data.cards.filter(c=>c.active).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt),brand=c.bank||c.name;items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity"><div class="tileIdentityTop">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div></div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge availabilityKindIcon" title="Tarjeta de crédito" aria-label="Tarjeta de crédito"><i class="fa-solid fa-credit-card"></i></span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · Deuda total ${money(debt,c.currency)}</div></div>`)});
   }else{
     if(sub)sub.textContent=`Pendiente y Deuda total al ${prettyDate(cutoff)}.`;
-    data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este Corte',brand=c.bank||c.name;items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge"><i class="fa-solid fa-file-invoice-dollar"></i> Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · Deuda total ${money(cy.debt,c.currency)}</div></div>`)});
+    data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este Corte',brand=c.bank||c.name;items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity"><div class="tileIdentityTop">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div></div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge"><i class="fa-solid fa-file-invoice-dollar"></i> Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · Deuda total ${money(cy.debt,c.currency)}</div></div>`)});
   }
   $('availability').innerHTML=items.join('')||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
 }
