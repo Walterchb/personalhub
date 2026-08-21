@@ -1,11 +1,12 @@
-const CACHE='personal-hub-v33-tile-identity';
+const CACHE='personal-hub-v34-audited-ui';
 const APP_SHELL=[
   './',
   './index.html',
   './manifest.webmanifest',
   './assets/logo.svg',
   './assets/logo-white.svg',
-  './assets/logo-mark.svg',  './icons/favicon-32.png',
+  './assets/logo-mark.svg',
+  './icons/favicon-32.png',
   './icons/apple-touch-icon.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
