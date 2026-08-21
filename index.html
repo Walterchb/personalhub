@@ -2410,6 +2410,40 @@ html[data-theme="dark"] .pnlSection.pnlBarsEnabled .matrix .pnlValueCell.pnlHasB
   .pnlDesktop .matrix thead th:first-child{z-index:36 !important}
 }
 
+
+/* Personal Hub v27 — Availability brand marks + P&L header consistency */
+.tileIdentity{position:relative;min-width:0;padding-left:22px}
+.tileIdentity>.tileName,.tileIdentity>.tileType{min-width:0}
+.brandLogo{position:absolute;left:0;top:0;width:17px;height:17px;border-radius:5px;display:grid;place-items:center;overflow:hidden;box-sizing:border-box;border:1px solid color-mix(in srgb,var(--line) 80%,transparent);font:900 6.5px/1 Manrope,Arial,sans-serif;letter-spacing:-.03em;color:#fff;box-shadow:none;user-select:none}
+.brandLogo.brand-bif{background:linear-gradient(135deg,#6d28d9 0 46%,#2563eb 46% 100%);font-size:6px}
+.brandLogo.brand-bcp{background:#003b7a;font-size:6px}
+.brandLogo.brand-bbva{background:#004481;font-size:5.9px}
+.brandLogo.brand-interbank{background:#00a859;font-size:5.4px}
+.brandLogo.brand-scotia{background:#d71920;font-size:6px}
+.brandLogo.brand-pichincha{background:#ffd100;color:#161616;font-size:6px}
+.brandLogo.brand-nacion{background:#b91c1c;font-size:5.8px}
+.brandLogo.brand-falabella{background:#69be28;font-size:6px}
+.brandLogo.brand-ripley{background:#4d148c;font-size:6px}
+.brandLogo.brand-cajaarequipa{background:#cf202f;font-size:5.1px}
+.brandLogo.brand-diners{background:#0067a0;font-size:5.8px}
+.brandLogo.brand-amex{background:#2f77bb;font-size:4.9px}
+.brandLogo.brand-visa{background:#1a1f71;font-size:5.6px}
+.brandLogo.brand-mastercard{background:#111827;font-size:0}
+.brandLogo.brand-mastercard::before,.brandLogo.brand-mastercard::after{content:'';position:absolute;top:4px;width:8px;height:8px;border-radius:50%}
+.brandLogo.brand-mastercard::before{left:2px;background:#eb001b}
+.brandLogo.brand-mastercard::after{right:2px;background:#f79e1b;opacity:.92}
+.brandLogo.brand-yape{background:#742774;font-size:5.5px}
+.brandLogo.brand-plin{background:#1aa6c8;font-size:5.8px}
+.brandLogo.brand-generic{background:var(--nav);font-size:6px}
+.availabilityKindIcon{width:25px;min-width:25px;height:24px;padding:0 !important;justify-content:center;border-radius:5px !important}
+.availabilityKindIcon i{font-size:9px}
+.matrix thead th:first-child{font-size:10px !important;font-weight:800 !important;letter-spacing:.03em !important;text-transform:uppercase !important;color:var(--muted) !important}
+@media(max-width:700px){
+  .tileIdentity{padding-left:20px}
+  .brandLogo{width:16px;height:16px;border-radius:5px;font-size:6px}
+  .availabilityKindIcon{width:22px;min-width:22px;height:21px}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3049,15 +3083,38 @@ function renderDashboard(){
   renderAvailability();renderPlanningPreview();renderPnlDesktop(year,cutoff);renderPnlMobile(year,+$('pnlMonth').value,cutoff);renderIndicators(cash,debt,due,inc,exp,inv,saving);renderUpcoming();
 }
 function setAvailabilityMode(mode){availabilityMode=mode==='debt'?'debt':'available';const av=$('availabilityAvailableBtn'),db=$('availabilityDebtBtn');if(av){av.classList.toggle('active',availabilityMode==='available');av.setAttribute('aria-pressed',String(availabilityMode==='available'))}if(db){db.classList.toggle('active',availabilityMode==='debt');db.setAttribute('aria-pressed',String(availabilityMode==='debt'))}renderAvailability()}
+function normalizeBrandText(v=''){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim()}
+function brandInitials(v=''){const words=String(v||'').trim().split(/\s+/).filter(Boolean);if(!words.length)return '•';return words.slice(0,2).map(x=>x[0]).join('').toUpperCase()}
+function financialBrandMeta(label=''){
+  const raw=String(label||'').trim(),n=normalizeBrandText(raw);let key='generic',text=brandInitials(raw);
+  if(/banbif|\bbif\b/.test(n)){key='bif';text='BIF'}
+  else if(/\bbcp\b|credito del peru|banco de credito/.test(n)){key='bcp';text='BCP'}
+  else if(/bbva/.test(n)){key='bbva';text='BBVA'}
+  else if(/interbank|\bibk\b/.test(n)){key='interbank';text='IBK'}
+  else if(/scotiabank|scotia/.test(n)){key='scotia';text='S'}
+  else if(/pichincha/.test(n)){key='pichincha';text='P'}
+  else if(/banco de la nacion|\bnacion\b/.test(n)){key='nacion';text='BN'}
+  else if(/falabella/.test(n)){key='falabella';text='F'}
+  else if(/ripley/.test(n)){key='ripley';text='R'}
+  else if(/caja arequipa/.test(n)){key='cajaarequipa';text='CA'}
+  else if(/diners/.test(n)){key='diners';text='D'}
+  else if(/american express|amex/.test(n)){key='amex';text='AMEX'}
+  else if(/mastercard/.test(n)){key='mastercard';text=''}
+  else if(/\bvisa\b/.test(n)){key='visa';text='VISA'}
+  else if(/yape/.test(n)){key='yape';text='Y'}
+  else if(/\bplin\b/.test(n)){key='plin';text='P'}
+  return {key,text,raw:raw||'Institución'};
+}
+function financialBrandLogo(label=''){const b=financialBrandMeta(label);return `<span class="brandLogo brand-${b.key}" title="${esc(b.raw)}" aria-hidden="true">${esc(b.text)}</span>`}
 function renderAvailability(){
   const items=[],cutoff=selectedCutoff(),sub=$('availabilitySubtitle');
   if(availabilityMode==='available'){
     if(sub)sub.textContent=`Saldo y línea disponible al ${prettyDate(cutoff)}.`;
-    data.accounts.filter(a=>a.active).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff);items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(a.name)}</div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge"><i class="fa-solid fa-building-columns"></i> Cuenta</span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">Saldo disponible · Corte ${prettyDate(cutoff)}</div></div>`)});
-    data.cards.filter(c=>c.active).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt);items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge"><i class="fa-solid fa-credit-card"></i> TC</span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · Deuda total ${money(debt,c.currency)}</div></div>`)});
+    data.accounts.filter(a=>a.active).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff),brand=a.institution||a.name;items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileName">${esc(a.name)}</div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge availabilityKindIcon" title="Cuenta" aria-label="Cuenta"><i class="fa-solid fa-building-columns"></i></span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">Saldo disponible · Corte ${prettyDate(cutoff)}</div></div>`)});
+    data.cards.filter(c=>c.active).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt),brand=c.bank||c.name;items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge availabilityKindIcon" title="Tarjeta de crédito" aria-label="Tarjeta de crédito"><i class="fa-solid fa-credit-card"></i></span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · Deuda total ${money(debt,c.currency)}</div></div>`)});
   }else{
     if(sub)sub.textContent=`Pendiente y Deuda total al ${prettyDate(cutoff)}.`;
-    data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este Corte';items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge"><i class="fa-solid fa-file-invoice-dollar"></i> Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · Deuda total ${money(cy.debt,c.currency)}</div></div>`)});
+    data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este Corte',brand=c.bank||c.name;items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge"><i class="fa-solid fa-file-invoice-dollar"></i> Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · Deuda total ${money(cy.debt,c.currency)}</div></div>`)});
   }
   $('availability').innerHTML=items.join('')||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
 }
@@ -3127,7 +3184,7 @@ function togglePnlDecimals(){pnlShowDecimals=!pnlShowDecimals;pnlRerender()}
 function updatePnlToolButtons(){const sub=$('pnlToggleSubsBtn'),decimals=$('pnlToggleDecimalsBtn'),bars=$('pnlToggleBarsBtn'),cats=data.categories||[],allOpen=cats.length>0&&cats.every(c=>pnlExpandedCategories.has(c.id));if(sub){sub.classList.toggle('active',allOpen);sub.setAttribute('aria-pressed',String(allOpen));sub.title=allOpen?'Ocultar subcategorías':'Desplegar subcategorías';sub.setAttribute('aria-label',sub.title)}if(decimals){const compact=!pnlShowDecimals;decimals.classList.toggle('active',compact);decimals.setAttribute('aria-pressed',String(compact));decimals.title=pnlShowDecimals?'Ocultar decimales':'Mostrar 2 decimales';decimals.setAttribute('aria-label',decimals.title)}if(bars){bars.classList.toggle('active',pnlShowBars);bars.setAttribute('aria-pressed',String(pnlShowBars));bars.title=pnlShowBars?'Ocultar barras de proporción':'Mostrar barras de proporción';bars.setAttribute('aria-label',bars.title)}}
 
 function renderPnlDesktop(year,cutoff=selectedCutoff()){
-  const months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];let h=`<thead><tr><th><span class="pnlHeaderLabel">P&L <span class="pnlUnit">EN S/</span></span></th>${months.map(m=>`<th>${m}</th>`).join('')}<th class="pnlTotalHead">Total</th></tr></thead><tbody>`,totals={};
+  const months=['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];let h=`<thead><tr><th>P&L EN S/</th>${months.map(m=>`<th>${m}</th>`).join('')}<th class="pnlTotalHead">TOTAL</th></tr></thead><tbody>`,totals={};
   for(const [g,label] of [['income','Ingresos'],['expense','Egresos'],['investment','Ahorro / Inversión']]){
     h+=`<tr class="group"><td><div class="pnlLabelAligned"><span>${label}</span></div></td>${months.map(()=>'<td></td>').join('')}<td class="pnlTotalCol"></td></tr>`;
     const groupVals=months.map((_,i)=>groupMonth(g,year,i,cutoff)),groupAnnual=groupVals.reduce((a,b)=>a+b,0);
