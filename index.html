@@ -2461,6 +2461,83 @@ html[data-theme="dark"] .pnlSection.pnlBarsEnabled .matrix .pnlValueCell.pnlHasB
   .pnlLine.pnlSubLine.pnlSubTail{border-bottom:1px solid #d97706 !important}
 }
 
+
+/* Personal Hub v29 — CSS-only financial marks + exact availability alignment */
+.tileIdentity{
+  position:static !important;
+  display:grid !important;
+  grid-template-columns:18px minmax(0,1fr) !important;
+  grid-template-rows:18px auto !important;
+  column-gap:7px !important;
+  row-gap:2px !important;
+  align-items:center !important;
+  min-width:0 !important;
+  padding-left:0 !important;
+}
+.tileIdentity>.tileName{
+  grid-column:2 !important;
+  grid-row:1 !important;
+  align-self:center !important;
+  min-width:0 !important;
+  line-height:18px !important;
+  margin:0 !important;
+  text-align:left !important;
+}
+.tileIdentity>.tileType{
+  grid-column:1 / -1 !important;
+  grid-row:2 !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  line-height:1.15 !important;
+  text-align:left !important;
+}
+.tileText{display:contents !important}
+.brandLogo{
+  position:static !important;
+  grid-column:1 !important;
+  grid-row:1 !important;
+  width:18px !important;
+  height:18px !important;
+  min-width:18px !important;
+  border-radius:5px !important;
+  display:grid !important;
+  place-items:center !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+  border:1px solid color-mix(in srgb,var(--line) 70%,transparent) !important;
+  box-shadow:none !important;
+  user-select:none !important;
+  font-family:Manrope,Arial,sans-serif !important;
+}
+.brandLogo img{display:none !important}
+.brandLogo::before,.brandLogo::after{content:none !important;display:none !important}
+.brandLogoText{display:block;white-space:nowrap;line-height:1;font-weight:900;letter-spacing:-.05em;transform:scale(.92);transform-origin:center}
+.brandLogo.brand-bif{background:linear-gradient(135deg,#6d28d9 0 45%,#2563eb 45% 100%) !important;color:#fff !important}.brandLogo.brand-bif .brandLogoText{font-size:5.7px}
+.brandLogo.brand-bcp{background:#003b7a !important;color:#fff !important;border-left:3px solid #ff7a00 !important}.brandLogo.brand-bcp .brandLogoText{font-size:5.2px}
+.brandLogo.brand-bbva{background:#004481 !important;color:#fff !important}.brandLogo.brand-bbva .brandLogoText{font-size:4.7px}
+.brandLogo.brand-interbank{background:linear-gradient(135deg,#00a651 0 62%,#ffd100 62% 100%) !important;color:#fff !important}.brandLogo.brand-interbank .brandLogoText{font-size:4.5px;text-shadow:0 1px 1px rgba(0,0,0,.2)}
+.brandLogo.brand-scotia{background:#d71920 !important;color:#fff !important}.brandLogo.brand-scotia .brandLogoText{font-size:5px}
+.brandLogo.brand-pichincha{background:#ffd100 !important;color:#161616 !important}.brandLogo.brand-pichincha .brandLogoText{font-size:5px}
+.brandLogo.brand-nacion{background:#b91c1c !important;color:#fff !important}.brandLogo.brand-nacion .brandLogoText{font-size:5.2px}
+.brandLogo.brand-falabella{background:#69be28 !important;color:#fff !important}.brandLogo.brand-falabella .brandLogoText{font-size:4.1px}
+.brandLogo.brand-ripley{background:#4d148c !important;color:#fff !important}.brandLogo.brand-ripley .brandLogoText{font-size:4.7px}
+.brandLogo.brand-cajaarequipa{background:#cf202f !important;color:#fff !important}.brandLogo.brand-cajaarequipa .brandLogoText{font-size:5px}
+.brandLogo.brand-diners{background:#0067a0 !important;color:#fff !important}.brandLogo.brand-diners .brandLogoText{font-size:4.8px}
+.brandLogo.brand-amex{background:#2f77bb !important;color:#fff !important}.brandLogo.brand-amex .brandLogoText{font-size:4.2px}
+.brandLogo.brand-visa{background:#1a1f71 !important;color:#fff !important;border-bottom:2px solid #f5a623 !important}.brandLogo.brand-visa .brandLogoText{font-size:4.8px}
+.brandLogo.brand-mastercard{background:#111827 !important;color:transparent !important;position:relative !important}
+.brandLogo.brand-mastercard::before,.brandLogo.brand-mastercard::after{content:'' !important;display:block !important;position:absolute;top:4px;width:9px;height:9px;border-radius:50%}
+.brandLogo.brand-mastercard::before{left:2px;background:#eb001b}.brandLogo.brand-mastercard::after{right:2px;background:#f79e1b;opacity:.95}.brandLogo.brand-mastercard .brandLogoText{display:none}
+.brandLogo.brand-yape{background:#742774 !important;color:#fff !important}.brandLogo.brand-yape .brandLogoText{font-size:4.6px;letter-spacing:-.08em}
+.brandLogo.brand-plin{background:#12a7c8 !important;color:#fff !important}.brandLogo.brand-plin .brandLogoText{font-size:4.8px;letter-spacing:-.08em}
+.brandLogo.brand-generic{background:var(--nav) !important;color:#fff !important}.brandLogo.brand-generic .brandLogoText{font-size:5px}
+@media(max-width:700px){
+  .tileIdentity{grid-template-columns:17px minmax(0,1fr) !important;grid-template-rows:17px auto !important;column-gap:6px !important;row-gap:2px !important}
+  .tileIdentity>.tileName{line-height:17px !important}
+  .brandLogo{width:17px !important;height:17px !important;min-width:17px !important}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3122,16 +3199,16 @@ function financialBrandMeta(label=''){
   else if(/\bvisa\b/.test(n)){key='visa';text='VISA'}
   return {key,text,raw:raw||'Institución'};
 }
-function financialBrandLogo(label=''){const b=financialBrandMeta(label);return `<span class="brandLogo brand-${b.key}" title="${esc(b.raw)}" aria-hidden="true"><img src="./assets/brands/${b.key}.svg" alt="" loading="lazy" decoding="async"></span>`}
+function financialBrandLogo(label=''){const b=financialBrandMeta(label);return `<span class="brandLogo brand-${b.key}" title="${esc(b.raw)}" aria-hidden="true"><span class="brandLogoText">${esc(b.text)}</span></span>`}
 function renderAvailability(){
   const items=[],cutoff=selectedCutoff(),sub=$('availabilitySubtitle');
   if(availabilityMode==='available'){
     if(sub)sub.textContent=`Saldo y línea disponible al ${prettyDate(cutoff)}.`;
-    data.accounts.filter(a=>a.active).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff),brand=a.institution||a.name;items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileText"><div class="tileName">${esc(a.name)}</div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div></div><span class="badge availabilityKindIcon" title="Cuenta" aria-label="Cuenta"><i class="fa-solid fa-building-columns"></i></span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">Saldo disponible · Corte ${prettyDate(cutoff)}</div></div>`)});
-    data.cards.filter(c=>c.active).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt),brand=c.bank||c.name;items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileText"><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div></div><span class="badge availabilityKindIcon" title="Tarjeta de crédito" aria-label="Tarjeta de crédito"><i class="fa-solid fa-credit-card"></i></span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · Deuda total ${money(debt,c.currency)}</div></div>`)});
+    data.accounts.filter(a=>a.active).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff),brand=a.institution||a.name;items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileName">${esc(a.name)}</div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge availabilityKindIcon" title="Cuenta" aria-label="Cuenta"><i class="fa-solid fa-building-columns"></i></span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">Saldo disponible · Corte ${prettyDate(cutoff)}</div></div>`)});
+    data.cards.filter(c=>c.active).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt),brand=c.bank||c.name;items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge availabilityKindIcon" title="Tarjeta de crédito" aria-label="Tarjeta de crédito"><i class="fa-solid fa-credit-card"></i></span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · Deuda total ${money(debt,c.currency)}</div></div>`)});
   }else{
     if(sub)sub.textContent=`Pendiente y Deuda total al ${prettyDate(cutoff)}.`;
-    data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este Corte',brand=c.bank||c.name;items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileText"><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div></div><span class="badge debtBadge"><i class="fa-solid fa-file-invoice-dollar"></i> Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · Deuda total ${money(cy.debt,c.currency)}</div></div>`)});
+    data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este Corte',brand=c.bank||c.name;items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge"><i class="fa-solid fa-file-invoice-dollar"></i> Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · Deuda total ${money(cy.debt,c.currency)}</div></div>`)});
   }
   $('availability').innerHTML=items.join('')||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
 }
