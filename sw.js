@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v28-brand-assets';
+const CACHE='personal-hub-v29-supabase-runtime-fix';
 const APP_SHELL=[
   './',
   './index.html',
