@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v18-mobile-nav-center';
+const CACHE='personal-hub-v19-pnl-hierarchy';
 const APP_SHELL=[
   './',
   './index.html',
