@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v29-css-brandmarks';
+const CACHE='personal-hub-v31-logo-css-refined';
 const APP_SHELL=[
   './',
   './index.html',
