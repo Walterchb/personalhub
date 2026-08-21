@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v21-supabase-bootstrap-fix';
+const CACHE='personal-hub-v22-pnl-ux-performance';
 const APP_SHELL=[
   './',
   './index.html',

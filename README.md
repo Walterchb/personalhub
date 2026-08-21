@@ -65,3 +65,8 @@ La app incluye manifest, Service Worker, Apple Touch Icon e iconos PWA de 192 y 
 ## Indicadores / motor de análisis
 
 La pestaña **Indicadores** permite analizar rangos rápidos (7D, 15D, 30D, 60D, 90D, semana actual, mes actual, YTD, 6M, 12M y Todo) o personalizados, comparar contra el periodo anterior, alternar variables financieras y agrupar la serie en forma diaria, semanal o mensual. La agrupación predeterminada es **Diaria**. En escritorio, el panel **Configurar análisis** queda fijo a la izquierda mientras se revisan ratios, composición, rankings y desgloses. Los datos financieros continúan siendo **solo nube en Supabase**.
+
+### P&L UX v22
+- Despliegue de subcategorías inmediato sin recalcular toda la matriz.
+- Importes desktop sin símbolo S/; móvil conserva S/.
+- Cabeceras sticky, alineación numérica uniforme y navegación móvil más compacta.
