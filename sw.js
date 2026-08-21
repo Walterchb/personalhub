@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v31-logo-css-refined';
+const CACHE='personal-hub-v32-yape-bcp-logo';
 const APP_SHELL=[
   './',
   './index.html',
