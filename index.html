@@ -2834,6 +2834,49 @@ function initModalScrollIsolation(){
 }
 initModalScrollIsolation();
 
+
+function renderAll(){
+  document.documentElement.dataset.theme=data.settings.theme||'light';
+  renderSelects();
+  renderDashboard();
+  renderMovements();
+  renderReceivables();
+  renderGoals();
+  renderAccounts();
+  renderCards();
+  renderRecurring();
+  renderCategories();
+  renderSettings();
+  if($('analytics')?.classList.contains('active'))renderAnalytics(true);
+}
+function renderSelects(){
+  if(!$('periodInput').value)$('periodInput').value=monthNow();syncCutoffBounds(false);if(!$('mvMonth').value)$('mvMonth').value=$('periodInput').value;
+  const keep=$('mvCatFilter').value;$('mvCatFilter').innerHTML='<option value="">Todas las categorías</option>'+data.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');$('mvCatFilter').value=keep;
+  refreshMovementCategories();refreshRecurringCategories();refreshMvSources();refreshRecSources();refreshReceivableAccounts();if($('receivablePaymentAccount'))$('receivablePaymentAccount').innerHTML=accountOpts();refreshReceivableCategories();
+  const {year,month}=selectedPeriod(),months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];$('pnlMonth').innerHTML=months.map((m,i)=>`<option value="${i}">${m}</option>`).join('');$('pnlMonth').value=String(month);
+}
+function renderDashboard(){
+  const {year,month}=selectedPeriod(),cutoff=selectedCutoff(),cash=data.accounts.filter(a=>a.active).reduce((sum,a)=>sum+toPen(accountBalanceAt(a.id,cutoff),a.currency),0),debt=data.cards.filter(c=>c.active).reduce((sum,c)=>sum+toPen(cardDebtAt(c.id,cutoff),c.currency),0),due=data.cards.filter(c=>c.active).reduce((sum,c)=>sum+toPen(cardCycleAt(c.id,cutoff).remaining,c.currency),0);
+  const inc=groupMonth('income',year,month,cutoff),exp=groupMonth('expense',year,month,cutoff),inv=groupMonth('investment',year,month,cutoff),saving=inc-exp-inv;
+  $('kSaving').textContent=pen(saving);$('kSaving').className='metricValue '+(saving<0?'bad':'');$('kSavingNote').textContent=`Al ${prettyDate(cutoff)}`;
+  const receivablesOutstanding=data.receivables.reduce((sum,r)=>sum+toPen(receivableOutstandingAt(r,cutoff),r.currency||'PEN'),0),netPosition=cash-debt,estimatedPosition=netPosition+receivablesOutstanding;$('kCash').textContent=pen(cash);$('kCardDue').textContent=pen(due);$('kDebt').textContent=pen(debt);$('kNet').textContent=pen(netPosition);$('kNet').className='metricValue '+(netPosition<0?'bad':'');$('kEstimated').textContent=pen(estimatedPosition);$('kEstimated').className='metricValue '+(estimatedPosition<0?'bad':'');
+  renderAvailability();renderPlanningPreview();renderPnlDesktop(year,cutoff);renderPnlMobile(year,+$('pnlMonth').value,cutoff);renderIndicators(cash,debt,due,inc,exp,inv,saving);renderUpcoming();
+}
+function setAvailabilityMode(mode){availabilityMode=mode==='debt'?'debt':'available';const av=$('availabilityAvailableBtn'),db=$('availabilityDebtBtn');if(av){av.classList.toggle('active',availabilityMode==='available');av.setAttribute('aria-pressed',String(availabilityMode==='available'))}if(db){db.classList.toggle('active',availabilityMode==='debt');db.setAttribute('aria-pressed',String(availabilityMode==='debt'))}renderAvailability()}
+function renderAvailability(){
+  const items=[],cutoff=selectedCutoff(),sub=$('availabilitySubtitle');
+  if(availabilityMode==='available'){
+    if(sub)sub.textContent=`Saldo y línea disponible al ${prettyDate(cutoff)}.`;
+    data.accounts.filter(a=>a.active).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff);items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(a.name)}</div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge"><i class="fa-solid fa-building-columns"></i> Cuenta</span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">Saldo disponible · Corte ${prettyDate(cutoff)}</div></div>`)});
+    data.cards.filter(c=>c.active).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt);items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge"><i class="fa-solid fa-credit-card"></i> TC</span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · Deuda total ${money(debt,c.currency)}</div></div>`)});
+  }else{
+    if(sub)sub.textContent=`Pendiente y Deuda total al ${prettyDate(cutoff)}.`;
+    data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este Corte';items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div><div class="tileName">${esc(c.name)}</div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge"><i class="fa-solid fa-file-invoice-dollar"></i> Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · Deuda total ${money(cy.debt,c.currency)}</div></div>`)});
+  }
+  $('availability').innerHTML=items.join('')||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
+}
+
+
 function save(){
   if(!cloudReady||!cloudOnline||!cloudSession){restoreCloudSnapshot();toast('Cambio no guardado','Personal Hub funciona en modo solo nube. Reconecta con Supabase e inténtalo nuevamente.','bad');return}
   syncRecurring();renderAll();updatePrivacyButton();applyAdminMode();if(!cloudApplyingRemote)queueCloudSave();
