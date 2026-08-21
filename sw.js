@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v23-pnl-polish';
+const CACHE='personal-hub-v24-pnl-alignment';
 const APP_SHELL=[
   './',
   './index.html',
