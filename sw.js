@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v35-bbva-rounded';
+const CACHE='personal-hub-v36-availability-goals';
 const APP_SHELL=[
   './',
   './index.html',
