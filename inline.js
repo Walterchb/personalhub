@@ -230,7 +230,7 @@ function financialBrandMeta(label=''){
   else if(/\bvisa\b/.test(n)){key='visa';text='VISA'}
   return {key,text,raw:raw||'Institución'};
 }
-function financialBrandLogo(label=''){const b=financialBrandMeta(label);return `<span class="brandLogo brand-${b.key}" title="${esc(b.raw)}" aria-hidden="true"><img src="./assets/brands/${b.key}.svg" alt="" width="32" height="32" decoding="async"></span>`}
+function financialBrandLogo(label=''){const b=financialBrandMeta(label);return `<span class="brandLogo brand-${b.key}" title="${esc(b.raw)}" aria-hidden="true"><span class="brandLogoText">${esc(b.text)}</span></span>`}
 function syncAvailabilityColumns(){
   const grid=$('availability');if(!grid||window.innerWidth<=700||!grid.clientWidth)return;
   const count=Math.max(1,+grid.dataset.total||1),aggregate=grid.classList.contains('aggregateView');

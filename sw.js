@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v38-mobile-brand';
+const CACHE='personal-hub-v39-original-brand';
 const APP_SHELL=[
   './',
   './index.html',
