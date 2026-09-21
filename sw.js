@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v37-heatmap-accounts';
+const CACHE='personal-hub-v38-mobile-brand';
 const APP_SHELL=[
   './',
   './index.html',

@@ -185,7 +185,7 @@ function renderDashboard(){
   renderAvailability();renderPlanningPreview();renderPnlDesktop(year,cutoff);renderPnlMobile(year,+$('pnlMonth').value,cutoff);renderIndicators(cash,debt,due,inc,exp,inv,saving);renderUpcoming();
 }
 function setAvailabilityMode(mode){
-  availabilityMode=['available','aggregate','debt'].includes(mode)?mode:'available';availabilityPage=0;
+  availabilityMode=['available','aggregate','debt'].includes(mode)?mode:'available';availabilityPage=0;if($('availability'))$('availability').scrollLeft=0;
   for(const [id,value] of [['availabilityAvailableBtn','available'],['availabilityAggregateBtn','aggregate'],['availabilityDebtBtn','debt']]){
     const button=$(id);button.classList.toggle('active',availabilityMode===value);button.setAttribute('aria-pressed',String(availabilityMode===value));
   }
@@ -230,7 +230,19 @@ function financialBrandMeta(label=''){
   else if(/\bvisa\b/.test(n)){key='visa';text='VISA'}
   return {key,text,raw:raw||'Institución'};
 }
-function financialBrandLogo(label=''){const b=financialBrandMeta(label);return `<span class="brandLogo brand-${b.key}" title="${esc(b.raw)}" aria-hidden="true"><span class="brandLogoText">${esc(b.text)}</span></span>`}
+function financialBrandLogo(label=''){const b=financialBrandMeta(label);return `<span class="brandLogo brand-${b.key}" title="${esc(b.raw)}" aria-hidden="true"><img src="./assets/brands/${b.key}.svg" alt="" width="32" height="32" decoding="async"></span>`}
+function syncAvailabilityColumns(){
+  const grid=$('availability');if(!grid||window.innerWidth<=700||!grid.clientWidth)return;
+  const count=Math.max(1,+grid.dataset.total||1),aggregate=grid.classList.contains('aggregateView');
+  const maxFit=Math.max(1,Math.min(7,Math.floor((grid.clientWidth+8)/168))),pageSize=Math.min(7,count);
+  const columns=aggregate?3:Math.min(pageSize,Math.ceil(pageSize/Math.ceil(pageSize/maxFit)));
+  grid.style.setProperty('--availability-columns',columns);
+}
+function renderAvailabilityMobilePages(items){
+  const pages=[];for(let i=0;i<items.length;i+=8)pages.push(`<div class="availabilityMobilePage" role="group" aria-label="Página ${i/8+1} de ${Math.ceil(items.length/8)}">${items.slice(i,i+8).join('')}</div>`);
+  return pages.join('');
+}
+
 function renderAvailability(){
   const items=[],cutoff=selectedCutoff(),sub=$('availabilitySubtitle'),mobile=window.matchMedia('(max-width:700px)').matches,mode=mobile&&availabilityMode==='aggregate'?'available':availabilityMode,totals=availabilityTotalsAt(cutoff);
   $('availability').classList.toggle('aggregateView',mode==='aggregate');
@@ -248,13 +260,15 @@ function renderAvailability(){
     if(sub)sub.textContent=`Pendiente y Deuda total al ${prettyDate(cutoff)}.`;
     data.cards.filter(c=>c.active&&(c.openingDate||'')<=cutoff).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este Corte',brand=c.bank||c.name;items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity"><div class="tileIdentityTop">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div></div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge">Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · Deuda total ${money(cy.debt,c.currency)}</div></div>`)});
   }
-  const paginated=!mobile&&mode!=='aggregate',pages=Math.max(1,Math.ceil(items.length/7));
+  const paginated=!mobile&&mode!=='aggregate',pages=mode==='aggregate'?1:Math.max(1,Math.ceil(items.length/7));
   availabilityPage=Math.max(0,Math.min(availabilityPage,pages-1));
-  $('availabilityPager').hidden=!paginated;
+  $('availabilityPager').hidden=mobile;
   $('availabilityPageLabel').textContent=`${availabilityPage+1} de ${pages}`;
   $('availabilityPrev').disabled=availabilityPage===0;$('availabilityNext').disabled=availabilityPage>=pages-1;
   const shown=paginated?items.slice(availabilityPage*7,availabilityPage*7+7):items;
-  $('availability').innerHTML=shown.join('')||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
+  const grid=$('availability'),oldScroll=grid.scrollLeft;grid.dataset.total=items.length;grid.classList.toggle('mobilePages',mobile);
+  grid.innerHTML=(mobile?renderAvailabilityMobilePages(items):shown.join(''))||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
+  if(mobile)grid.scrollLeft=oldScroll;syncAvailabilityColumns();
 }
 
 
@@ -283,7 +297,7 @@ function addPeriod(d,p){d=new Date(d);if(p==='weekly')d.setDate(d.getDate()+7);e
 function nextDue(r){if(!r.startDate)return null;let d=parseDate(r.startDate),n=parseDate(today()),g=0;while(d<n&&g++<2000)d=addPeriod(d,r.period);if(r.autoPost){while(data.movements.some(t=>t.recurringKey===`${r.id}|${fmt(d)}`)&&g++<2000)d=addPeriod(d,r.period)}return d}
 function syncRecurring(){const n=parseDate(today()),low=new Date(n);low.setMonth(low.getMonth()-(+data.settings.lookback||6));let made=0;for(const r of data.recurring.filter(x=>x.active&&x.autoPost&&x.sourceId)){let d=parseDate(r.startDate),g=0;while(d<low&&g++<2000)d=addPeriod(d,r.period);while(d<=n&&g++<2500){const ds=fmt(d),key=`${r.id}|${ds}`;if(!data.movements.some(t=>t.recurringKey===key)){data.movements.push({id:uid(),date:ds,kind:r.kind,description:r.name,sourceType:r.kind==='income'?'account':r.sourceType,sourceId:r.sourceId,destinationId:'',cardId:'',categoryId:r.categoryId,subcategoryId:r.subcategoryId||'',tag:r.tag||'',amount:+r.amount||0,appliedAmount:null,note:r.comment||'',recurringKey:key,recurringId:r.id,manualRecurring:false});made++}d=addPeriod(d,r.period)}}return made}
 
-function navigateTo(view){const target=$(view);if(!target)return;document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));target.classList.add('active');if(view==='analytics')renderAnalytics(true);window.scrollTo({top:0,behavior:'smooth'})}
+function navigateTo(view){const target=$(view);if(!target)return;document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));target.classList.add('active');if(view==='analytics')renderAnalytics(true);if(view==='dashboard')syncAvailabilityColumns();window.scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(b=>b.onclick=()=>navigateTo(b.dataset.view));
 const mobileQuickMovement=$('mobileQuickMovement');if(mobileQuickMovement)mobileQuickMovement.onclick=()=>openMovement();
 
@@ -539,11 +553,12 @@ function renderUpcoming(){const cutoff=selectedCutoff(),rows=data.recurring.filt
 
 function kindName(k){return {expense:'Gasto / inversión',income:'Ingreso',reimbursement:'Reembolso',transfer:'Transferencia',card_payment:'Pago TC',refund:'Devolución',adjustment:'Ajuste'}[k]||k}
 function party(t){if(t.kind==='expense')return srcName(t.sourceType,t.sourceId);if(t.kind==='income'||t.kind==='reimbursement')return '→ '+srcName('account',t.sourceId);if(t.kind==='transfer')return `${srcName('account',t.sourceId)} → ${srcName('account',t.destinationId)}`;if(t.kind==='card_payment')return `${srcName('account',t.sourceId)} → ${srcName('card',t.cardId)}`;if(t.kind==='refund')return '→ '+srcName('card',t.cardId);return 'Conciliación'}
+function openMovementMonthPicker(){try{$('mvMonth').showPicker?.()}catch{}}
 function syncMovementDayOptions(){
   const cutoff=selectedCutoff(),monthInput=$('mvMonth'),dayInput=$('mvDay');
   monthInput.max=cutoff.slice(0,7);
   if(!monthInput.value||monthInput.value>monthInput.max)monthInput.value=monthInput.max;
-  const month=monthInput.value,previous=dayInput.value,last=month===cutoff.slice(0,7)?+cutoff.slice(8):new Date(+month.slice(0,4),+month.slice(5,7),0).getDate();
+  const month=monthInput.value;const monthLabel=`${monthNames[+month.slice(5)-1]} ${month.slice(0,4)}`;$('mvMonthLabel').textContent=`${monthNames[+month.slice(5)-1].slice(0,3)} ${month.slice(0,4)}`;monthInput.setAttribute('aria-label',`Mes de movimientos: ${monthLabel}`);monthInput.title=monthLabel;const previous=dayInput.value,last=month===cutoff.slice(0,7)?+cutoff.slice(8):new Date(+month.slice(0,4),+month.slice(5,7),0).getDate();
   dayInput.innerHTML='<option value="">Todo el mes</option>'+Array.from({length:last},(_,i)=>{const date=`${month}-${String(i+1).padStart(2,'0')}`;return `<option value="${date}">${prettyDate(date)}</option>`}).join('');
   dayInput.value=previous.startsWith(month)&&previous<=cutoff?previous:'';
   if(dayInput.selectedIndex<0)dayInput.value='';
@@ -895,7 +910,7 @@ $('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('set
 $('resetBtn').onclick=()=>{if(!requireAdmin('reiniciar la herramienta'))return;if(confirm('¿Reiniciar toda la herramienta?')){data=starter();save();toast('Herramienta reiniciada','','warn')}};
 updatePrivacyButton();
 applyAdminMode();
-window.addEventListener('resize',()=>requestAnimationFrame(syncPnlStickyOffsets),{passive:true});
+window.addEventListener('resize',()=>requestAnimationFrame(()=>{syncPnlStickyOffsets();syncAvailabilityColumns()}),{passive:true});
 const adminModeObserver=new MutationObserver(()=>applyAdminMode());
 const adminObserveRoot=document.querySelector('main');if(adminObserveRoot)adminModeObserver.observe(adminObserveRoot,{childList:true,subtree:true});
 initCloud();
