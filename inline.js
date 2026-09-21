@@ -267,6 +267,15 @@ function renderAvailability(){
   $('availabilityPrev').disabled=availabilityPage===0;$('availabilityNext').disabled=availabilityPage>=pages-1;
   const shown=paginated?items.slice(availabilityPage*7,availabilityPage*7+7):items;
   const grid=$('availability'),oldScroll=grid.scrollLeft;grid.dataset.total=items.length;grid.classList.toggle('mobilePages',mobile);
+  // Measure every card at the current column width before paging. This keeps
+  // both pages equally compact without imposing a larger fixed card height.
+  grid.style.removeProperty('--availability-row-height');
+  syncAvailabilityColumns();
+  grid.innerHTML=mobile?renderAvailabilityMobilePages(items):items.join('');
+  if(grid.clientWidth&&items.length){
+    const height=Math.ceil(Math.max(...[...grid.querySelectorAll('.balanceTile')].map(tile=>tile.getBoundingClientRect().height)));
+    grid.style.setProperty('--availability-row-height',`${height}px`);
+  }
   grid.innerHTML=(mobile?renderAvailabilityMobilePages(items):shown.join(''))||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
   if(mobile)grid.scrollLeft=oldScroll;syncAvailabilityColumns();
 }
@@ -297,7 +306,7 @@ function addPeriod(d,p){d=new Date(d);if(p==='weekly')d.setDate(d.getDate()+7);e
 function nextDue(r){if(!r.startDate)return null;let d=parseDate(r.startDate),n=parseDate(today()),g=0;while(d<n&&g++<2000)d=addPeriod(d,r.period);if(r.autoPost){while(data.movements.some(t=>t.recurringKey===`${r.id}|${fmt(d)}`)&&g++<2000)d=addPeriod(d,r.period)}return d}
 function syncRecurring(){const n=parseDate(today()),low=new Date(n);low.setMonth(low.getMonth()-(+data.settings.lookback||6));let made=0;for(const r of data.recurring.filter(x=>x.active&&x.autoPost&&x.sourceId)){let d=parseDate(r.startDate),g=0;while(d<low&&g++<2000)d=addPeriod(d,r.period);while(d<=n&&g++<2500){const ds=fmt(d),key=`${r.id}|${ds}`;if(!data.movements.some(t=>t.recurringKey===key)){data.movements.push({id:uid(),date:ds,kind:r.kind,description:r.name,sourceType:r.kind==='income'?'account':r.sourceType,sourceId:r.sourceId,destinationId:'',cardId:'',categoryId:r.categoryId,subcategoryId:r.subcategoryId||'',tag:r.tag||'',amount:+r.amount||0,appliedAmount:null,note:r.comment||'',recurringKey:key,recurringId:r.id,manualRecurring:false});made++}d=addPeriod(d,r.period)}}return made}
 
-function navigateTo(view){const target=$(view);if(!target)return;document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));target.classList.add('active');if(view==='analytics')renderAnalytics(true);if(view==='dashboard')syncAvailabilityColumns();window.scrollTo({top:0,behavior:'smooth'})}
+function navigateTo(view){const target=$(view);if(!target)return;document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));target.classList.add('active');if(view==='analytics')renderAnalytics(true);if(view==='dashboard')renderAvailability();window.scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(b=>b.onclick=()=>navigateTo(b.dataset.view));
 const mobileQuickMovement=$('mobileQuickMovement');if(mobileQuickMovement)mobileQuickMovement.onclick=()=>openMovement();
 
@@ -910,7 +919,7 @@ $('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('set
 $('resetBtn').onclick=()=>{if(!requireAdmin('reiniciar la herramienta'))return;if(confirm('¿Reiniciar toda la herramienta?')){data=starter();save();toast('Herramienta reiniciada','','warn')}};
 updatePrivacyButton();
 applyAdminMode();
-window.addEventListener('resize',()=>requestAnimationFrame(()=>{syncPnlStickyOffsets();syncAvailabilityColumns()}),{passive:true});
+window.addEventListener('resize',()=>requestAnimationFrame(()=>{syncPnlStickyOffsets();renderAvailability()}),{passive:true});
 const adminModeObserver=new MutationObserver(()=>applyAdminMode());
 const adminObserveRoot=document.querySelector('main');if(adminObserveRoot)adminModeObserver.observe(adminObserveRoot,{childList:true,subtree:true});
 initCloud();

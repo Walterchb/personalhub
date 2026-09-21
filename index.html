@@ -2667,11 +2667,10 @@ html:not([data-theme="dark"]) .heatmapCells.month .heatmapCell[data-level="3"],h
 }
 
 
-/* v38: stable balance pages, native iOS field containment and dimensional vector marks. */
+/* Stable balance pages with compact, content-based heights; native iOS field containment. */
 @media(min-width:701px){
-  #availability{grid-template-columns:repeat(var(--availability-columns,7),minmax(0,1fr));grid-auto-rows:150px;align-items:stretch}
-  #availability .balanceTile{height:150px;min-height:150px;box-sizing:border-box;overflow:hidden}
-  #availability .tileMeta{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4}
+  #availability{grid-template-columns:repeat(var(--availability-columns,7),minmax(0,1fr));grid-auto-rows:minmax(var(--availability-row-height,0px),auto);align-items:stretch}
+  #availability .balanceTile{height:auto;min-height:0;box-sizing:border-box}
 }
 .movementMonthControl{position:relative;display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%;min-width:0;height:36px;box-sizing:border-box;overflow:hidden;border:1px solid var(--line);border-radius:5px;background:var(--surface);padding:0 10px}
 #mvMonthLabel{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px;color:var(--ink)}
@@ -2681,11 +2680,8 @@ html:not([data-theme="dark"]) .heatmapCells.month .heatmapCell[data-level="3"],h
 .movementMonthControl:focus-within{outline:2px solid var(--blue);outline-offset:1px}
 @media(max-width:700px){
   #availability.mobilePages{display:flex !important;gap:12px !important;overflow-x:auto !important;overflow-y:hidden !important;scroll-snap-type:x mandatory !important;align-items:stretch;scroll-padding:0;touch-action:pan-x pan-y}
-  .availabilityMobilePage{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:150px;gap:8px;flex:0 0 100%;width:100%;min-width:0;scroll-snap-align:start;scroll-snap-stop:always;align-content:start}
-  #availability .availabilityMobilePage .balanceTile{min-width:0 !important;width:auto !important;height:150px;box-sizing:border-box;scroll-snap-align:none !important;overflow:hidden;padding:10px !important}
-  #availability .tileName{font-size:11px !important;line-height:1.25 !important}
-  #availability .tileType,#availability .tileMeta{font-size:9.5px !important;line-height:1.4 !important}
-  #availability .tileMeta{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .availabilityMobilePage{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(var(--availability-row-height,0px),auto);gap:8px;flex:0 0 100%;width:100%;min-width:0;scroll-snap-align:start;scroll-snap-stop:always;align-content:start}
+  #availability .availabilityMobilePage .balanceTile{min-width:0 !important;width:auto !important;height:auto;box-sizing:border-box;scroll-snap-align:none !important}
   #movements .movementFilters{align-items:start !important;gap:12px 10px !important;padding:12px !important}
   #movements .movementFilters>div{display:flex;flex-direction:column;align-items:stretch;min-width:0;max-width:100%;gap:6px}
   #movements .movementFilters label{display:block;line-height:16px;height:16px;margin:0;white-space:nowrap}
@@ -3429,6 +3425,15 @@ function renderAvailability(){
   $('availabilityPrev').disabled=availabilityPage===0;$('availabilityNext').disabled=availabilityPage>=pages-1;
   const shown=paginated?items.slice(availabilityPage*7,availabilityPage*7+7):items;
   const grid=$('availability'),oldScroll=grid.scrollLeft;grid.dataset.total=items.length;grid.classList.toggle('mobilePages',mobile);
+  // Measure every card at the current column width before paging. This keeps
+  // both pages equally compact without imposing a larger fixed card height.
+  grid.style.removeProperty('--availability-row-height');
+  syncAvailabilityColumns();
+  grid.innerHTML=mobile?renderAvailabilityMobilePages(items):items.join('');
+  if(grid.clientWidth&&items.length){
+    const height=Math.ceil(Math.max(...[...grid.querySelectorAll('.balanceTile')].map(tile=>tile.getBoundingClientRect().height)));
+    grid.style.setProperty('--availability-row-height',`${height}px`);
+  }
   grid.innerHTML=(mobile?renderAvailabilityMobilePages(items):shown.join(''))||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
   if(mobile)grid.scrollLeft=oldScroll;syncAvailabilityColumns();
 }
@@ -3459,7 +3464,7 @@ function addPeriod(d,p){d=new Date(d);if(p==='weekly')d.setDate(d.getDate()+7);e
 function nextDue(r){if(!r.startDate)return null;let d=parseDate(r.startDate),n=parseDate(today()),g=0;while(d<n&&g++<2000)d=addPeriod(d,r.period);if(r.autoPost){while(data.movements.some(t=>t.recurringKey===`${r.id}|${fmt(d)}`)&&g++<2000)d=addPeriod(d,r.period)}return d}
 function syncRecurring(){const n=parseDate(today()),low=new Date(n);low.setMonth(low.getMonth()-(+data.settings.lookback||6));let made=0;for(const r of data.recurring.filter(x=>x.active&&x.autoPost&&x.sourceId)){let d=parseDate(r.startDate),g=0;while(d<low&&g++<2000)d=addPeriod(d,r.period);while(d<=n&&g++<2500){const ds=fmt(d),key=`${r.id}|${ds}`;if(!data.movements.some(t=>t.recurringKey===key)){data.movements.push({id:uid(),date:ds,kind:r.kind,description:r.name,sourceType:r.kind==='income'?'account':r.sourceType,sourceId:r.sourceId,destinationId:'',cardId:'',categoryId:r.categoryId,subcategoryId:r.subcategoryId||'',tag:r.tag||'',amount:+r.amount||0,appliedAmount:null,note:r.comment||'',recurringKey:key,recurringId:r.id,manualRecurring:false});made++}d=addPeriod(d,r.period)}}return made}
 
-function navigateTo(view){const target=$(view);if(!target)return;document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));target.classList.add('active');if(view==='analytics')renderAnalytics(true);if(view==='dashboard')syncAvailabilityColumns();window.scrollTo({top:0,behavior:'smooth'})}
+function navigateTo(view){const target=$(view);if(!target)return;document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));target.classList.add('active');if(view==='analytics')renderAnalytics(true);if(view==='dashboard')renderAvailability();window.scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('.tab,.mobileTab,.headerViewBtn').forEach(b=>b.onclick=()=>navigateTo(b.dataset.view));
 const mobileQuickMovement=$('mobileQuickMovement');if(mobileQuickMovement)mobileQuickMovement.onclick=()=>openMovement();
 
@@ -4072,7 +4077,7 @@ $('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('set
 $('resetBtn').onclick=()=>{if(!requireAdmin('reiniciar la herramienta'))return;if(confirm('¿Reiniciar toda la herramienta?')){data=starter();save();toast('Herramienta reiniciada','','warn')}};
 updatePrivacyButton();
 applyAdminMode();
-window.addEventListener('resize',()=>requestAnimationFrame(()=>{syncPnlStickyOffsets();syncAvailabilityColumns()}),{passive:true});
+window.addEventListener('resize',()=>requestAnimationFrame(()=>{syncPnlStickyOffsets();renderAvailability()}),{passive:true});
 const adminModeObserver=new MutationObserver(()=>applyAdminMode());
 const adminObserveRoot=document.querySelector('main');if(adminObserveRoot)adminModeObserver.observe(adminObserveRoot,{childList:true,subtree:true});
 initCloud();
