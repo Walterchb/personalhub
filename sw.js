@@ -1,4 +1,4 @@
-const CACHE='personal-hub-v36-availability-goals';
+const CACHE='personal-hub-v37-heatmap-accounts';
 const APP_SHELL=[
   './',
   './index.html',

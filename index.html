@@ -2569,6 +2569,104 @@ html[data-theme="dark"] .pnlSection.pnlBarsEnabled .matrix .pnlValueCell.pnlHasB
   .analyticsSidebar .analyticsPresetRow{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
 
+/* v37: one selection palette, paged balances and expense activity. */
+:root{--selected-bg:var(--ink);--selected-fg:var(--surface);--heat-0:var(--surface-2);--heat-1:#d3efdf;--heat-2:#87cfa5;--heat-3:#39a76a;--heat-4:#137344}
+html[data-theme="dark"]{--heat-0:#172b38;--heat-1:#204e3d;--heat-2:#267653;--heat-3:#36a66c;--heat-4:#68dc98}
+html body button:is(.active,[aria-pressed="true"]),html body .analyticsChip.active,
+html body #privacyBtn.active,html body #adminModeBtn.adminActive,
+html[data-theme] body .availabilitySwitch button.active,html[data-theme] body .quickChoiceBtn.active,
+html body .topControlRow .pageTop.periodOnly .periodControl.cutoffOnly .cutoffToday.active{
+  background:var(--selected-bg) !important;color:var(--selected-fg) !important;border-color:var(--selected-bg) !important;box-shadow:none !important
+}
+html body button:is(.active,[aria-pressed="true"]) i,html body #adminModeBtn.adminActive i{color:inherit !important}
+html[data-theme="dark"] .pnlSection.pnlBarsEnabled .matrix .pnlValueCell.pnlHasBar::before,
+html[data-theme="dark"] .pnlSection.pnlBarsEnabled .pnlLine.pnlHasBar::before{
+  background:linear-gradient(90deg,rgba(55,211,183,.56),rgba(104,164,255,.40));box-shadow:inset 2px 0 #4cd8bc
+}
+.availabilityTools{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.availabilityPager{display:flex;align-items:center;gap:7px}
+.availabilityPager[hidden]{display:none}
+.availabilityPager span{font-size:11px;font-weight:700;color:var(--muted);min-width:40px;text-align:center}
+.availabilityPager .btn{font:700 22px/1 system-ui;width:30px;min-width:30px;height:30px;min-height:30px;padding:0}
+.availabilityPager .btn:disabled{opacity:.3;cursor:default}
+@media(min-width:701px){.availabilityScroller:not(.aggregateView){grid-template-columns:repeat(auto-fit,minmax(155px,1fr))}.availabilityScroller .balanceTile{min-width:0}.availabilityScroller .tileAmount{font-size:clamp(15px,1.45vw,21px)}}
+.accountPreferenceTags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.accountPreferenceTags span{background:var(--surface-2);border:1px solid var(--line);padding:4px 6px;font-size:9px;border-radius:4px;color:var(--muted)}
+.accountOrderTools{display:flex;align-items:center;gap:6px;margin-top:10px}
+.accountOrderTools>span{font-size:10px;color:var(--muted);margin-right:auto}
+.accountOrderTools .btn{min-width:30px;min-height:30px;padding:3px 8px}
+.accountOrderTools .btn:disabled{opacity:.35}
+.movementFilters{grid-template-columns:1fr 1fr 1.2fr 1.2fr 1.6fr}
+.movementFilters>div{min-width:0}
+.movementHeatmap{margin:0 14px 12px;padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.heatmapHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}
+.heatmapHead h3{margin:0;font-size:13px}.heatmapHead h3 span{font-weight:500;color:var(--muted);margin-left:6px}
+.heatmapHead p{font-size:10px;color:var(--muted);margin:5px 0 0}
+.heatmapMode{display:flex;gap:3px;background:var(--surface-2);padding:3px;border:1px solid var(--line);border-radius:6px}
+.heatmapMode button{border:0;background:transparent;color:var(--muted);padding:6px 12px;font:inherit;font-size:11px;font-weight:700;border-radius:4px;cursor:pointer}
+.heatmapCalendar{min-width:0}.heatmapMonths{margin-left:33px;display:grid;grid-template-columns:repeat(var(--heat-weeks),minmax(0,1fr));gap:3px;margin-bottom:6px;font-size:9px;color:var(--muted)}
+.heatmapMonths span{white-space:nowrap;overflow:visible;grid-row:1}
+.heatmapYearBoard{display:grid;grid-template-columns:27px minmax(0,1fr);gap:6px}
+.heatmapWeekdays{display:grid;grid-template-rows:repeat(7,1fr);font-size:8px;color:var(--muted);align-items:center}
+.heatmapCells{display:grid;gap:3px}
+.heatmapCells.year{grid-template-rows:repeat(7,18px);grid-template-columns:repeat(var(--heat-weeks),minmax(0,1fr));grid-auto-flow:column}
+.heatmapCells.month{grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.heatmapCell{display:block;width:100%;height:100%;min-width:0;min-height:0;border:1px solid color-mix(in srgb,var(--line) 55%,transparent);border-radius:3px;background:var(--heat-0);padding:0;cursor:pointer;color:var(--ink);font-size:11px}
+.heatmapCell[data-level="1"],.heatmapLegend i[data-level="1"]{background:var(--heat-1)}
+.heatmapCell[data-level="2"],.heatmapLegend i[data-level="2"]{background:var(--heat-2)}
+.heatmapCell[data-level="3"],.heatmapLegend i[data-level="3"]{background:var(--heat-3)}
+.heatmapCell[data-level="4"],.heatmapLegend i[data-level="4"]{background:var(--heat-4)}
+.heatmapCells.month .heatmapCell{height:36px;font-weight:700}
+html:not([data-theme="dark"]) .heatmapCells.month .heatmapCell[data-level="3"],html:not([data-theme="dark"]) .heatmapCells.month .heatmapCell[data-level="4"]{color:#fff}
+.heatmapCell:disabled{opacity:.25;cursor:default}
+.heatmapCell:not(:disabled):hover,.heatmapCell:focus-visible{outline:2px solid var(--ink);outline-offset:1px;z-index:1}
+.heatmapCell.selected{outline:2px solid var(--ink);outline-offset:1px}
+.heatmapMonthDays{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:6px;font-size:9px;text-align:center;color:var(--muted)}
+.heatmapStats{display:flex;gap:32px;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+.heatmapStats>div{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.heatmapStats span,.heatmapStats small{color:var(--muted);font-size:10px}.heatmapStats strong{font-size:14px}
+.movementHeatmap.monthly .heatmapLayout{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:28px;max-width:900px}
+.movementHeatmap.monthly .heatmapStats{border:0;margin:0;padding:0;display:flex;flex-direction:column;justify-content:center;gap:20px}
+.movementHeatmap.monthly .heatmapStats>div{display:grid;gap:4px}.movementHeatmap.monthly .heatmapStats strong{font-size:20px}
+.heatmapFooter{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px;color:var(--muted);font-size:9px}
+.heatmapLegend{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.heatmapLegend i{width:12px;height:12px;background:var(--heat-0);border:1px solid var(--line);border-radius:3px}
+.ledgerDayHeading{display:none}
+@media(max-width:1000px) and (min-width:701px){.heatmapCells.year{grid-template-rows:repeat(7,13px)}.heatmapCells,.heatmapMonths{gap:2px}.heatmapStats{gap:15px}.heatmapFooter{align-items:flex-start}}
+@media(max-width:700px){
+  .availabilityPager{display:none !important}
+  .availabilityScroller{display:grid !important;grid-template-columns:none !important;grid-auto-flow:column !important;grid-auto-columns:calc((100% - 8px)/2) !important;grid-template-rows:auto !important;gap:8px !important;overflow-x:auto !important;overflow-y:hidden !important;scroll-snap-type:x proximity;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 !important;padding:2px 0 4px !important}
+  .availabilityScroller::-webkit-scrollbar{display:none}
+  .availabilityScroller .balanceTile{width:auto;min-width:0 !important;scroll-snap-align:start}
+  .availabilityScroller .tileAmount{font-size:clamp(16px,4.7vw,21px) !important}
+  .movementDesktopAdd,#movementHeatmap{display:none !important}
+  #movements>.card{background:transparent;border:0;box-shadow:none}
+  #movements>.card>.sectionHead{padding:12px 3px 10px;border:0;background:transparent}
+  #movements>.card>.sectionHead p{display:none}
+  #movements .movementFilters{margin:0;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:9px;gap:10px 8px !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  #movements .movementFilters label{font-size:10px;margin-bottom:5px;color:var(--muted)}
+  #movements .movementFilters input,#movements .movementFilters select{height:40px;min-height:40px;font-size:13px;border-radius:6px;background:var(--surface-2)}
+  #movements .movementSearchField{grid-column:1/-1}
+  #movements .movementRangeHint{padding:10px 3px 0;font-size:10px;line-height:1.5}
+  #movements .ledgerList{padding:0;gap:7px}
+  .ledgerDayHeading{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 2px;color:var(--muted);font-size:10px}
+  .ledgerDayHeading strong{color:var(--ink);font-size:11px}
+  #movements .ledgerRow{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"description amount" "party party" "category type" "actions actions";gap:5px 8px;padding:12px;border-radius:9px;align-items:start;background:var(--surface)}
+  #movements .ledgerDate{display:none}
+  #movements .ledgerDescription{grid-area:description;min-width:0}
+  #movements .ledgerDesc{font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+  #movements .ledgerDescription .ledgerMeta{font-size:10px;margin-top:3px;overflow-wrap:anywhere}
+  #movements .ledgerAmount{grid-area:amount;align-self:start;font-size:14px;padding-top:1px;white-space:nowrap}
+  #movements .ledgerParty{grid-area:party;display:block;font-size:10px;line-height:1.4;overflow-wrap:anywhere}
+  #movements .ledgerCategory{grid-area:category;display:block;font-size:9px;line-height:1.5;overflow-wrap:anywhere}
+  #movements .ledgerType{grid-area:type;justify-self:end}
+  #movements .typePill{font-size:8px;padding:3px 5px}
+  #movements .ledgerActions{grid-area:actions;justify-content:flex-end;margin:4px 0 0;padding-top:6px;border-top:1px solid var(--line);gap:12px}
+  #movements .ledgerActions .btn{flex:0 0 auto;min-height:30px;padding:3px 5px;border:0;background:transparent;box-shadow:none;font-size:10px;color:var(--muted)}
+  #movements .ledgerActions .danger{color:var(--red)}
+  #movements .tagPill{font-size:9px;margin-top:4px}
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2685,7 +2783,7 @@ html[data-theme="dark"] .pnlSection.pnlBarsEnabled .matrix .pnlValueCell.pnlHasB
     </div>
 
     <div class="card section">
-      <div class="sectionHead"><div><h2><i class="fa-solid fa-wallet"></i>Disponibilidad</h2><p id="availabilitySubtitle">Saldo y línea disponible al Corte seleccionado.</p></div><div class="availabilitySwitch" role="group" aria-label="Vista de disponibilidad"><button id="availabilityAvailableBtn" type="button" class="active" aria-pressed="true"><i class="fa-solid fa-wallet"></i> Disponible</button><button id="availabilityAggregateBtn" type="button" aria-pressed="false"><i class="fa-solid fa-layer-group"></i> Agregado</button><button id="availabilityDebtBtn" type="button" aria-pressed="false"><i class="fa-solid fa-credit-card"></i> Deuda</button></div></div>
+      <div class="sectionHead"><div><h2><i class="fa-solid fa-wallet"></i>Disponibilidad</h2><p id="availabilitySubtitle">Saldo y línea disponible al Corte seleccionado.</p></div><div class="availabilityTools"><div class="availabilitySwitch" role="group" aria-label="Vista de disponibilidad"><button id="availabilityAvailableBtn" type="button" class="active" aria-pressed="true"><i class="fa-solid fa-wallet"></i> Disponible</button><button id="availabilityAggregateBtn" type="button" aria-pressed="false"><i class="fa-solid fa-layer-group"></i> Agregado</button><button id="availabilityDebtBtn" type="button" aria-pressed="false"><i class="fa-solid fa-credit-card"></i> Deuda</button></div><div id="availabilityPager" class="availabilityPager" aria-label="Páginas de disponibilidad"><button id="availabilityPrev" class="btn small" type="button" onclick="stepAvailabilityPage(-1)" aria-label="Página anterior">‹</button><span id="availabilityPageLabel" aria-live="polite">1 de 1</span><button id="availabilityNext" class="btn small" type="button" onclick="stepAvailabilityPage(1)" aria-label="Página siguiente">›</button></div></div></div>
       <div class="sectionBody"><div id="availability" class="availabilityScroller"></div></div>
     </div>
 
@@ -2810,9 +2908,14 @@ html[data-theme="dark"] .pnlSection.pnlBarsEnabled .matrix .pnlValueCell.pnlHasB
 
   <section id="movements" class="view">
     <div class="card section">
-      <div class="sectionHead"><div><h2><i class="fa-solid fa-arrow-right-arrow-left"></i>Movimientos</h2><p>Tu libro mayor. Al editar un movimiento se recalcula todo.</p></div><button class="btn primary" onclick="openMovement()"><i class="fa-solid fa-plus"></i> Movimiento</button></div>
-      <div class="filters movementFilters"><div><label for="mvMonth">Mes</label><input id="mvMonth" type="month" required></div><div><label for="mvDay">Día</label><select id="mvDay"><option value="">Todo el mes</option></select></div><select id="mvKindFilter"><option value="">Todos los tipos</option><option value="expense">Gastos / inversiones</option><option value="income">Ingresos</option><option value="reimbursement">Reembolsos recibidos</option><option value="transfer">Transferencias</option><option value="card_payment">Pagos de tarjeta</option><option value="refund">Devoluciones</option><option value="adjustment">Ajustes</option></select><select id="mvCatFilter"></select><input id="mvSearch" placeholder="Buscar movimiento..."></div>
-      <p id="mvRangeHint" class="movementRangeHint" aria-live="polite"></p><div id="ledgerList" class="ledgerList"></div>
+      <div class="sectionHead"><div><h2><i class="fa-solid fa-arrow-right-arrow-left"></i>Movimientos</h2><p>Tu libro mayor. Al editar un movimiento se recalcula todo.</p></div><button class="btn primary movementDesktopAdd" onclick="openMovement()"><i class="fa-solid fa-plus"></i> Movimiento</button></div>
+      <div class="filters movementFilters"><div><label for="mvMonth">Mes</label><input id="mvMonth" type="month" required></div><div><label for="mvDay">Día</label><select id="mvDay"><option value="">Todo el mes</option></select></div><div class="movementExtraFilter"><label for="mvKindFilter">Tipo</label><select id="mvKindFilter"><option value="">Todos los tipos</option><option value="expense">Gastos / inversiones</option><option value="income">Ingresos</option><option value="reimbursement">Reembolsos recibidos</option><option value="transfer">Transferencias</option><option value="card_payment">Pagos de tarjeta</option><option value="refund">Devoluciones</option><option value="adjustment">Ajustes</option></select></div><div class="movementExtraFilter"><label for="mvCatFilter">Categoría</label><select id="mvCatFilter"></select></div><div class="movementSearchField"><label for="mvSearch">Buscar</label><input id="mvSearch" type="search" placeholder="Concepto, nota o etiqueta..."></div></div>
+      <p id="mvRangeHint" class="movementRangeHint" aria-live="polite"></p>
+      <section id="movementHeatmap" class="movementHeatmap" aria-label="Mapa de calor de gastos">
+        <div class="heatmapHead"><div><h3>Actividad de gastos <span id="heatmapPeriodLabel"></span></h3><p>Gastos realizados en PEN · según tipo, categoría y búsqueda · pulsa un día para ver sus movimientos.</p></div><div class="heatmapMode" role="group" aria-label="Periodo del mapa"><button id="heatmapMonthBtn" type="button" onclick="setMovementHeatmapMode('month')" aria-pressed="false">Mes</button><button id="heatmapYearBtn" type="button" onclick="setMovementHeatmapMode('year')" class="active" aria-pressed="true">Año</button></div></div>
+        <div class="heatmapLayout"><div id="heatmapCalendar" class="heatmapCalendar"></div><div id="heatmapStats" class="heatmapStats"></div></div>
+        <div class="heatmapFooter"><span>Sin inversiones, transferencias ni pagos de tarjeta. Corte: <span id="heatmapCutoff"></span></span><div class="heatmapLegend" aria-label="Intensidad del gasto">Menor <i data-level="0"></i><i data-level="1"></i><i data-level="2"></i><i data-level="3"></i><i data-level="4"></i> Mayor</div></div>
+      </section><div id="ledgerList" class="ledgerList"></div>
     </div>
   </section>
 
@@ -2870,7 +2973,6 @@ html[data-theme="dark"] .pnlSection.pnlBarsEnabled .matrix .pnlValueCell.pnlHasB
   <section id="settings" class="view">
     <div class="card section"><div class="sectionHead"><div><h2><i class="fa-solid fa-sliders"></i>Ajustes</h2><p>Parámetros, respaldo y mantenimiento.</p></div></div>
       <div class="sectionBody"><div class="settingsGrid">
-        <div class="card settingCard"><label>Ingreso mensual de referencia</label><input id="incomeInput" data-admin-field type="number" step=".01"></div>
         <div class="card settingCard"><label>Tipo de cambio USD → PEN</label><input id="fxInput" data-admin-field type="number" step=".0001"></div>
         <div class="card settingCard"><label>Histórico automático</label><select id="lookbackInput" data-admin-field><option value="3">3 meses</option><option value="6">6 meses</option><option value="12">12 meses</option><option value="24">24 meses</option></select></div>
         <div class="card settingCard"><label>Protección de edición</label><div class="cloudLine"><i class="fa-solid fa-shield-halved"></i><span>La app inicia siempre en <strong>Modo normal</strong>. Activa Administrador desde el header solo cuando necesites registrar o modificar información.</span></div></div>
@@ -2903,6 +3005,10 @@ html[data-theme="dark"] .pnlSection.pnlBarsEnabled .matrix .pnlValueCell.pnlHasB
 <div><label>Moneda</label><select id="accountCurrency"><option>PEN</option><option>USD</option></select></div>
 <div><label>Saldo inicial</label><input id="accountOpening" type="number" step=".01" required></div><div><label>Fecha saldo inicial</label><input id="accountOpeningDate" type="date" required></div>
 <div><label>Activo</label><select id="accountActive"><option value="true">Sí</option><option value="false">No</option></select></div>
+<div><label for="accountIncludeInCash">Sumar al efectivo disponible</label><select id="accountIncludeInCash"><option value="true">Sí, incluir saldo</option><option value="false">No, excluir saldo</option></select></div>
+<div><label for="accountShowAvailability">Mostrar en disponibilidad</label><select id="accountShowAvailability"><option value="true">Sí, mostrar tarjeta</option><option value="false">No, ocultar tarjeta</option></select></div>
+<div><label for="accountAvailabilityOrder">Orden en disponibilidad</label><input id="accountAvailabilityOrder" type="number" min="1" step="1" required></div>
+<div class="span2 fieldHint">El orden se aplica entre tus cuentas, antes de las tarjetas de crédito. Ocultar una tarjeta no excluye su saldo del efectivo. Estas preferencias no modifican movimientos ni objetivos.</div>
 </div><div class="modalActions"><button type="button" class="btn" onclick="$('accountDialog').close()">Cancelar</button><button class="btn primary">Guardar</button></div></form></dialog>
 
 <dialog id="cardDialog"><form id="cardForm" class="modal"><h3 id="cardTitle">Tarjeta</h3><input id="cardId" type="hidden"><div class="formGrid">
@@ -3037,6 +3143,8 @@ try{LEGACY_LOCAL_KEYS.forEach(k=>localStorage.removeItem(k))}catch{}
 let figuresHidden=false;
 let adminMode=false; // Safety mode: always starts in Normal on each app load.
 let availabilityMode='available';
+let availabilityPage=0;
+let movementHeatmapMode='year';
 let pnlExpandedCategories=new Set();
 let pnlShowBars=false;
 let pnlShowDecimals=true;
@@ -3151,7 +3259,7 @@ function starter(){
 function normalize(d){
   if(!d||typeof d!=='object')d=starter();
   d.version=6;d.settings=d.settings||{income:3700,fx:3.5,theme:'light',lookback:6,hideFigures:false};if(typeof d.settings.hideFigures!=='boolean')d.settings.hideFigures=false;
-  d.accounts=Array.isArray(d.accounts)?d.accounts:[];d.cards=Array.isArray(d.cards)?d.cards:[];d.categories=Array.isArray(d.categories)?d.categories:[];
+  d.accounts=Array.isArray(d.accounts)?d.accounts:[];d.accounts.forEach((a,i)=>{a.includeInCash=a.includeInCash!==false;a.showInAvailability=a.showInAvailability!==false;a.availabilityOrder=Number.isFinite(+a.availabilityOrder)?+a.availabilityOrder:i+1});d.cards=Array.isArray(d.cards)?d.cards:[];d.categories=Array.isArray(d.categories)?d.categories:[];
   d.movements=Array.isArray(d.movements)?d.movements:[];d.recurring=Array.isArray(d.recurring)?d.recurring:[];d.goals=Array.isArray(d.goals)?d.goals:[];d.receivables=Array.isArray(d.receivables)?d.receivables:[];
   if((+d.settings.categoryModelVersion||0)<2)migrateCategoryModel(d);
   d.categories.forEach(c=>{if(!c.group)c.group='expense';if(c.budget==null)c.budget=0;if(!c.color)c.color='#2f6fed';if(!Array.isArray(c.subcategories))c.subcategories=[];c.subcategories=c.subcategories.filter(x=>x&&x.name).map(x=>({id:x.id||uid(),name:categoryKey(x.name)==='suscripciones profesionales'?'Suscripciones':x.name,archived:!!x.archived}))});
@@ -3202,21 +3310,30 @@ function renderSelects(){
   const {year,month}=selectedPeriod(),months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];$('pnlMonth').innerHTML=months.map((m,i)=>`<option value="${i}">${m}</option>`).join('');$('pnlMonth').value=String(month);
 }
 function renderDashboard(){
-  const {year,month}=selectedPeriod(),cutoff=selectedCutoff(),cash=data.accounts.filter(a=>a.active).reduce((sum,a)=>sum+toPen(accountBalanceAt(a.id,cutoff),a.currency),0),debt=data.cards.filter(c=>c.active).reduce((sum,c)=>sum+toPen(cardDebtAt(c.id,cutoff),c.currency),0),due=data.cards.filter(c=>c.active).reduce((sum,c)=>sum+toPen(cardCycleAt(c.id,cutoff).remaining,c.currency),0);
+  const {year,month}=selectedPeriod(),cutoff=selectedCutoff(),cash=availableCashAt(cutoff),debt=data.cards.filter(c=>c.active).reduce((sum,c)=>sum+toPen(cardDebtAt(c.id,cutoff),c.currency),0),due=data.cards.filter(c=>c.active).reduce((sum,c)=>sum+toPen(cardCycleAt(c.id,cutoff).remaining,c.currency),0);
   const inc=groupMonth('income',year,month,cutoff),exp=groupMonth('expense',year,month,cutoff),inv=groupMonth('investment',year,month,cutoff),saving=inc-exp-inv;
   $('kSaving').textContent=pen(saving);$('kSaving').className='metricValue '+(saving<0?'bad':'');$('kSavingNote').textContent=`Al ${prettyDate(cutoff)}`;
   const receivablesOutstanding=data.receivables.reduce((sum,r)=>sum+toPen(receivableOutstandingAt(r,cutoff),r.currency||'PEN'),0),netPosition=cash-debt,estimatedPosition=netPosition+receivablesOutstanding;$('kCash').textContent=pen(cash);$('kCardDue').textContent=pen(due);$('kDebt').textContent=pen(debt);$('kNet').textContent=pen(netPosition);$('kNet').className='metricValue '+(netPosition<0?'bad':'');$('kEstimated').textContent=pen(estimatedPosition);$('kEstimated').className='metricValue '+(estimatedPosition<0?'bad':'');
   renderAvailability();renderPlanningPreview();renderPnlDesktop(year,cutoff);renderPnlMobile(year,+$('pnlMonth').value,cutoff);renderIndicators(cash,debt,due,inc,exp,inv,saving);renderUpcoming();
 }
 function setAvailabilityMode(mode){
-  availabilityMode=['available','aggregate','debt'].includes(mode)?mode:'available';
+  availabilityMode=['available','aggregate','debt'].includes(mode)?mode:'available';availabilityPage=0;
   for(const [id,value] of [['availabilityAvailableBtn','available'],['availabilityAggregateBtn','aggregate'],['availabilityDebtBtn','debt']]){
     const button=$(id);button.classList.toggle('active',availabilityMode===value);button.setAttribute('aria-pressed',String(availabilityMode===value));
   }
   renderAvailability();
 }
+function accountIncludedInCash(a,date){return a.active&&a.includeInCash!==false&&(a.openingDate||'')<=date}
+function availableCashAt(date=selectedCutoff()){return data.accounts.filter(a=>accountIncludedInCash(a,date)).reduce((sum,a)=>sum+toPen(accountBalanceAt(a.id,date),a.currency),0)}
+function orderedAccounts(){return data.accounts.map((a,i)=>({a,i})).sort((x,y)=>(Number(x.a.availabilityOrder)||0)-(Number(y.a.availabilityOrder)||0)||x.i-y.i).map(x=>x.a)}
+function moveAccountOrder(id,direction){
+  if(!requireAdmin('ordenar las cuentas'))return;
+  const rows=orderedAccounts(),i=rows.findIndex(a=>a.id===id),j=i+direction;if(i<0||j<0||j>=rows.length)return;
+  [rows[i],rows[j]]=[rows[j],rows[i]];rows.forEach((a,index)=>a.availabilityOrder=index+1);save();
+}
+function stepAvailabilityPage(delta){availabilityPage+=delta;renderAvailability()}
 function availabilityTotalsAt(cutoff=selectedCutoff()){
-  const cash=data.accounts.filter(a=>a.active&&(a.openingDate||'')<=cutoff).reduce((sum,a)=>sum+toPen(accountBalanceAt(a.id,cutoff),a.currency),0);
+  const cash=availableCashAt(cutoff);
   const credit=data.cards.filter(c=>c.active&&(c.openingDate||'')<=cutoff).reduce((sum,c)=>sum+toPen(Math.max(0,(+c.limit||0)-cardDebtAt(c.id,cutoff)),c.currency),0);
   return {cash,credit,total:cash+credit};
 }
@@ -3257,13 +3374,19 @@ function renderAvailability(){
   }else if(mode==='available'){
     if(mobile)items.push(availabilitySummaryTile('Disponible total',totals.total,'fa-layer-group','Efectivo + crédito · PEN','totalAvailable'));
     if(sub)sub.textContent=`Saldo y línea disponible al ${prettyDate(cutoff)}.`;
-    data.accounts.filter(a=>a.active).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff),brand=a.institution||a.name;items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity"><div class="tileIdentityTop">${financialBrandLogo(brand)}<div class="tileName">${esc(a.name)}</div></div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge availabilityKindIcon" title="Cuenta" aria-label="Cuenta"><i class="fa-solid fa-building-columns"></i></span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">Saldo disponible · Corte ${prettyDate(cutoff)}</div></div>`)});
-    data.cards.filter(c=>c.active).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt),brand=c.bank||c.name;items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity"><div class="tileIdentityTop">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div></div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge availabilityKindIcon" title="Tarjeta de crédito" aria-label="Tarjeta de crédito"><i class="fa-solid fa-credit-card"></i></span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · Deuda total ${money(debt,c.currency)}</div></div>`)});
+    orderedAccounts().filter(a=>a.active&&a.showInAvailability!==false&&(a.openingDate||'')<=cutoff).forEach(a=>{const balance=accountBalanceAt(a.id,cutoff),brand=a.institution||a.name;items.push(`<div class="balanceTile drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('account','${a.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity"><div class="tileIdentityTop">${financialBrandLogo(brand)}<div class="tileName">${esc(a.name)}</div></div><div class="tileType">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge availabilityKindIcon" title="Cuenta" aria-label="Cuenta"><i class="fa-solid fa-building-columns"></i></span></div><div class="tileAmount">${money(balance,a.currency)}</div><div class="tileMeta">${a.includeInCash===false?'Excluida del efectivo':'Saldo disponible'} · Corte ${prettyDate(cutoff)}</div></div>`)});
+    data.cards.filter(c=>c.active&&(c.openingDate||'')<=cutoff).forEach(c=>{const debt=cardDebtAt(c.id,cutoff),available=Math.max(0,(+c.limit||0)-debt),brand=c.bank||c.name;items.push(`<div class="balanceTile credit drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity"><div class="tileIdentityTop">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div></div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge availabilityKindIcon" title="Tarjeta de crédito" aria-label="Tarjeta de crédito"><i class="fa-solid fa-credit-card"></i></span></div><div class="tileAmount">${money(available,c.currency)}</div><div class="tileMeta">Línea disponible · Deuda total ${money(debt,c.currency)}</div></div>`)});
   }else{
     if(sub)sub.textContent=`Pendiente y Deuda total al ${prettyDate(cutoff)}.`;
-    data.cards.filter(c=>c.active).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este Corte',brand=c.bank||c.name;items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity"><div class="tileIdentityTop">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div></div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge">Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · Deuda total ${money(cy.debt,c.currency)}</div></div>`)});
+    data.cards.filter(c=>c.active&&(c.openingDate||'')<=cutoff).forEach(c=>{const cy=cardCycleAt(c.id,cutoff),cycleText=cy.cycleActive?'Pago pendiente':'Sin ciclo registrado para este Corte',brand=c.bank||c.name;items.push(`<div class="balanceTile credit debtView drillable" role="button" tabindex="0" title="Ver tendencia y movimientos" onclick="openAvailabilityDetail('card','${c.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="tileTop"><div class="tileIdentity"><div class="tileIdentityTop">${financialBrandLogo(brand)}<div class="tileName">${esc(c.name)}</div></div><div class="tileType">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge debtBadge">Deuda</span></div><div class="tileAmount">${money(cy.remaining,c.currency)}</div><div class="tileMeta">${cycleText} · Deuda total ${money(cy.debt,c.currency)}</div></div>`)});
   }
-  $('availability').innerHTML=items.join('')||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
+  const paginated=!mobile&&mode!=='aggregate',pages=Math.max(1,Math.ceil(items.length/7));
+  availabilityPage=Math.max(0,Math.min(availabilityPage,pages-1));
+  $('availabilityPager').hidden=!paginated;
+  $('availabilityPageLabel').textContent=`${availabilityPage+1} de ${pages}`;
+  $('availabilityPrev').disabled=availabilityPage===0;$('availabilityNext').disabled=availabilityPage>=pages-1;
+  const shown=paginated?items.slice(availabilityPage*7,availabilityPage*7+7):items;
+  $('availability').innerHTML=shown.join('')||`<div class="empty">${availabilityMode==='debt'?'No tienes tarjetas activas.':'Agrega una cuenta o tarjeta para comenzar.'}</div>`;
 }
 
 
@@ -3412,7 +3535,7 @@ function analyticsProductSelected(type,id){return analyticsState.productIds===nu
 function analyticsMovementProductKey(t){if(t.kind==='expense')return `${t.sourceType||'account'}:${t.sourceId||''}`;if(t.kind==='income'||t.kind==='reimbursement')return `account:${t.sourceId||''}`;if(t.kind==='refund')return `card:${t.cardId||''}`;if(t.kind==='card_payment')return `account:${t.sourceId||''}`;return ''}
 function analyticsMovementIncluded(t){if(!analyticsCategorySelected(t.categoryId||''))return false;if(analyticsState.productIds!==null){const key=analyticsMovementProductKey(t);if(key&&!analyticsState.productIds.has(key))return false}return true}
 function analyticsFlowSummary(from,to){let income=0,expense=0,investment=0,count=0;for(const t of data.movements){if((t.date||'')<from||(t.date||'')>to||!['expense','income','reimbursement'].includes(t.kind)||!analyticsMovementIncluded(t))continue;const v=toPen(t.amount,movementCurrency(t)),group=cat(t.categoryId)?.group||(t.kind==='income'?'income':'expense');if(t.kind==='income'||group==='income')income+=v;else if(group==='investment')investment+=(t.kind==='reimbursement'?-v:v);else expense+=(t.kind==='reimbursement'?-v:v);count++}return {income,expense,investment,net:income-expense-investment,count}}
-function analyticsCashAt(date){return data.accounts.filter(a=>analyticsProductSelected('account',a.id)).reduce((sum,a)=>sum+toPen(accountBalanceAt(a.id,date),a.currency),0)}
+function analyticsCashAt(date){return data.accounts.filter(a=>accountIncludedInCash(a,date)&&analyticsProductSelected('account',a.id)).reduce((sum,a)=>sum+toPen(accountBalanceAt(a.id,date),a.currency),0)}
 function analyticsDebtAt(date){return data.cards.filter(c=>analyticsProductSelected('card',c.id)).reduce((sum,c)=>sum+toPen(cardDebtAt(c.id,date),c.currency),0)}
 function analyticsLineAt(date){return data.cards.filter(c=>analyticsProductSelected('card',c.id)).reduce((sum,c)=>sum+toPen(+c.limit||0,c.currency),0)}
 function analyticsReceivablesAt(date){return data.receivables.reduce((sum,r)=>sum+toPen(receivableOutstandingAt(r,date),r.currency||'PEN'),0)}
@@ -3558,9 +3681,71 @@ function syncMovementDayOptions(){
   if(dayInput.selectedIndex<0)dayInput.value='';
   $('mvRangeHint').textContent=dayInput.value?`Día ${prettyDate(dayInput.value)} · Corte ${prettyDate(cutoff)}`:`Todo el mes · Del 01/${month.slice(5)}/${month.slice(0,4)} al ${prettyDate(`${month}-${String(last).padStart(2,'0')}`)} · Corte ${prettyDate(cutoff)}`;
 }
-function renderMovements(){syncMovementDayOptions();const day=$('mvDay').value,m=$('mvMonth').value||monthNow(),cutoff=selectedCutoff(),k=$('mvKindFilter').value,c=$('mvCatFilter').value,q=$('mvSearch').value.toLowerCase(),rows=data.movements.filter(t=>{const hay=[t.description,t.note,t.tag,catName(t.categoryId),subcatName(t.categoryId,t.subcategoryId)].join(' ').toLowerCase();return(!m||t.date.startsWith(m))&&(!day||t.date===day)&&(t.date||'')<=cutoff&&(!k||t.kind===k)&&(!c||t.categoryId===c)&&(!q||hay.includes(q))}).sort((a,b)=>b.date.localeCompare(a.date));$('ledgerList').innerHTML=rows.length?rows.map(t=>{const path=t.categoryId?categoryPathText(t.categoryId,t.subcategoryId):'Sin categoría',tag=t.tag?`<div class="tagPill"><i class="fa-solid fa-tag"></i>${esc(t.tag)}</div>`:'';return `<div class="ledgerRow"><div class="ledgerDate">${t.date}</div><div class="ledgerType"><span class="typePill ${t.kind==='income'||t.kind==='refund'||t.kind==='reimbursement'?'good':t.kind==='expense'?'bad':'warn'}">${kindName(t.kind)}</span></div><div class="ledgerDescription"><div class="ledgerDesc">${esc(t.description)}</div>${t.note?`<div class="ledgerMeta">${esc(t.note)}</div>`:''}${tag}</div><div class="ledgerParty ledgerMeta">${esc(party(t))}</div><div class="ledgerCategory ledgerMeta">${esc(path)}</div><div class="ledgerAmount">${money(t.amount,movementCurrency(t))}</div><div class="ledgerActions">${t.receivableId?`<button class="btn small" onclick="navigateTo('receivables')"><i class="fa-solid fa-hand-holding-dollar"></i> Pendiente</button>`:`<button class="btn small" onclick="openMovement('${t.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar</button>`}<button class="btn small danger" onclick="deleteMovement('${t.id}')"><i class="fa-regular fa-trash-can"></i> Eliminar</button></div></div>`}).join(''):'<div class="empty">No hay movimientos para este filtro.</div>'}
+function movementMatchesFilters(t){
+  const kind=$('mvKindFilter').value,category=$('mvCatFilter').value,query=$('mvSearch').value.trim().toLowerCase();
+  const text=[t.description,t.note,t.tag,catName(t.categoryId),subcatName(t.categoryId,t.subcategoryId)].join(' ').toLowerCase();
+  return (!kind||t.kind===kind)&&(!category||t.categoryId===category)&&(!query||text.includes(query));
+}
+function movementExpenseDays(from,to){
+  const days=new Map(),cutoff=selectedCutoff();
+  for(const t of data.movements){
+    if(t.kind!=='expense'||cat(t.categoryId)?.group==='investment'||!t.date||t.date<from||t.date>to||t.date>cutoff||!movementMatchesFilters(t))continue;
+    const value=Math.max(0,toPen(t.amount,movementCurrency(t))),day=days.get(t.date)||{amount:0,count:0};
+    if(value>0){day.amount+=value;day.count++;days.set(t.date,day)}
+  }
+  return days;
+}
+function setMovementHeatmapMode(mode){movementHeatmapMode=mode==='month'?'month':'year';renderMovementHeatmap()}
+function selectMovementHeatmapDay(date){
+  if(date>selectedCutoff())return;
+  const same=$('mvDay').value===date;$('mvMonth').value=date.slice(0,7);syncMovementDayOptions();$('mvDay').value=same?'':date;renderMovements();
+  document.querySelector(`#heatmapCalendar [data-date="${date}"]`)?.focus({preventScroll:true});
+}
+function heatmapKeydown(event){
+  const steps=movementHeatmapMode==='year'?{ArrowUp:-1,ArrowDown:1,ArrowLeft:-7,ArrowRight:7}:{ArrowUp:-7,ArrowDown:7,ArrowLeft:-1,ArrowRight:1};
+  if(!Object.hasOwn(steps,event.key))return;event.preventDefault();
+  const date=parseDate(event.currentTarget.dataset.date);date.setDate(date.getDate()+steps[event.key]);
+  const target=document.querySelector(`#heatmapCalendar [data-date="${isoDateLocal(date)}"]:not(:disabled)`);
+  if(target){event.currentTarget.tabIndex=-1;target.tabIndex=0;target.focus()}
+}
+function renderMovementHeatmap(){
+  const month=$('mvMonth').value||selectedCutoff().slice(0,7),year=+month.slice(0,4),monthly=movementHeatmapMode==='month',cutoff=selectedCutoff();
+  const from=monthly?`${month}-01`:`${year}-01-01`,to=monthly?isoDateLocal(new Date(year,+month.slice(5),0)):`${year}-12-31`;
+  const days=movementExpenseDays(from,to),values=[...days.entries()],peak=values.reduce((best,row)=>!best||row[1].amount>best[1].amount?row:best,null),max=peak?.[1].amount||0,total=values.reduce((sum,row)=>sum+row[1].amount,0);
+  const start=parseDate(from),finish=parseDate(to),offset=(start.getDay()+6)%7;
+  start.setDate(start.getDate()-offset);finish.setDate(finish.getDate()+(6-(finish.getDay()+6)%7));
+  const count=Math.round((finish-start)/86400000)+1,weeks=count/7,cells=[],headers=[],selected=$('mvDay').value;
+  for(let d=new Date(start),i=0;d<=finish;d.setDate(d.getDate()+1),i++){
+    const date=isoDateLocal(d),inPeriod=date>=from&&date<=to,disabled=!inPeriod||date>cutoff,day=days.get(date)||{amount:0,count:0};
+    const level=figuresHidden||!day.amount?0:Math.min(4,Math.max(1,Math.ceil(day.amount/max*4)));
+    if(!monthly&&inPeriod&&d.getDate()===1)headers.push(`<span style="grid-column:${Math.floor(i/7)+1}">${monthNames[d.getMonth()].slice(0,3)}</span>`);
+    if(!inPeriod){cells.push('<span class="heatmapBlank" aria-hidden="true"></span>');continue}
+    const label=`${prettyDate(date)} · ${date>cutoff?'Después del corte':`${pen(day.amount)} · ${figuresHidden?'••••':day.count} gasto${day.count===1?'':'s'}`}`;
+    cells.push(`<button type="button" class="heatmapCell${date===selected?' selected':''}" data-date="${date}" data-level="${level}" ${disabled?'disabled':''} tabindex="${!disabled&&date===(selected||from)?0:-1}" aria-pressed="${date===selected}" aria-label="${esc(label)}" title="${esc(label)}" onclick="selectMovementHeatmapDay('${date}')" onkeydown="heatmapKeydown(event)">${monthly?d.getDate():''}</button>`);
+  }
+  $('movementHeatmap').classList.toggle('monthly',monthly);
+  $('heatmapPeriodLabel').textContent=monthly?`${monthNames[+month.slice(5)-1]} ${year}`:String(year);
+  for(const [id,active] of [['heatmapMonthBtn',monthly],['heatmapYearBtn',!monthly]]){$(id).classList.toggle('active',active);$(id).setAttribute('aria-pressed',String(active))}
+  const weekdays=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  $('heatmapCalendar').innerHTML=monthly?`<div class="heatmapMonthDays">${weekdays.map(d=>`<span>${d}</span>`).join('')}</div><div class="heatmapCells month">${cells.join('')}</div>`:`<div class="heatmapMonths" style="--heat-weeks:${weeks}">${headers.join('')}</div><div class="heatmapYearBoard"><div class="heatmapWeekdays">${weekdays.map(d=>`<span>${d}</span>`).join('')}</div><div class="heatmapCells year" style="--heat-weeks:${weeks}">${cells.join('')}</div></div>`;
+  $('heatmapStats').innerHTML=`<div><span>Gasto del ${monthly?'mes':'año'}</span><strong>${pen(total)}</strong></div><div><span>Día de mayor gasto</span><strong>${figuresHidden?'••••':peak?prettyDate(peak[0]):'—'}</strong><small>${max?pen(max):'Sin gastos registrados'}</small></div><div><span>Días con gastos</span><strong>${figuresHidden?'••••':days.size}</strong></div>`;
+  $('heatmapCutoff').textContent=prettyDate(cutoff);
+}
+function renderMovements(){
+  syncMovementDayOptions();
+  const day=$('mvDay').value,month=$('mvMonth').value,cutoff=selectedCutoff();
+  const rows=data.movements.filter(t=>t.date?.startsWith(month)&&(!day||t.date===day)&&t.date<=cutoff&&movementMatchesFilters(t)).sort((a,b)=>b.date.localeCompare(a.date));
+  const counts=new Map();for(const t of rows)counts.set(t.date,(counts.get(t.date)||0)+1);
+  let lastDate='';
+  $('ledgerList').innerHTML=rows.length?rows.map(t=>{
+    const path=t.categoryId?categoryPathText(t.categoryId,t.subcategoryId):'Sin categoría',tag=t.tag?`<div class="tagPill"><i class="fa-solid fa-tag"></i>${esc(t.tag)}</div>`:'';
+    const heading=t.date!==lastDate?`<div class="ledgerDayHeading"><strong>${prettyDate(t.date)}</strong><span>${counts.get(t.date)} ${counts.get(t.date)===1?'movimiento':'movimientos'}</span></div>`:'';lastDate=t.date;
+    return `${heading}<div class="ledgerRow"><div class="ledgerDate">${prettyDate(t.date)}</div><div class="ledgerType"><span class="typePill ${['income','refund','reimbursement'].includes(t.kind)?'good':t.kind==='expense'?'bad':'warn'}">${kindName(t.kind)}</span></div><div class="ledgerDescription"><div class="ledgerDesc">${esc(t.description)}</div>${t.note?`<div class="ledgerMeta">${esc(t.note)}</div>`:''}${tag}</div><div class="ledgerParty ledgerMeta">${esc(party(t))}</div><div class="ledgerCategory ledgerMeta">${esc(path)}</div><div class="ledgerAmount">${money(t.amount,movementCurrency(t))}</div><div class="ledgerActions">${t.receivableId?`<button class="btn small" onclick="navigateTo('receivables')" aria-label="Ver pendiente"><i class="fa-solid fa-hand-holding-dollar"></i><span>Pendiente</span></button>`:`<button class="btn small" onclick="openMovement('${t.id}')" aria-label="Editar movimiento"><i class="fa-regular fa-pen-to-square"></i><span>Editar</span></button>`}<button class="btn small danger" onclick="deleteMovement('${t.id}')" aria-label="Eliminar movimiento"><i class="fa-regular fa-trash-can"></i><span>Eliminar</span></button></div></div>`;
+  }).join(''):'<div class="empty">No hay movimientos para este filtro.</div>';
+  renderMovementHeatmap();
+}
 
-function renderAccounts(){const cutoff=selectedCutoff(),isToday=cutoff===today();$('accountsGrid').innerHTML=data.accounts.length?data.accounts.map(a=>{const b=accountBalanceAt(a.id,cutoff);return `<div class="entityCard"><div class="entityHeader"><div><div class="entityTitle"><i class="fa-solid fa-building-columns iconBlue"></i> ${esc(a.name)}</div><div class="entitySub">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge ${a.active?'good':'warn'}">${a.active?'Activa':'Archivada'}</span></div><div class="entityValueLabel">Saldo al ${prettyDate(cutoff)}</div><div class="entityValue ${b<0?'bad':''}">${money(b,a.currency)}</div><div class="entityStats"><div class="statBox"><div class="statLabel">Saldo base</div><div class="statValue">${money(a.openingBalance,a.currency)}</div></div><div class="statBox"><div class="statLabel">Fecha base</div><div class="statValue">${a.openingDate}</div></div></div><div class="entityActions"><button class="btn small" onclick="openAccount('${a.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar</button><button class="btn small" onclick="reconcileAccount('${a.id}')"><i class="fa-solid fa-scale-balanced"></i> Conciliar ${isToday?'':'hoy'}</button><button class="btn small" onclick="toggleEntity('accounts','${a.id}')">${a.active?'Archivar':'Activar'}</button></div></div>`}).join(''):'<div class="empty">Agrega tu primera cuenta.</div>'}
+function renderAccounts(){const cutoff=selectedCutoff(),isToday=cutoff===today();$('accountsGrid').innerHTML=data.accounts.length?orderedAccounts().map((a,index)=>{const b=accountBalanceAt(a.id,cutoff);return `<div class="entityCard accountEntityCard"><div class="entityHeader"><div><div class="entityTitle"><i class="fa-solid fa-building-columns iconBlue"></i> ${esc(a.name)}</div><div class="entitySub">${esc(a.institution||a.type)} · ${a.currency}</div></div><span class="badge ${a.active?'good':'warn'}">${a.active?'Activa':'Archivada'}</span></div><div class="entityValueLabel">Saldo al ${prettyDate(cutoff)}</div><div class="entityValue ${b<0?'bad':''}">${money(b,a.currency)}</div><div class="entityStats"><div class="statBox"><div class="statLabel">Saldo base</div><div class="statValue">${money(a.openingBalance,a.currency)}</div></div><div class="statBox"><div class="statLabel">Fecha base</div><div class="statValue">${a.openingDate}</div></div></div><div class="accountPreferenceTags"><span>${a.includeInCash===false?'No suma al efectivo':'Suma al efectivo'}</span><span>${a.showInAvailability===false?'Oculta en disponibilidad':'Visible en disponibilidad'}</span></div><div class="accountOrderTools"><span>Orden ${index+1}</span><button class="btn small" type="button" data-admin-action ${index===0?'disabled':''} onclick="moveAccountOrder('${a.id}',-1)" aria-label="Subir ${esc(a.name)}">↑</button><button class="btn small" type="button" data-admin-action ${index===data.accounts.length-1?'disabled':''} onclick="moveAccountOrder('${a.id}',1)" aria-label="Bajar ${esc(a.name)}">↓</button></div><div class="entityActions"><button class="btn small" onclick="openAccount('${a.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar</button><button class="btn small" onclick="reconcileAccount('${a.id}')"><i class="fa-solid fa-scale-balanced"></i> Conciliar ${isToday?'':'hoy'}</button><button class="btn small" onclick="toggleEntity('accounts','${a.id}')">${a.active?'Archivar':'Activar'}</button></div></div>`}).join(''):'<div class="empty">Agrega tu primera cuenta.</div>'}
 
 function creditUsageClass(usage){return usage<=30?'utilGreen':usage<=50?'utilYellow':'utilRed'}
 function renderCards(){const cutoff=selectedCutoff(),isToday=cutoff===today();$('cardsGrid').innerHTML=data.cards.length?data.cards.map(c=>{const cy=cardCycleAt(c.id,cutoff),usage=c.limit?Math.min(100,cy.debt/c.limit*100):0,av=Math.max(0,c.limit-cy.debt);return `<div class="creditCard"><div class="creditHeader"><div><div class="creditName"><i class="fa-solid fa-credit-card iconBlue"></i> ${esc(c.name)}</div><div class="creditBank">${esc(c.bank||'Tarjeta')} · ${c.currency}</div></div><span class="badge">${figuresHidden?'••••':usage.toFixed(0)+'%'} uso</span></div><div class="creditDebtLabel">Deuda total al ${prettyDate(cutoff)}</div><div class="creditDebt">${money(cy.debt,c.currency)}</div><div class="creditProgress"><div class="${creditUsageClass(usage)}" style="width:${usage}%"></div></div><div class="tileMeta">Disponible ${money(av,c.currency)} de ${money(c.limit,c.currency)}</div><div class="creditCycle"><div class="cycleBox"><div class="cycleLabel">Pago ciclo</div><div class="cycleValue">${money(cy.amount,c.currency)}</div></div><div class="cycleBox"><div class="cycleLabel">Pagado al Corte</div><div class="cycleValue">${money(cy.paid,c.currency)}</div></div><div class="cycleBox"><div class="cycleLabel">Pendiente</div><div class="cycleValue ${cy.remaining>0?'warn':'good'}">${money(cy.remaining,c.currency)}</div></div></div><div class="creditFooter"><div class="dueText">Vence: <strong>${cy.dueDate||'—'}</strong></div><div class="actions"><button class="btn small" onclick="openCard('${c.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar ciclo</button><button class="btn small" onclick="reconcileCard('${c.id}')"><i class="fa-solid fa-scale-balanced"></i> Conciliar ${isToday?'':'hoy'}</button><button class="btn small" onclick="openCardPayment(\'${c.id}\')"><i class="fa-solid fa-wallet"></i> Pagar</button></div></div></div>`}).join(''):'<div class="empty">Agrega tu primera tarjeta.</div>'}
@@ -3569,10 +3754,10 @@ function renderRecurring(){const f=$('recActive').value,q=$('recSearch').value.t
 
 function renderCategories(){const {year,month}=selectedPeriod(),cutoff=selectedCutoff(),order={income:0,expense:1,investment:2},rows=[...data.categories].sort((a,b)=>(order[a.group]??9)-(order[b.group]??9)||a.name.localeCompare(b.name,'es'));$('categoryGrid').innerHTML=rows.map(c=>{const v=pnlValue(c.id,year,month,cutoff),label=categoryGroupLabel(c.group),subs=(c.subcategories||[]).filter(x=>!x.archived),chips=subs.slice(0,6).map(x=>`<span class="subcategoryChip">${esc(x.name)}</span>`).join('')+(subs.length>6?`<span class="subcategoryChip">+${subs.length-6}</span>`:'');return `<div class="entityCard"><div class="entityHeader"><div><div class="entityTitle"><i class="dot" style="background:${c.color}"></i>${esc(c.name)}</div><div class="entitySub">${label}</div></div><span class="badge">${label}</span></div><div class="subcategoryChips">${chips||'<span class="subcategoryChip">Sin subcategorías</span>'}</div><div class="entityValueLabel">Movimiento del periodo</div><div class="entityValue">${pen(v)}</div><div class="entityStats"><div class="statBox"><div class="statLabel">Presupuesto</div><div class="statValue">${pen(c.budget||0)}</div></div><div class="statBox"><div class="statLabel">Subcategorías</div><div class="statValue">${subs.length}</div></div></div><div class="entityActions"><button class="btn small" onclick="openCategory('${c.id}')"><i class="fa-regular fa-pen-to-square"></i> Editar</button><button class="btn small danger" onclick="deleteCategory('${c.id}')"><i class="fa-regular fa-trash-can"></i> Eliminar</button></div></div>`}).join('')}
 
-function renderSettings(){$('incomeInput').value=data.settings.income;$('fxInput').value=data.settings.fx;$('lookbackInput').value=data.settings.lookback}
+function renderSettings(){$('fxInput').value=data.settings.fx;$('lookbackInput').value=data.settings.lookback}
 
 function upsert(arr,item){const i=arr.findIndex(x=>x.id===item.id);if(i>=0)arr[i]=item;else arr.push(item)}
-function openAccount(id=''){if(!requireAdmin(id?'editar esta cuenta':'agregar una cuenta'))return;const a=account(id)||{};$('accountTitle').textContent=id?'Editar cuenta':'Nueva cuenta';$('accountId').value=id;$('accountName').value=a.name||'';$('accountInstitution').value=a.institution||'';$('accountType').value=a.type||'Ahorros';$('accountCurrency').value=a.currency||'PEN';$('accountOpening').value=a.openingBalance??'';$('accountOpeningDate').value=a.openingDate||today();$('accountActive').value=String(a.active??true);$('accountDialog').showModal()}
+function openAccount(id=''){if(!requireAdmin(id?'editar esta cuenta':'agregar una cuenta'))return;const a=account(id)||{};$('accountTitle').textContent=id?'Editar cuenta':'Nueva cuenta';$('accountId').value=id;$('accountName').value=a.name||'';$('accountInstitution').value=a.institution||'';$('accountType').value=a.type||'Ahorros';$('accountCurrency').value=a.currency||'PEN';$('accountOpening').value=a.openingBalance??'';$('accountOpeningDate').value=a.openingDate||today();$('accountActive').value=String(a.active??true);$('accountIncludeInCash').value=String(a.includeInCash!==false);$('accountShowAvailability').value=String(a.showInAvailability!==false);$('accountAvailabilityOrder').value=a.availabilityOrder??Math.max(0,...data.accounts.map(x=>+x.availabilityOrder||0))+1;$('accountDialog').showModal()}
 function openCard(id=''){if(!requireAdmin(id?'editar esta tarjeta':'agregar una tarjeta'))return;const c=card(id)||{},cy=c.cycle||{};$('cardTitle').textContent=id?'Editar tarjeta / ciclo':'Nueva tarjeta';$('cardId').value=id;$('cardName').value=c.name||'';$('cardBank').value=c.bank||'';$('cardCurrency').value=c.currency||'PEN';$('cardLimit').value=c.limit??'';$('cardOpeningDebt').value=c.openingDebt??0;$('cardOpeningDate').value=c.openingDate||today();$('cardCycleAmount').value=cy.amount??0;$('cardCycleStart').value=cy.startDate||today();$('cardCycleDue').value=cy.dueDate||'';$('cardActive').value=String(c.active??true);$('cardDialog').showModal()}
 function paymentAccountOptsByCurrency(currency,blank=true){const same=data.accounts.filter(a=>a.active&&a.currency===currency);const list=same.length?same:data.accounts.filter(a=>a.active);return (blank?'<option value="">Selecciona...</option>':'')+list.map(a=>`<option value="${a.id}">${esc(a.name)} · ${a.currency} · ${money(accountBalance(a.id),a.currency)}</option>`).join('')}
 function setCardPaymentMode(mode,amount){const cycleBtn=$('cardPaymentCycleBtn'),customBtn=$('cardPaymentCustomBtn'),amountInput=$('cardPaymentAmount');if(!cycleBtn||!customBtn||!amountInput)return;cycleBtn.classList.toggle('active',mode==='cycle');customBtn.classList.toggle('active',mode==='custom');if(mode==='cycle'&&Number.isFinite(amount)&&amount>0){amountInput.value=amount.toFixed(2)}else if(mode==='custom'&&(!amountInput.value||Number(amountInput.value)===0)){amountInput.value=''}$('cardPaymentAmountLabel').textContent=mode==='cycle'?'Monto a pagar':'Ingresa otro monto';setTimeout(()=>amountInput.focus(),0)}
@@ -3593,7 +3778,7 @@ function updateRecForm(){if($('recurringKind').value==='income')$('recurringSour
 function openRecurring(id=''){if(!requireAdmin(id?'editar este recurrente':'agregar un recurrente'))return;const r=data.recurring.find(x=>x.id===id)||{};$('recurringTitle').textContent=id?'Editar recurrente':'Nuevo recurrente';$('recurringId').value=id;$('recurringName').value=r.name||'';$('recurringKind').value=r.kind||'expense';$('recurringAmount').value=r.amount??'';$('recurringPeriod').value=r.period||'monthly';$('recurringStart').value=r.startDate||today();$('recurringSourceType').value=r.sourceType||'account';updateRecForm();refreshRecurringCategories(r.categoryId||'',r.subcategoryId||'');$('recurringTag').value=r.tag||'';$('recurringSourceId').value=r.sourceId||'';$('recurringAuto').value=String(r.autoPost??false);$('recurringActive').value=String(r.active??true);$('recurringComment').value=r.comment||'';$('recurringDialog').showModal()}
 
 
-$('accountForm').onsubmit=e=>{e.preventDefault();if(!requireAdmin('guardar cambios'))return;upsert(data.accounts,{id:$('accountId').value||uid(),name:$('accountName').value.trim(),institution:$('accountInstitution').value.trim(),type:$('accountType').value,currency:$('accountCurrency').value,openingBalance:+$('accountOpening').value||0,openingDate:$('accountOpeningDate').value,active:$('accountActive').value==='true'});$('accountDialog').close();save();toast('Cuenta guardada')}
+$('accountForm').onsubmit=e=>{e.preventDefault();if(!requireAdmin('guardar cambios'))return;upsert(data.accounts,{id:$('accountId').value||uid(),name:$('accountName').value.trim(),institution:$('accountInstitution').value.trim(),type:$('accountType').value,currency:$('accountCurrency').value,openingBalance:+$('accountOpening').value||0,openingDate:$('accountOpeningDate').value,active:$('accountActive').value==='true',includeInCash:$('accountIncludeInCash').value==='true',showInAvailability:$('accountShowAvailability').value==='true',availabilityOrder:Math.max(1,Math.trunc(+$('accountAvailabilityOrder').value)||1)});$('accountDialog').close();save();toast('Cuenta guardada')}
 $('cardForm').onsubmit=e=>{e.preventDefault();if(!requireAdmin('guardar cambios'))return;const id=$('cardId').value||uid(),existing=card(id),nextCycle={amount:+$('cardCycleAmount').value||0,startDate:$('cardCycleStart').value,dueDate:$('cardCycleDue').value},history=[...(existing?.cycleHistory||[])],oldCycle=existing?.cycle;if(oldCycle?.startDate&&nextCycle.startDate&&oldCycle.startDate!==nextCycle.startDate){const key=`${oldCycle.startDate}|${oldCycle.dueDate||''}|${+oldCycle.amount||0}`;if(!history.some(x=>`${x.startDate}|${x.dueDate||''}|${+x.amount||0}`===key))history.push({...oldCycle})}history.sort((a,b)=>(a.startDate||'').localeCompare(b.startDate||''));upsert(data.cards,{id,name:$('cardName').value.trim(),bank:$('cardBank').value.trim(),currency:$('cardCurrency').value,limit:+$('cardLimit').value||0,openingDebt:+$('cardOpeningDebt').value||0,openingDate:$('cardOpeningDate').value,cycle:nextCycle,cycleHistory:history,active:$('cardActive').value==='true'});$('cardDialog').close();save();toast('Tarjeta actualizada','El nuevo ciclo quedó guardado y el anterior se conserva para el histórico.')}
 $('categoryForm').onsubmit=e=>{e.preventDefault();if(!requireAdmin('guardar cambios'))return;const id=$('categoryId').value||uid(),old=cat(id),names=$('categorySubcategories').value.split(/\n|,/).map(x=>x.trim()).filter(Boolean),seen=new Set(),existing=new Map((old?.subcategories||[]).map(x=>[categoryKey(x.name),x])),used=usedSubcategoryIds(id),subs=[];for(const name of names){const key=categoryKey(name);if(seen.has(key))continue;seen.add(key);const prev=existing.get(key);subs.push({id:prev?.id||uid(),name,archived:false})}for(const prev of old?.subcategories||[])if(used.has(prev.id)&&!subs.some(x=>x.id===prev.id))subs.push({...prev,archived:true});upsert(data.categories,{id,name:$('categoryName').value.trim(),group:$('categoryGroup').value,budget:+$('categoryBudget').value||0,color:$('categoryColor').value,subcategories:subs});$('categoryDialog').close();save();toast('Categoría guardada',`${subs.filter(x=>!x.archived).length} subcategorías activas`)}
 $('movementForm').onsubmit=e=>{e.preventDefault();if(!requireAdmin('guardar cambios'))return;const k=$('movementKind').value,amt=+$('movementAmount').value||0,s=$('movementSourceId').value,d=$('movementDestinationId').value,c=$('movementCardId').value,st=$('movementSourceType').value,hasCategory=k==='expense'||k==='income'||k==='reimbursement';if(amt<=0)return toast('No se guardó','El monto debe ser mayor a cero.','bad');if(k!=='refund'&&!s)return toast('No se guardó','Selecciona una cuenta o tarjeta.','bad');if(k==='transfer'&&(!d||d===s))return toast('No se guardó','Selecciona una cuenta destino distinta.','bad');if((k==='card_payment'||k==='refund')&&!c)return toast('No se guardó','Selecciona la tarjeta.','bad');const old=data.movements.find(x=>x.id===$('movementId').value),item={id:$('movementId').value||uid(),date:$('movementDate').value,kind:k,description:$('movementDescription').value.trim(),sourceType:k==='income'||k==='reimbursement'||k==='transfer'||k==='card_payment'?'account':st,sourceId:s,destinationId:k==='transfer'?d:'',cardId:k==='card_payment'||k==='refund'?c:'',categoryId:hasCategory?$('movementCategory').value:'',subcategoryId:hasCategory?$('movementSubcategory').value:'',tag:hasCategory?$('movementTag').value.trim():'',amount:amt,appliedAmount:k==='transfer'||k==='card_payment'?(+$('movementAppliedAmount').value||amt):null,note:$('movementNote').value.trim(),recurringKey:old?.recurringKey||'',recurringId:old?.recurringId||'',manualRecurring:old?.manualRecurring||false};upsert(data.movements,item);$('movementDialog').close();save();toast('Movimiento registrado',`${kindName(k)} · ${money(amt,movementCurrency(item))}`)}
@@ -3837,7 +4022,7 @@ $('movementKind').onchange=updateMvForm;$('movementCategory').onchange=()=>fillS
 $('recurringKind').onchange=updateRecForm;$('recurringCategory').onchange=()=>fillSubcategorySelect('recurringSubcategory',$('recurringCategory').value);$('recurringSourceType').onchange=refreshRecSources;
 $('cutoffInput').onchange=()=>{syncCutoffBounds(false);$('mvMonth').value=$('periodInput').value;const {month}=selectedPeriod();$('pnlMonth').value=String(month);renderDashboard();renderMovements();renderReceivables();renderGoals();renderAccounts();renderCards();renderCategories();if($('analytics')?.classList.contains('active'))renderAnalytics(true)};$('cutoffPrevBtn').onclick=()=>stepCutoff(-1);$('cutoffNextBtn').onclick=()=>stepCutoff(1);const cutoffTodayBtn=$('cutoffTodayBtn');if(cutoffTodayBtn)cutoffTodayBtn.onclick=()=>goCutoffToday();const cutoffDateBox=$('cutoffDateBox');if(cutoffDateBox){cutoffDateBox.onclick=()=>openCutoffPicker();cutoffDateBox.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCutoffPicker();}}}$('availabilityAvailableBtn').onclick=()=>setAvailabilityMode('available');$('availabilityDebtBtn').onclick=()=>setAvailabilityMode('debt');$('availabilityAggregateBtn').onclick=()=>setAvailabilityMode('aggregate');window.matchMedia('(max-width:700px)').addEventListener('change',()=>setAvailabilityMode(availabilityMode==='aggregate'?'available':availabilityMode));$('pnlMonth').onchange=()=>{const {year}=selectedPeriod();renderPnlMobile(year,+$('pnlMonth').value,selectedCutoff())};const pnlToggleSubsBtn=$('pnlToggleSubsBtn'),pnlToggleDecimalsBtn=$('pnlToggleDecimalsBtn'),pnlToggleBarsBtn=$('pnlToggleBarsBtn');if(pnlToggleSubsBtn)pnlToggleSubsBtn.onclick=toggleAllPnlSubcategories;if(pnlToggleDecimalsBtn)pnlToggleDecimalsBtn.onclick=togglePnlDecimals;if(pnlToggleBarsBtn)pnlToggleBarsBtn.onclick=togglePnlBars;const cardPaymentCycleBtn=$('cardPaymentCycleBtn'),cardPaymentCustomBtn=$('cardPaymentCustomBtn');if(cardPaymentCycleBtn)cardPaymentCycleBtn.onclick=()=>{const cy=cardCycleAt($('cardPaymentCardId').value,today()),amount=cy.remaining>0?cy.remaining:cy.debt;setCardPaymentMode('cycle',amount)};if(cardPaymentCustomBtn)cardPaymentCustomBtn.onclick=()=>setCardPaymentMode('custom',0);
 $('mvMonth').onchange=()=>{$('mvDay').value='';renderMovements()};$('mvDay').onchange=renderMovements;$('mvKindFilter').onchange=renderMovements;$('mvCatFilter').onchange=renderMovements;$('mvSearch').oninput=renderMovements;$('recActive').onchange=renderRecurring;$('recSearch').oninput=renderRecurring;
-$('incomeInput').onchange=()=>{if(!requireAdmin('cambiar parámetros'))return renderSettings();data.settings.income=+$('incomeInput').value||0;save()};$('fxInput').onchange=()=>{if(!requireAdmin('cambiar parámetros'))return renderSettings();data.settings.fx=+$('fxInput').value||0;save()};$('lookbackInput').onchange=()=>{if(!requireAdmin('cambiar parámetros'))return renderSettings();data.settings.lookback=+$('lookbackInput').value||6;save()};
+$('fxInput').onchange=()=>{if(!requireAdmin('cambiar parámetros'))return renderSettings();data.settings.fx=+$('fxInput').value||0;save()};$('lookbackInput').onchange=()=>{if(!requireAdmin('cambiar parámetros'))return renderSettings();data.settings.lookback=+$('lookbackInput').value||6;save()};
 $('themeBtn').onclick=toggleTheme;$('mobileThemeBtn').onclick=toggleTheme;$('settingsTheme').onclick=toggleTheme;$('privacyBtn').onclick=togglePrivacy;$('adminModeBtn').onclick=toggleAdminMode;$('settingsExport').onclick=exportData;$('settingsImport').onclick=importClick;
 $('resetBtn').onclick=()=>{if(!requireAdmin('reiniciar la herramienta'))return;if(confirm('¿Reiniciar toda la herramienta?')){data=starter();save();toast('Herramienta reiniciada','','warn')}};
 updatePrivacyButton();
